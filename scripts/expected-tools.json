@@ -1,0 +1,17 @@
+[
+  "select_account",
+  "quick_send_envelope",
+  "list_templates",
+  "get_template_fields",
+  "create_template",
+  "edit_template",
+  "create_envelope_with_template",
+  "create_envelope_with_file_url",
+  "list_envelopes",
+  "get_envelope_details",
+  "list_envelope_documents",
+  "list_envelope_signers",
+  "get_document_details",
+  "send_envelope_reminders",
+  "send_signer_reminder"
+]
