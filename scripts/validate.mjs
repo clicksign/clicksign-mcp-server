@@ -187,7 +187,8 @@ export function validate(root, { release = false } = {}) {
         if (!testCase?.[field]) error(file, `${at}.test_cases.negative[${i}].${field} is required`);
       }
     });
-    if (!review.demo_recording_url) error(file, `${at}.demo_recording_url is required for the MCP review`);
+    // The demo video can come after the first upload, so a draft only warns.
+    if (!review.demo_recording_url) placeholder(file, `${at}.demo_recording_url is required for the MCP review`);
     else httpsUrl(file, `${at}.demo_recording_url`, review.demo_recording_url, 2048, true);
     if (review.commerce !== undefined && typeof review.commerce !== 'boolean') error(file, `${at}.commerce must be a boolean`);
   }

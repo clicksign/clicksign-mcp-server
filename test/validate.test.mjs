@@ -88,6 +88,17 @@ describe('validate', () => {
     assertError(result, /logo is still a placeholder image/);
   });
 
+  it('treats a missing demo_recording_url as unfinished, not invalid', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => delete openai(data).review.demo_recording_url);
+
+    const draft = validate(dir);
+    assert.ok(!draft.errors.some((message) => /demo_recording_url/.test(message)), draft.errors.join('\n'));
+    assert.ok(draft.warnings.some((message) => /demo_recording_url is required for the MCP review/.test(message)));
+
+    assertError(validate(dir, { release: true }), /demo_recording_url is required for the MCP review/);
+  });
+
   it('rejects a displayName longer than 30 characters', () => {
     const dir = copyRepo();
     editJson(dir, 'plugin.json', (data) => (openai(data).interface.displayName = 'C'.repeat(31)));
