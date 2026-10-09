@@ -4,7 +4,7 @@
 //
 //   node scripts/inspect.mjs web   opens the Inspector web UI; log in with OAuth there
 //   node scripts/inspect.mjs cli   lists the tools and compares them with scripts/expected-tools.json,
-//                                  reporting tools without title or annotations (G1)
+//                                  reporting tools without the title or annotations the OpenAI plugin review requires
 //
 // The Inspector runs the OAuth login itself and keeps the token in its own store
 // (~/.mcp-inspector), shared by the web UI and the CLI. No token passes through
@@ -86,7 +86,7 @@ const annotationGaps = tools.filter(
 ).length;
 if (missing.length) console.error(`\n✖ missing tools: ${missing.join(', ')}`);
 if (unexpected.length) console.error(`✖ unexpected tools: ${unexpected.join(', ')}`);
-if (annotationGaps) console.error(`✖ ${annotationGaps} tool(s) lack a title or readOnlyHint/destructiveHint/openWorldHint (G1)`);
+if (annotationGaps) console.error(`✖ ${annotationGaps} tool(s) lack a title or readOnlyHint/destructiveHint/openWorldHint, required by the OpenAI plugin review`);
 
 const ok = !missing.length && !unexpected.length && !annotationGaps;
 console.log(ok ? '\n✔ tool list matches and every tool is annotated' : '');
