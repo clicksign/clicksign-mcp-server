@@ -29,7 +29,7 @@
           "List my Clicksign templates.",
           "Send a reminder to pending signers."
         ],
-        "brandColor": "<#RRGGBB brand color>",
+        "brandColor": "#F25924",
         "logo": "./assets/logo.png",
         "composerIcon": "./assets/logo.png"
       },
