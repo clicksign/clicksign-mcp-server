@@ -10,7 +10,7 @@ https://mcp.clicksign.com/mcp/oauth2
 
 You sign in with your Clicksign account through OAuth 2.1 in the browser. No API key is pasted into the chat, and the connector only reaches the account you authorize.
 
-> **Status:** version 1.0.0 is being prepared for the OpenAI plugin directory and is not published yet. See [docs/submission-checklist.md](docs/submission-checklist.md).
+> **Status:** version 1.0.0 is being prepared for the OpenAI plugin directory and is not published yet.
 
 ## Get started
 
@@ -53,7 +53,7 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 .cursor-plugin/                    Cursor plugin (not published)
 skills/                            Agent Skills bundled with the plugin (none yet)
 assets/                            Listing icons
-docs/                              Setup guides and submission checklist
+docs/                              Setup guides for ChatGPT and Codex
 scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
 ```
 
