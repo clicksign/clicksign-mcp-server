@@ -61,16 +61,30 @@ afterEach(() => {
 });
 
 describe('validate', () => {
-  it('passes the repository with placeholder warnings only', () => {
-    const result = validate(ROOT);
+  it('passes the repository without errors', () => {
+    assert.deepEqual(validate(ROOT).errors, []);
+  });
+
+  // Copies the repo and puts a placeholder string and the generated placeholder
+  // icon back, so these checks do not depend on what is still unfilled.
+  function copyWithPlaceholders() {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.supportURL = '<https://ajuda.clicksign.com/... support page>'));
+    cpSync(join(ROOT, 'test', 'fixtures', 'placeholder-logo.png'), join(dir, 'assets', 'logo.png'));
+    return dir;
+  }
+
+  it('reports placeholders as warnings in a draft', () => {
+    const result = validate(copyWithPlaceholders());
     assert.deepEqual(result.errors, []);
-    assert.ok(result.warnings.some((message) => /placeholder/.test(message)));
+    assert.ok(result.warnings.some((message) => /placeholder at .*supportURL/.test(message)));
+    assert.ok(result.warnings.some((message) => /logo is still a placeholder image/.test(message)));
   });
 
   it('turns placeholders into errors with --release', () => {
-    const result = validate(ROOT, { release: true });
+    const result = validate(copyWithPlaceholders(), { release: true });
     assert.deepEqual(result.warnings, []);
-    assertError(result, /supportURL.*placeholder|placeholder at .*supportURL/);
+    assertError(result, /placeholder at .*supportURL/);
     assertError(result, /logo is still a placeholder image/);
   });
 
