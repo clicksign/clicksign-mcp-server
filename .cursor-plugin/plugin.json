@@ -12,6 +12,5 @@
   "license": "Apache-2.0",
   "keywords": ["clicksign", "e-signature", "contracts", "documents", "mcp"],
   "logo": "assets/logo.png",
-  "skills": "./skills/",
   "mcpServers": "./.mcp.json"
 }

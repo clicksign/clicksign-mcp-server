@@ -156,7 +156,7 @@ describe('validate', () => {
   it('validates skill frontmatter', () => {
     const dir = copyRepo();
     const skill = join(dir, 'skills', 'send-envelope');
-    mkdirSync(skill);
+    mkdirSync(skill, { recursive: true });
     writeFileSync(join(skill, 'SKILL.md'), '---\nname: other-name\ndescription: Sends an envelope.\n---\n\nBody\n');
     assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter name must be "send-envelope"/);
   });

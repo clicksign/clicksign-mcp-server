@@ -51,7 +51,6 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 .agents/plugins/marketplace.json   Codex marketplace that installs the plugin from this repo
 .claude-plugin/, .mcp.json         Claude Code plugin and marketplace (not published)
 .cursor-plugin/                    Cursor plugin (not published)
-skills/                            Agent Skills bundled with the plugin (none yet)
 assets/                            Listing icons
 docs/                              Setup guides for ChatGPT and Codex
 scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
@@ -71,7 +70,7 @@ npm run package             # validate, then build dist/clicksign-<version>.zip
 npm run package -- --release  # same, but placeholders are errors
 ```
 
-`npm run package` puts only `plugin.json`, `mcp.json`, `assets/` and skill directories in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
+`npm run package` puts only `plugin.json`, `mcp.json` and `assets/` in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
 
 ### Testing the connection
 
