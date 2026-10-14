@@ -25,6 +25,7 @@ Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugi
 
 | Tool | What it does |
 |---|---|
+| `list_accounts` | List the Clicksign accounts available to your login and show which one is in use |
 | `select_account` | Choose which Clicksign account to use when your login has more than one |
 | `quick_send_envelope` | Create and send a minimal envelope: one document name and one signer email |
 | `list_templates` | List the document templates in the account |
@@ -117,7 +118,7 @@ Os guias estão em inglês e têm um resumo em português no fim.
 
 ### O que o conector faz
 
-As 15 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
+As 16 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
 
 ### Desenvolvimento
 
