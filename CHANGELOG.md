@@ -12,4 +12,5 @@ All notable changes to this package are documented here. The format follows [Kee
 - Skills directory convention.
 - `migrate-api-v1-to-v3` skill: guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope), with references distilled from the official documentation.
 - Link check for the documentation URLs cited by skills (`npm run check:links`), also run in the validate workflow.
+- Weekly `docs-drift` workflow that compares the documentation pages cited by skills with `scripts/docs-sources.lock.json` and opens or updates a `docs-drift` issue when they change (`npm run check:docs-drift`, `npm run docs:lock`).
 - Validation (`npm run validate`), packaging (`npm run package`), connection smoke test (`npm run smoke`) and MCP Inspector helpers (`npm run inspect`, `npm run inspect:cli`).

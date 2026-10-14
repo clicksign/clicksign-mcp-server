@@ -8,6 +8,14 @@ This directory holds [Agent Skills](https://agentskills.io) bundled with the Cli
 
 Skills cite the official documentation at `developers.clicksign.com`. `npm run check:links` checks that every cited URL still answers.
 
+The documentation is published straight from ReadMe, so a cited page can change without any pull request here. `scripts/docs-sources.lock.json` records the reviewed version of every cited Markdown page, and the weekly `docs-drift` workflow compares it with the live pages. When a page changes, the workflow opens or updates a single issue labelled `docs-drift`. To resolve it:
+
+1. Read each listed page and update the skill files that cite it, if the change affects them.
+2. Run `npm run docs:lock` to record the reviewed versions.
+3. Open a pull request with the skill changes and the updated lock.
+
+Citing a new page or dropping one also requires `npm run docs:lock`; `npm test` fails while the lock and the citations disagree.
+
 ## Convention
 
 Each skill lives in its own kebab-case directory:

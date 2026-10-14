@@ -88,12 +88,18 @@ These commands reach the production server.
 ```sh
 npm run smoke         # no login: checks the 401 challenge and the OAuth discovery metadata
 npm run check:links   # checks that every documentation URL cited by a skill answers 200
+npm run check:docs-drift  # compares the cited documentation pages with scripts/docs-sources.lock.json
+npm run docs:lock     # records the current pages in the lock, after reviewing the skill
 npm run inspect       # opens the MCP Inspector web UI; sign in with OAuth and explore tools
 npm run inspect:cli   # lists the tools, compares them with scripts/expected-tools.json
                       # and reports tools without a title or annotations
 ```
 
 The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) runs the OAuth login itself and keeps the token in its own store, so the scripts never handle credentials. Set `CLICKSIGN_MCP_URL` to point these commands at another environment.
+
+### Keeping skills current
+
+The `docs-drift` workflow runs every Monday and on demand. It compares the documentation pages cited by the skills with `scripts/docs-sources.lock.json` and opens or updates one issue labelled `docs-drift` when a page changed. It reads only public pages and uses the workflow's own `GITHUB_TOKEN`. The resolution steps are in [skills/README.md](skills/README.md). GitHub disables scheduled workflows in public repositories after 60 days without activity; re-enable it in the Actions tab if that happens.
 
 ### Releasing
 
@@ -133,6 +139,8 @@ As 15 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete not
 
 O plugin inclui a skill `migrate-api-v1-to-v3`. Ela ajuda quem tem uma integração na API 1.9 (legada) a adaptar o código para a API 3.0 (Envelope): pede o contexto que faltar, mapeia endpoints, payloads e fluxos, explica o que não tem equivalência direta e propõe o código para testar em sandbox. Não precisa de login no servidor MCP. Peça ao assistente, no projeto com o código 1.9, algo como *"Migre minha integração Clicksign da API 1.9 para a 3.0"*.
 
+Para a skill não ficar desatualizada, o workflow `docs-drift` roda toda segunda e sob demanda: compara as páginas da documentação citadas com `scripts/docs-sources.lock.json` e abre ou atualiza uma issue com a label `docs-drift` quando alguma muda. Os passos para resolver estão em [skills/README.md](skills/README.md).
+
 ### Desenvolvimento
 
 ```sh
@@ -143,6 +151,8 @@ npm run package               # gera dist/clicksign-<versão>.zip
 npm run package -- --release  # placeholders viram erro
 npm run smoke                 # checa o desafio 401 e a descoberta OAuth (produção, sem login)
 npm run check:links           # checa se os links da documentação citados pelas skills respondem 200
+npm run check:docs-drift      # compara as páginas citadas com scripts/docs-sources.lock.json
+npm run docs:lock             # registra as páginas atuais no lock, depois de revisar a skill
 npm run inspect               # abre o MCP Inspector para login OAuth e testes manuais
 npm run inspect:cli           # compara as tools com scripts/expected-tools.json
 ```
