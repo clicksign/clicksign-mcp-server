@@ -1,6 +1,6 @@
 ---
 name: migrate-api-v1-to-v3
-description: Migrate a Clicksign integration from the legacy API 1.9 to API 3.0 (Envelope). Use when code or a snippet calls app.clicksign.com or sandbox.clicksign.com on /api/v1 or /api/v2, passes access_token in the query string, sends document, signer, list or batch JSON roots, uses request_signature_key, sign_as or auths, or when the user asks to migrate, upgrade or port a Clicksign 1.9 integration to 3.0.
+description: Migrate a Clicksign integration from the legacy API 1.9 to API 3.0 (Envelope). Use when code or a snippet calls app.clicksign.com or sandbox.clicksign.com on /api/v1 or /api/v2, passes access_token in the query string, sends document, signer, list or batch JSON roots, uses request_signature_key, sign_as or auths, or when the user asks to migrate, upgrade or port a Clicksign 1.9 integration to 3.0. Also use for requests in Portuguese such as migrar, atualizar ou adaptar a integração Clicksign da API 1.9 (legada, v1) para a API 3.0 (v3, envelope), migração de documento, signatário, lista ou lote para envelope, ou trocar o access_token pelo header Authorization.
 ---
 
 # Migrate a Clicksign integration from API 1.9 to API 3.0
