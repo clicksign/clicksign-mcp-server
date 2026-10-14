@@ -8,7 +8,7 @@ import { deflateSync } from 'node:zlib';
 import { validate } from '../scripts/validate.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SKIP = new Set(['.git', 'node_modules', 'dist']);
+const SKIP = new Set(['.git', 'node_modules', 'dist', '.docs-cache']);
 
 let copies = [];
 

@@ -1,6 +1,10 @@
 # Skills
 
-This directory holds [Agent Skills](https://agentskills.io) bundled with the Clicksign plugin. There are no skills yet: the plugin currently provides only the connection to the Clicksign MCP server.
+This directory holds [Agent Skills](https://agentskills.io) bundled with the Clicksign plugin.
+
+| Skill | What it does |
+|---|---|
+| [`migrate-api-v1-to-v3`](migrate-api-v1-to-v3/SKILL.md) | Guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope): asks for the missing context, maps each call, explains what has no direct equivalent and proposes the adapted code. It does not need the MCP connection. |
 
 ## Convention
 

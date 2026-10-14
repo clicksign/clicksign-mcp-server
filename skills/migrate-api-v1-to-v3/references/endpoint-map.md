@@ -1,0 +1,142 @@
+# Endpoint and field map: API 1.9 to API 3.0
+
+Base paths: 1.9 is `https://{host}/api/v1` (and some `/api/v2`), 3.0 is `https://{host}/api/v3`. Hosts are the same: `https://sandbox.clicksign.com` and `https://app.clicksign.com`. Each row cites the 3.0 page to fetch for exact payloads; the 1.9 pages are listed in `sources.md`.
+
+## Transport
+
+| Topic | API 1.9 | API 3.0 | Source (3.0) |
+|---|---|---|---|
+| Access token | Query string `?access_token={{CLICKSIGN_ACCESS_TOKEN}}` | Header `Authorization: {{CLICKSIGN_ACCESS_TOKEN}}`, the token alone, no `Bearer` prefix | https://developers.clicksign.com/docs/ambientes-autenticacao-e-formato.md |
+| Headers | `Content-Type` and `Accept: application/json` | `Content-Type` and `Accept: application/vnd.api+json` | same |
+| Request body | Root named after the resource: `{"document": {...}}`, `{"signer": {...}}`, `{"list": {...}}` | `{"data": {"type": "<plural>", "attributes": {...}, "relationships": {...}}}`; PATCH also sends `data.id` | https://developers.clicksign.com/reference/api-criar-envelope.md |
+| IDs | `key` (e.g. `document.key`, `signer.key`, `list.key`) | `data.id` (UUID) | same |
+| Pagination | `?page=N`, 30 per page, `page_infos` object | `?page[number]=N&page[size]=M`, `links.next`/`prev`, `meta.record_count` | https://developers.clicksign.com/docs/gerenciamento-consultas-envelope.md |
+| Filters | None documented on lists | `filter[status]`, `filter[name]` (full name), `filter[created]`, `filter[modified]`, `filter[deadline_at]`, `sort=name` / `-name` | https://developers.clicksign.com/reference/api-listar-envelopes.md |
+| Errors | `{"errors": ["<message>"]}` | `{"errors": [{"code", "status", "title", "detail", "source": {"pointer": "/data/attributes/<field>"}}]}`. Unknown attribute: `400 "<field> não está disponível"` | https://developers.clicksign.com/docs/mensagens-de-erro.md |
+| Rate limit | 50 req / 10 s per account (production), 20 in sandbox, `429` | Same limits and headers. Notifications: 1 per minute per endpoint. Polling not allowed: use webhooks | https://developers.clicksign.com/docs/limite-de-requisicoes.md |
+| Account readiness | n/a | Envelope API is enabled for accounts created from 01/07/2024; older accounts get `503 service_unavailable` and must contact support | https://developers.clicksign.com/docs/mensagens-de-erro.md |
+
+JSON:API client libraries recommended by Clicksign (any language): see https://developers.clicksign.com/docs/comparativo-tecnico.md. Plain HTTP with the headers above also works.
+
+## Endpoints
+
+| API 1.9 | API 3.0 | Notes | Source (3.0) |
+|---|---|---|---|
+| `GET /api/v1/accounts` (test the token) | `GET /api/v3/envelopes` | No account endpoint in the 3.0 reference; listing envelopes validates the token | https://developers.clicksign.com/docs/primeiros-passos.md |
+| `POST /api/v1/documents` (upload) | `POST /api/v3/envelopes`, then `POST /api/v3/envelopes/{id}/documents` | Settings go to the envelope, the file to the document. Field map below | https://developers.clicksign.com/reference/api-upload-documentos.md |
+| `POST /api/v1/templates/{key}/documents` | `POST /api/v3/envelopes/{id}/documents` with `template: {key, data}` | `filename` ends in `.docx` | https://developers.clicksign.com/reference/criar-documento-por-modelo.md |
+| `POST /api/v2/templates` (multipart) | `POST /api/v3/templates` (JSON:API, `content_base64` of the `.docx`, `name` with `.docx`, `color`) | Content cannot be edited later: delete and create again | https://developers.clicksign.com/reference/api-criar-modelo.md |
+| `GET /api/v2/templates` | `GET /api/v3/templates` | `403` if the plan has no templates | https://developers.clicksign.com/reference/api-listar-modelos.md |
+| `GET /api/v1/documents/{key}` | `GET /api/v3/envelopes/{id}`, `.../documents/{document_id}`, `.../signers`, `.../requirements` | The document no longer embeds signers and events. Events: `GET .../documents/{document_id}/events` | https://developers.clicksign.com/reference/detalhes-do-documento.md |
+| `GET /api/v1/documents?page=N` | `GET /api/v3/envelopes` with filters, then `GET .../documents` per envelope | No account-wide document listing | https://developers.clicksign.com/reference/api-listar-envelopes.md |
+| `PATCH /api/v1/documents/{key}` (settings) | `PATCH /api/v3/envelopes/{id}` | Settings are per envelope, not per document | https://developers.clicksign.com/reference/api-editar-envelope.md |
+| `PATCH /api/v1/documents/{key}/finish` | `PATCH /api/v3/envelopes/{id}/documents/{document_id}` with `status: closed` | Only for `running` documents | https://developers.clicksign.com/reference/editar-documento.md |
+| `PATCH /api/v1/documents/{key}/cancel` | `PATCH /api/v3/envelopes/{id}/documents/{document_id}` with `status: canceled` | Per document; there is no cancel on the envelope | https://developers.clicksign.com/reference/editar-documento.md |
+| `POST /api/v1/documents/{key}/duplicate` | `POST /api/v3/envelopes/{id}/documents` with `filename` and `duplicate: {key: <document id>}` | Behaviour differs, see `no-equivalent.md` | https://developers.clicksign.com/reference/api-duplicar-documento.md |
+| `DELETE /api/v1/documents/{key}` | `DELETE /api/v3/envelopes/{id}/documents/{document_id}` or `DELETE /api/v3/envelopes/{id}` | Only in `draft`, see `no-equivalent.md` | https://developers.clicksign.com/reference/api-excluir-documento.md |
+| `POST /api/v1/batches` | One envelope with all documents and requirements for that signer | See `no-equivalent.md` | https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md |
+| `POST /api/v1/signers` | `POST /api/v3/envelopes/{id}/signers` | Created per envelope; cannot be edited. Field map below | https://developers.clicksign.com/reference/api-criar-signatario.md |
+| `GET /api/v1/signers/{key}` | `GET /api/v3/envelopes/{id}/signers/{signer_id}` | | https://developers.clicksign.com/reference/api-detalhes-do-signatario.md |
+| `GET /api/v2/signers` (account-wide) | `GET /api/v3/envelopes/{id}/signers` (per envelope) | No account-wide signer listing | https://developers.clicksign.com/reference/api-listar-signatarios.md |
+| `DELETE /api/v2/signers/{key}` | `DELETE /api/v3/envelopes/{id}/signers/{signer_id}` | Only if the signer has not started signing | https://developers.clicksign.com/reference/api-excluir-signatario.md |
+| `GET /api/v2/contacts` | None | See `no-equivalent.md` | |
+| `POST /api/v1/lists` | `POST /api/v3/envelopes/{id}/requirements` twice: `agree` + `role`, and `provide_evidence` + `auth` | `group` and `refusable` move to the signer. `message` moves to the notification | https://developers.clicksign.com/reference/criar-requisito-qualificacao.md |
+| `DELETE /api/v1/lists/{key}` | `DELETE /api/v3/envelopes/{id}/requirements/{requirement_id}` (`draft`) or `bulk_requirements` with `op: remove` (`running`) | | https://developers.clicksign.com/reference/bulk-requirements.md |
+| `POST /api/v1/notifications` | `POST /api/v3/envelopes/{id}/signers/{signer_id}/notifications` or `POST /api/v3/envelopes/{id}/notifications` | Envelope must be `running`; only the active group is notified. `message` is used by email only; `email_customization` customizes the email | https://developers.clicksign.com/reference/api-notificar-signatario.md |
+| `POST /api/v1/notify_by_sms`, `POST /api/v1/notify_by_whatsapp` | Same notification endpoints | The channel comes from the signer's `communicate_events.signature_request` (`email`, `sms`, `whatsapp`, `none`) | https://developers.clicksign.com/docs/notificacoes.md |
+| `POST /api/v1/sign` | Automatic signature: term + `auth: auto_signature` | See `no-equivalent.md` and `flows.md` | https://developers.clicksign.com/docs/assinatura-automatica.md |
+| `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data.kind`: `token_email`, `token_sms` | https://developers.clicksign.com/reference/criar-evento-customizado.md |
+| `POST /api/v2/documents/{key}/images` | Same events endpoint with `name: add_image`, `content_base64`, `data.title`, `data.occurred_at` | | https://developers.clicksign.com/reference/criar-evento-com-imagem-para-o-documento.md |
+| `POST /api/v2/webhooks`, `GET /api/v2/webhooks` | `POST /api/v3/webhooks`, `GET /api/v3/webhooks`, plus `PATCH` and `DELETE /api/v3/webhooks/{id}` | JSON:API body with `endpoint`, `status`, `events` | https://developers.clicksign.com/reference/api-criar-webhook.md |
+| `POST /api/v1/send_presential_signature_request/email` | Signer with `signature_host` + `auth: presential` requirement, then the notification endpoint | The host gets a 6-character token valid for 24 h after activation | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
+
+## Document settings: 1.9 document to 3.0 envelope
+
+| 1.9 (`document`) | 3.0 | Default 1.9 | Default 3.0 |
+|---|---|---|---|
+| `path` (folder + filename) | Document `filename`; folder through the envelope `folder` relationship | n/a | n/a |
+| `content_base64` | Document `content_base64` (same `data:<mime>;base64,` prefix) | n/a | n/a |
+| `deadline_at` | Envelope `deadline_at` (max 90 days, must be in the future) | +30 days | +30 days |
+| `auto_close` | Envelope `auto_close` | `true` | `true` |
+| `locale` | Envelope `locale` (`pt-BR`, `en-US`) | `pt-BR` | `pt-BR` |
+| `remind_interval` | Envelope `remind_interval` (`1`, `2`, `3`, `7`, `14`, `null`) | disabled | **`3`** |
+| `block_after_refusal` | Envelope `block_after_refusal` | **`true`** | **`false`** |
+| `sequence_enabled` | Signer `group` | `false` | groups always on, default `1` |
+| (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` | | |
+
+Two defaults changed. Send `remind_interval` and `block_after_refusal` explicitly when the 1.9 code relied on the old defaults.
+
+Source: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md
+
+## Signer fields
+
+| 1.9 (`signer`) | 3.0 |
+|---|---|
+| `name`, `email`, `phone_number`, `documentation`, `birthday`, `has_documentation` | Same attributes on the 3.0 signer |
+| `location_required_enabled` | Same attribute on the signer |
+| `communicate_by` (`email`, `whatsapp`) | `communicate_events.signature_request` and `communicate_events.document_signed` |
+| `delivery` | `communicate_events.document_signed` |
+| List `group` | Signer `group` |
+| List `refusable` | Signer `refusable` |
+| List `sign_as` | Qualification requirement `role` |
+| `auths` and `*_enabled` | Authentication requirements, table below |
+
+`documentation` must be formatted `000.000.000-00` in 3.0. Source: https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md
+
+## `auths` and flags to authentication requirements
+
+Each row becomes one `POST /envelopes/{id}/requirements` with `action: provide_evidence` and the `auth` below, for each document the signer signs.
+
+| 1.9 | 3.0 `auth` | Note |
+|---|---|---|
+| `auths: ["email"]` | `email` | Set `communicate_events.signature_request: email` |
+| `auths: ["sms"]` | `sms` | Set `communicate_events.signature_request: sms` if the request also goes by SMS |
+| `auths: ["whatsapp"]` | `whatsapp` | Same for WhatsApp. Only one token type per signer |
+| `auths: ["pix"]` | `pix` | CPF required |
+| `auths: ["icp_brasil"]` | `icp_brasil` | |
+| `auths: ["api"]` | `auto_signature` | Needs the automatic signature term, see `flows.md` |
+| `auths: ["tokenless"]` | `embedded_signature` | Signer gives name, CPF, birth date and location |
+| `auths: ["presential"]` | `presential` | Signer needs `signature_host` |
+| `selfie_enabled: true` | `selfie` | |
+| `handwritten_enabled: true` | `handwritten` | |
+| `official_document_enabled: true` | `official_document` | |
+| `liveness_enabled: true` | `liveness` | |
+| `facial_biometrics_enabled: true` | `facial_biometrics` | Not combinable with `official_document`, `liveness`, `selfie`. Billed per successful check |
+
+Source: https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md
+
+## `sign_as` to `role`
+
+`role` (qualification requirement, `action: agree`) accepts the same identifiers as `sign_as`, for example `sign`, `party`, `witness`, `contractor`, `contractee`, `approve`, `receipt`. Two 1.9 values are not in the 3.0 list: `condominium_member` and `signed` (see `no-equivalent.md`). Full list: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
+
+## Webhooks
+
+| Topic | 1.9 | 3.0 |
+|---|---|---|
+| Register | App settings or `POST /api/v2/webhooks` | App settings or `POST /api/v3/webhooks` |
+| Delivery | `POST` JSON, header `Event: <name>` | Same |
+| Signature | `Content-Hmac: sha256=<hex>`, HMAC-SHA256 of the raw body with the webhook secret | Same |
+| Retries, timeout | 5 s timeout, 10 attempts over about a day, redirects are errors | Respond `2xx` fast, redirects are errors |
+| Event names | `upload`, `add_signer`, `remove_signer`, `sign`, `refusal`, `auto_close`, `close`, `document_closed`, `cancel`, `deadline`, `update_deadline`, `update_auto_close`, `custom`, `add_image`, `attempts_by_whatsapp_exceeded`, `facematch_refused` | Same names, plus `signature_started`, `update_locale`, `liveness_refused`, `biometric_refused`, `identity_biometrics_refused`, `documentscopy_refused`, `ocr_refused`, `attempts_by_liveness_or_facematch_exceeded` |
+| Payload | `{"event": {...}, "document": {...}}` | Same outer shape; `document` keeps `key`, `status`, `downloads`, `signers`, `events` |
+
+Re-check every field the handler reads against a real 3.0 sandbox delivery: the documented examples are partial, and the ids your database stores change from 1.9 `key` values to 3.0 ids.
+
+Sources: https://developers.clicksign.com/docs/introducao-a-webhooks.md, https://developers.clicksign.com/reference/api-listar-webhooks.md, https://developers.clicksign.com/docs/evento-document-closed.md
+
+## Signed file download
+
+The 3.0 document resource documents `links.files.original` (a signed S3 URL valid for about 5 minutes). The `document_closed` webhook payload carries `document.downloads.signed_file_url`. Use the webhook to fetch the signed file, and confirm the link field on a closed document in sandbox before relying on the REST response.
+
+Sources: https://developers.clicksign.com/reference/api-listar-documentos.md, https://developers.clicksign.com/docs/evento-document-closed.md
+
+## Widget Embedded
+
+| | 1.9 | 3.0 |
+|---|---|---|
+| Script | `https://cdn-public-library.clicksign.com/embedded/embedded.min-1.0.0.js` | `https://cdn-public-library.clicksign.com/embedded/embedded.min-2.1.0.js` |
+| Start | `new Clicksign('<request_signature_key>')` | `new Clicksign('<signer id>')`, envelope must be `running` |
+| Rest of the API | `endpoint`, `origin`, `mount`, `unmount`, `on('loaded' / 'signed' / 'resized')` | Same |
+| No-token signature | `tokenlessWidget.js` + `TokenlessWidget` (beta, closed to new customers) | `auth: embedded_signature` requirement + `noWidget` client, started with the signer id |
+
+Sources: https://developers.clicksign.com/docs/implementando-o-widget-embedded.md, https://developers.clicksign.com/docs/assinatura-incorporada-implementacoes-e-testes.md

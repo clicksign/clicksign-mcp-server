@@ -43,6 +43,14 @@ Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugi
 
 Sending an envelope or a reminder notifies the signers and cannot be undone. The connector never signs documents on anyone's behalf.
 
+## Skills
+
+| Skill | What it does |
+|---|---|
+| `migrate-api-v1-to-v3` | Helps a developer migrate code from the legacy Clicksign API 1.9 to API 3.0 (Envelope). It asks for missing context, maps endpoints, payloads and flows, explains features without a direct equivalent, and proposes the adapted code to test in sandbox. Works without signing in to the MCP server. |
+
+Ask the assistant, in a project with 1.9 code, something like *"Migrate my Clicksign integration from API 1.9 to 3.0"*.
+
 ## Repository layout
 
 ```
@@ -51,7 +59,7 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 .agents/plugins/marketplace.json   Codex marketplace that installs the plugin from this repo
 .claude-plugin/, .mcp.json         Claude Code plugin and marketplace (not published)
 .cursor-plugin/                    Cursor plugin (not published)
-skills/                            Agent Skills bundled with the plugin (none yet)
+skills/                            Agent Skills bundled with the plugin
 assets/                            Listing icons
 docs/                              Setup guides for ChatGPT and Codex
 scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
@@ -119,6 +127,10 @@ Os guias estão em inglês e têm um resumo em português no fim.
 ### O que o conector faz
 
 As 15 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
+
+### Skill de migração da API 1.9 para a 3.0
+
+O plugin inclui a skill `migrate-api-v1-to-v3`. Ela ajuda quem tem uma integração na API 1.9 (legada) a adaptar o código para a API 3.0 (Envelope): pede o contexto que faltar, mapeia endpoints, payloads e fluxos, explica o que não tem equivalência direta e propõe o código para testar em sandbox. Não precisa de login no servidor MCP. Peça ao assistente, no projeto com o código 1.9, algo como *"Migre minha integração Clicksign da API 1.9 para a 3.0"*.
 
 ### Desenvolvimento
 
