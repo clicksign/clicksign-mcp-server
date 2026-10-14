@@ -11,4 +11,5 @@ All notable changes to this package are documented here. The format follows [Kee
 - Claude Code and Cursor manifests (not published yet).
 - Skills directory convention.
 - `migrate-api-v1-to-v3` skill: guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope), with references distilled from the official documentation.
+- Link check for the documentation URLs cited by skills (`npm run check:links`), also run in the validate workflow.
 - Validation (`npm run validate`), packaging (`npm run package`), connection smoke test (`npm run smoke`) and MCP Inspector helpers (`npm run inspect`, `npm run inspect:cli`).

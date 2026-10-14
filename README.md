@@ -87,6 +87,7 @@ These commands reach the production server.
 
 ```sh
 npm run smoke         # no login: checks the 401 challenge and the OAuth discovery metadata
+npm run check:links   # checks that every documentation URL cited by a skill answers 200
 npm run inspect       # opens the MCP Inspector web UI; sign in with OAuth and explore tools
 npm run inspect:cli   # lists the tools, compares them with scripts/expected-tools.json
                       # and reports tools without a title or annotations
@@ -141,6 +142,7 @@ npm run validate              # valida os manifests; placeholders viram aviso
 npm run package               # gera dist/clicksign-<versão>.zip
 npm run package -- --release  # placeholders viram erro
 npm run smoke                 # checa o desafio 401 e a descoberta OAuth (produção, sem login)
+npm run check:links           # checa se os links da documentação citados pelas skills respondem 200
 npm run inspect               # abre o MCP Inspector para login OAuth e testes manuais
 npm run inspect:cli           # compara as tools com scripts/expected-tools.json
 ```
