@@ -88,6 +88,18 @@ describe('validate', () => {
     assertError(result, /logo is still a placeholder image/);
   });
 
+  it('rejects a category outside the portal taxonomy', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = 'Business'));
+    assertError(validate(dir), /category "Business" is not an accepted category/);
+  });
+
+  it('rejects a Codex marketplace category that differs from plugin.json', () => {
+    const dir = copyRepo();
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = 'Productivity'));
+    assertError(validate(dir), /marketplace\.json: plugins\[clicksign\]\.category/);
+  });
+
   it('treats a missing demo_recording_url as unfinished, not invalid', () => {
     const dir = copyRepo();
     editJson(dir, 'plugin.json', (data) => delete openai(data).review.demo_recording_url);

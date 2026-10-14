@@ -37,6 +37,23 @@ const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.svg']);
 const ICON_FIELDS = ['logo', 'logoDark', 'composerIcon', 'composerIconDark'];
 const URL_FIELDS = ['websiteURL', 'supportURL', 'privacyPolicyURL', 'termsOfServiceURL'];
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// Category titles from the plugin_category_unknown error in
+// https://developers.openai.com/plugins/deploy/submission-errors; any other value fails the upload.
+const CATEGORIES = [
+  'Productivity',
+  'Creativity',
+  'Developer Tools',
+  'Business & Operations',
+  'Data & Analytics',
+  'Communication',
+  'Education & Research',
+  'Security',
+  'Finance',
+  'Healthcare',
+  'Travel',
+  'Entertainment',
+  'Other',
+];
 
 export function validate(root, { release = false } = {}) {
   const errors = [];
@@ -126,6 +143,9 @@ export function validate(root, { release = false } = {}) {
       if (!ui[field]) error(file, `${at(field)} is required`);
     }
     if (!ui.composerIcon) error(file, `${at('composerIcon')} is required by Codex`);
+    if (ui.category && !CATEGORIES.includes(ui.category)) {
+      error(file, `${at('category')} "${ui.category}" is not an accepted category (${CATEGORIES.join(', ')})`);
+    }
     maxLength(file, at('displayName'), ui.displayName, 30);
     maxLength(file, at('shortDescription'), ui.shortDescription, 30);
     maxLength(file, at('longDescription'), ui.longDescription, 4000);
@@ -295,7 +315,10 @@ export function validate(root, { release = false } = {}) {
     }
     const codexEntry = codexMarketplace?.plugins?.find((entry) => entry.name === name);
     if (codexMarketplace && !codexEntry) error('.agents/plugins/marketplace.json', `no plugin entry named "${name}"`);
-    if (codexEntry) same('.agents/plugins/marketplace.json', `plugins[${name}].source.path`, codexEntry.source?.path, './');
+    if (codexEntry) {
+      same('.agents/plugins/marketplace.json', `plugins[${name}].source.path`, codexEntry.source?.path, './');
+      same('.agents/plugins/marketplace.json', `plugins[${name}].category`, codexEntry.category, plugin.extensions?.['com.openai']?.interface?.category);
+    }
     if (npmPackage) same('package.json', 'version', npmPackage.version, version);
 
     const changelog = existsSync(join(root, 'CHANGELOG.md')) ? readFileSync(join(root, 'CHANGELOG.md'), 'utf8') : '';

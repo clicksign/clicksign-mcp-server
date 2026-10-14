@@ -18,7 +18,7 @@
         "shortDescription": "Send and track e-signatures",
         "longDescription": "Clicksign is the official connector for your Clicksign account. Send documents for electronic signature from your templates or from a file link, check who has already signed and who is still pending, and send reminders to pending signers, all from a conversation. Sending an envelope or a reminder notifies the signers by email (or WhatsApp/SMS when configured) and cannot be undone, so ChatGPT asks for your confirmation first. Requires an existing Clicksign account; the connector only accesses the account you authorize and does not sign documents on your behalf.",
         "developerName": "Clicksign",
-        "category": "Business",
+        "category": "Business & Operations",
         "capabilities": ["Send documents for signature", "Track signing status", "Send signer reminders", "Manage templates"],
         "websiteURL": "https://www.clicksign.com",
         "supportURL": "https://www.clicksign.com/suporte",
