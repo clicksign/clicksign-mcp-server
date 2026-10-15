@@ -88,6 +88,30 @@ describe('validate', () => {
     assertError(result, /logo is still a placeholder image/);
   });
 
+  it('rejects a category outside the portal taxonomy', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = 'Business'));
+    assertError(validate(dir), /category "Business" is not an accepted category/);
+  });
+
+  it('treats a category placeholder as unfinished in a draft', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = '<category>'));
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = '<category>'));
+
+    const draft = validate(dir);
+    assert.deepEqual(draft.errors, []);
+    assert.ok(draft.warnings.some((message) => /placeholder at .*interface\/category/.test(message)));
+
+    assertError(validate(dir, { release: true }), /placeholder at .*interface\/category/);
+  });
+
+  it('rejects a Codex marketplace category that differs from plugin.json', () => {
+    const dir = copyRepo();
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = 'Productivity'));
+    assertError(validate(dir), /marketplace\.json: plugins\[clicksign\]\.category/);
+  });
+
   it('treats a missing demo_recording_url as unfinished, not invalid', () => {
     const dir = copyRepo();
     editJson(dir, 'plugin.json', (data) => delete openai(data).review.demo_recording_url);
@@ -156,7 +180,7 @@ describe('validate', () => {
   it('validates skill frontmatter', () => {
     const dir = copyRepo();
     const skill = join(dir, 'skills', 'send-envelope');
-    mkdirSync(skill);
+    mkdirSync(skill, { recursive: true });
     writeFileSync(join(skill, 'SKILL.md'), '---\nname: other-name\ndescription: Sends an envelope.\n---\n\nBody\n');
     assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter name must be "send-envelope"/);
   });

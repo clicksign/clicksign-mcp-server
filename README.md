@@ -25,6 +25,7 @@ Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugi
 
 | Tool | What it does |
 |---|---|
+| `list_accounts` | List the Clicksign accounts available to your login and show which one is in use |
 | `select_account` | Choose which Clicksign account to use when your login has more than one |
 | `quick_send_envelope` | Create and send a minimal envelope: one document name and one signer email |
 | `list_templates` | List the document templates in the account |
@@ -51,7 +52,6 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 .agents/plugins/marketplace.json   Codex marketplace that installs the plugin from this repo
 .claude-plugin/, .mcp.json         Claude Code plugin and marketplace (not published)
 .cursor-plugin/                    Cursor plugin (not published)
-skills/                            Agent Skills bundled with the plugin (none yet)
 assets/                            Listing icons
 docs/                              Setup guides for ChatGPT and Codex
 scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
@@ -69,9 +69,12 @@ npm test                    # validator test suite
 npm run validate            # check every manifest; placeholders are warnings
 npm run package             # validate, then build dist/clicksign-<version>.zip
 npm run package -- --release  # same, but placeholders are errors
+npm run package:dev         # build an isolated development ZIP named clicksign-dev
 ```
 
-`npm run package` puts only `plugin.json`, `mcp.json`, `assets/` and skill directories in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
+`npm run package` puts only `plugin.json`, `mcp.json` and `assets/` in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
+
+`npm run package:dev` does not change the repository manifest. It produces `dist/clicksign-dev-<version>.zip` with only the ZIP's internal plugin `name` changed to `clicksign-dev`, so it can be installed alongside a locally imported `clicksign` package. Do not use this artifact for release or directory submission.
 
 ### Testing the connection
 
@@ -118,7 +121,7 @@ Os guias estão em inglês e têm um resumo em português no fim.
 
 ### O que o conector faz
 
-As 15 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
+As 16 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
 
 ### Desenvolvimento
 

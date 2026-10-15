@@ -1,4 +1,5 @@
 [
+  "list_accounts",
   "select_account",
   "quick_send_envelope",
   "list_templates",

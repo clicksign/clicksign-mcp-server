@@ -12,7 +12,7 @@ codex plugin marketplace add clicksign/clicksign-mcp-server
 
 Then open the Plugins Directory in Codex, choose the **Clicksign** marketplace and install **Clicksign**.
 
-Authentication happens on first use (`ON_FIRST_USE`). The first time a Clicksign tool runs, a browser window opens for the Clicksign login.
+Authentication happens when a Clicksign tool is used (`ON_USE`). The first time one runs, a browser window opens for the Clicksign login.
 
 To pick up a new version later:
 
@@ -46,13 +46,15 @@ The key is `<plugin name>@<marketplace name>`, and both are `clicksign`. Codex l
 codex plugin marketplace list
 ```
 
-The `clicksign` marketplace should appear. Then ask Codex *"List my Clicksign templates."* to trigger the login and a first call.
+The `clicksign` marketplace should appear. Then open a **new** conversation, select **Clicksign** from the `@` menu and ask *"List my Clicksign templates."* to trigger the login and a first call.
+
+To start the login without a conversation, run `codex mcp login clicksign --no-browser`.
 
 ---
 
 ## Resumo em português
 
 1. **Instalar:** rode `codex plugin marketplace add clicksign/clicksign-mcp-server` e instale **Clicksign** pelo Plugins Directory do Codex.
-2. **Login:** acontece no primeiro uso. O navegador abre para o login da Clicksign.
+2. **Login:** acontece quando uma ferramenta é usada (`ON_USE`). O navegador abre para o login da Clicksign. Teste em uma conversa nova, selecionando o plugin no menu `@`.
 3. **Atualizar:** `codex plugin marketplace upgrade clicksign`.
 4. **Por projeto:** use `[plugins."clicksign@clicksign"]` no `.codex/config.toml` do projeto.
