@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { after, describe, it } from 'node:test';
-import { skillUrls } from '../scripts/check-links.mjs';
+import { skillFiles, skillUrls, urlsIn } from '../scripts/check-links.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 describe('skillUrls', () => {
   const root = mkdtempSync(join(tmpdir(), 'clicksign-links-'));
@@ -28,4 +31,24 @@ describe('skillUrls', () => {
       'https://developers.clicksign.com/v1.0/llms.txt',
     ]);
   });
+});
+
+describe('references/sources.md', () => {
+  // SKILL.md tells the assistant to use only the sources listed there.
+  const skills = readdirSync(join(ROOT, 'skills'), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(join(ROOT, 'skills', entry.name, 'references', 'sources.md')))
+    .map((entry) => entry.name);
+
+  for (const name of skills) {
+    it(`lists every page cited by ${name}`, () => {
+      const dir = join(ROOT, 'skills', name);
+      const listed = new Set(urlsIn(readFileSync(join(dir, 'references', 'sources.md'), 'utf8')));
+      const missing = skillFiles(ROOT)
+        .filter((file) => file.startsWith(`${dir}/`))
+        .flatMap((file) => urlsIn(readFileSync(file, 'utf8')).map((url) => ({ file: relative(ROOT, file), url })))
+        .filter(({ url }) => !listed.has(url))
+        .map(({ file, url }) => `${file}: ${url}`);
+      assert.deepEqual([...new Set(missing)], []);
+    });
+  }
 });

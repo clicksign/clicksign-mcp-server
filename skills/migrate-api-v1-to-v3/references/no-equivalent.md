@@ -27,8 +27,8 @@ When the code uses one of these, explain the difference, give the alternative an
 
 - **1.9:** `DELETE /api/v1/documents/{key}` removes a closed or canceled document.
 - **3.0:** delete endpoints work only while the envelope is `draft` (`403 "envelope não está com status draft"` otherwise).
-- **Limitation:** no API deletion after activation. Cancel the documents instead, and handle retention outside the API.
-- Sources: https://developers.clicksign.com/reference/api-excluir-documento.md, https://developers.clicksign.com/reference/api-excluir-envelope.md
+- **Limitation:** there is no API deletion for a closed or canceled document, and its status cannot change anymore (`422 "documento não pode ser cancelado"`). Handle retention outside the API. Canceling is an alternative only for documents still `running`.
+- Sources: https://developers.clicksign.com/reference/api-excluir-documento.md, https://developers.clicksign.com/reference/api-excluir-envelope.md, https://developers.clicksign.com/reference/editar-documento.md
 
 ## Cancel the whole process
 

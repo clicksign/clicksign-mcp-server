@@ -26,6 +26,8 @@ The 1.9 index lists only part of the legacy pages. The other legacy pages follow
 | Topic | URL |
 |---|---|
 | Hosts, access token, JSON:API | https://developers.clicksign.com/docs/ambientes-autenticacao-e-formato.md |
+| Hosts of each Clicksign product | https://developers.clicksign.com/docs/informacoes-gerais.md |
+| First steps (test the token) | https://developers.clicksign.com/docs/primeiros-passos.md |
 | Sandbox account and access token | https://developers.clicksign.com/docs/access-token.md |
 | Full walkthrough with cURL | https://developers.clicksign.com/docs/veja-como-funciona-na-prática.md |
 | Envelope creation guide | https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md |
@@ -36,14 +38,23 @@ The 1.9 index lists only part of the legacy pages. The other legacy pages follow
 | Envelope fields and rules | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
 | Create envelope | https://developers.clicksign.com/reference/api-criar-envelope.md |
 | List envelopes (filters) | https://developers.clicksign.com/reference/api-listar-envelopes.md |
+| Envelope queries and pagination | https://developers.clicksign.com/docs/gerenciamento-consultas-envelope.md |
 | Activate or edit envelope | https://developers.clicksign.com/reference/api-editar-envelope.md |
+| Delete envelope | https://developers.clicksign.com/reference/api-excluir-envelope.md |
+| Documents (concepts) | https://developers.clicksign.com/docs/documentos.md |
 | Document fields and rules | https://developers.clicksign.com/reference/documento-campos-e-regras-de-negocio.md |
+| List documents (signed file link) | https://developers.clicksign.com/reference/api-listar-documentos.md |
+| Document details | https://developers.clicksign.com/reference/detalhes-do-documento.md |
 | Create document by upload | https://developers.clicksign.com/reference/api-upload-documentos.md |
 | Create document from template | https://developers.clicksign.com/reference/criar-documento-por-modelo.md |
 | Duplicate document | https://developers.clicksign.com/reference/api-duplicar-documento.md |
 | Cancel or close document | https://developers.clicksign.com/reference/editar-documento.md |
+| Delete document | https://developers.clicksign.com/reference/api-excluir-documento.md |
 | Signer fields and rules | https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md |
 | Create signer | https://developers.clicksign.com/reference/api-criar-signatario.md |
+| List signers | https://developers.clicksign.com/reference/api-listar-signatarios.md |
+| Signer details | https://developers.clicksign.com/reference/api-detalhes-do-signatario.md |
+| Delete signer | https://developers.clicksign.com/reference/api-excluir-signatario.md |
 | Signers (concepts, what can change after activation) | https://developers.clicksign.com/docs/signatarios.md |
 | Requirements (concepts) | https://developers.clicksign.com/docs/docs-requisitos.md |
 | Qualification roles | https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md |
@@ -58,6 +69,7 @@ The 1.9 index lists only part of the legacy pages. The other legacy pages follow
 | Notify all signers | https://developers.clicksign.com/reference/api-notificar-envelope.md |
 | Templates | https://developers.clicksign.com/docs/docs-modelos.md |
 | Create template | https://developers.clicksign.com/reference/api-criar-modelo.md |
+| List templates | https://developers.clicksign.com/reference/api-listar-modelos.md |
 | Automatic signature | https://developers.clicksign.com/docs/assinatura-automatica.md |
 | Automatic signature term | https://developers.clicksign.com/reference/api-criar-termo.md |
 | Signature watchers | https://developers.clicksign.com/docs/observador-de-assinatura.md |
@@ -65,6 +77,7 @@ The 1.9 index lists only part of the legacy pages. The other legacy pages follow
 | Webhook best practices | https://developers.clicksign.com/docs/melhores-praticas-webhooks.md |
 | Create webhook | https://developers.clicksign.com/reference/api-criar-webhook.md |
 | List webhooks (event names) | https://developers.clicksign.com/reference/api-listar-webhooks.md |
+| `document_closed` event (signed file URL) | https://developers.clicksign.com/docs/evento-document-closed.md |
 | Document events | https://developers.clicksign.com/reference/eventos-de-um-documento.md |
 | Custom token event | https://developers.clicksign.com/reference/criar-evento-customizado.md |
 | Image event | https://developers.clicksign.com/reference/criar-evento-com-imagem-para-o-documento.md |

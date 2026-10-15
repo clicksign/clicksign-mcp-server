@@ -46,7 +46,8 @@ Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, http
 |---|---|
 | Edit envelope settings (`deadline_at`, `locale`, `auto_close`, `remind_interval`, `block_after_refusal`, `default_message`) | Yes. `default_subject` only in `draft`. |
 | Add a document | Not documented; plan documents before activation |
-| Delete envelope, document or requirement | No (`403`, only in `draft`) |
+| Delete envelope or document | No (`403`, only in `draft`) |
+| Remove a requirement | Only through `bulk_requirements` with `op: remove`; a direct `DELETE .../requirements/{id}` works only in `draft` |
 | Cancel or close a document; edit `metadata` | Yes |
 | Add a signer | Yes, and its requirements must go through `bulk_requirements` |
 | Edit a signer | Never |
