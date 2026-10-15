@@ -57,7 +57,7 @@
             },
             {
               "description": "Send a PDF from a public HTTPS link for e-signature.",
-              "prompt": "Mande este PDF https://drive.google.com/file/d/18mJOh5zuQOscR3JCcInUd9AJhHRybHdW/view?usp=sharing para João Teste (felipe.felix+openai@clicksign.com) assinar por e-mail.",
+              "prompt": "Mande este PDF https://drive.google.com/uc?export=download&id=18mJOh5zuQOscR3JCcInUd9AJhHRybHdW para João Teste (felipe.felix+openai@clicksign.com) assinar por e-mail.",
               "tools_triggered": "create_envelope_with_file_url",
               "expected_behavior": "Asks for confirmation, creates the envelope using the file from the URL (filename derived from the URL) and returns the envelope id."
             },
