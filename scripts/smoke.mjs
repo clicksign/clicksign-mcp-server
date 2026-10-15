@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Checks, without credentials, that the MCP URL in mcp.json answers like an
 // OAuth-protected MCP server that ChatGPT and Codex can connect to:
-//   1. an unauthenticated MCP request gets 401 with WWW-Authenticate resource_metadata (RFC 9728)
+//   1. an unauthenticated MCP request (POST, and GET for the SSE stream) gets 401 with
+//      WWW-Authenticate resource_metadata (RFC 9728), without hanging
 //   2. the protected resource metadata names an authorization server
 //   3. the authorization server metadata (RFC 8414) has the endpoints clients need
 // Usage: node scripts/smoke.mjs   (CLICKSIGN_MCP_URL overrides the URL)
@@ -10,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { serverUrl } from './lib/server-url.mjs';
 
 const TIMEOUT_MS = 15_000;
+const GET_TIMEOUT_MS = 5_000;
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const url = serverUrl(root);
 
@@ -68,6 +70,23 @@ try {
   else fail(`WWW-Authenticate has no resource_metadata (got ${JSON.stringify(challenge)})`);
 } catch (err) {
   fail(`could not reach ${url}: ${err.message}`);
+}
+
+// 1b. An unauthenticated GET (the streamable-HTTP SSE stream) must be challenged immediately.
+// A server that forwards it to the stream leaves OAuth clients waiting and discovery never starts.
+try {
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { Accept: 'text/event-stream' },
+    signal: AbortSignal.timeout(GET_TIMEOUT_MS),
+  });
+  const challenge = response.headers.get('www-authenticate') ?? '';
+  if (response.status === 401 && /resource_metadata="[^"]+"/.test(challenge)) pass('unauthenticated GET is rejected with 401 and resource_metadata');
+  else fail(`unauthenticated GET returned HTTP ${response.status} with WWW-Authenticate ${JSON.stringify(challenge)}, expected 401 with resource_metadata`);
+  await response.body?.cancel();
+} catch (err) {
+  if (err.name === 'TimeoutError') fail(`unauthenticated GET did not answer within ${GET_TIMEOUT_MS / 1000}s: the server must challenge GET, not hold the stream open`);
+  else fail(`unauthenticated GET failed: ${err.message}`);
 }
 
 // 2. Protected resource metadata.

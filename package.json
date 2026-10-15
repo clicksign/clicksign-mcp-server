@@ -11,6 +11,7 @@
   "scripts": {
     "validate": "node scripts/validate.mjs",
     "package": "node scripts/package.mjs",
+    "package:dev": "node scripts/package.mjs --dev",
     "test": "node --test test/",
     "smoke": "node scripts/smoke.mjs",
     "check:links": "node scripts/check-links.mjs",

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Builds dist/clicksign-<version>.zip, the file uploaded at https://platform.openai.com/plugins.
-// Usage: node scripts/package.mjs [--release]
+// Usage: node scripts/package.mjs [--release] [--dev]
 import { createHash } from 'node:crypto';
 import { createWriteStream, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -18,6 +18,12 @@ const MODE = 0o100644;
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const release = process.argv.includes('--release');
+const dev = process.argv.includes('--dev');
+
+if (dev && release) {
+  console.error('✖ --dev creates a development ZIP and cannot be combined with --release');
+  process.exit(1);
+}
 
 const { errors, warnings } = validate(root, { release });
 for (const warning of warnings) console.warn(`warning  ${warning}`);
@@ -27,19 +33,24 @@ if (errors.length) {
   process.exit(1);
 }
 
-const { name, version } = JSON.parse(readFileSync(join(root, 'plugin.json'), 'utf8'));
+const plugin = JSON.parse(readFileSync(join(root, 'plugin.json'), 'utf8'));
+const { version } = plugin;
+const name = dev ? `${plugin.name}-dev` : plugin.name;
 const files = packageFiles(root);
 const output = join(root, 'dist', `${name}-${version}.zip`);
 mkdirSync(dirname(output), { recursive: true });
 
 const zip = new yazl.ZipFile();
 for (const file of files) {
-  zip.addBuffer(readFileSync(join(root, file)), file, { mtime: MTIME, mode: MODE, compress: true, forceDosTimestamp: true });
+  const contents = dev && file === 'plugin.json'
+    ? Buffer.from(`${JSON.stringify({ ...plugin, name }, null, 2)}\n`)
+    : readFileSync(join(root, file));
+  zip.addBuffer(contents, file, { mtime: MTIME, mode: MODE, compress: true, forceDosTimestamp: true });
 }
 zip.end();
 await finished(zip.outputStream.pipe(createWriteStream(output)));
 
 const sha256 = createHash('sha256').update(readFileSync(output)).digest('hex');
-console.log(`\n${warnings.length ? '⚠' : '✔'} packaged ${output.slice(root.length + 1)} (${release ? 'release' : 'draft'}, ${warnings.length} warning(s))`);
+console.log(`\n${warnings.length ? '⚠' : '✔'} packaged ${output.slice(root.length + 1)} (${dev ? 'development' : release ? 'release' : 'draft'}, ${warnings.length} warning(s))`);
 for (const file of files) console.log(`  ${file}`);
 console.log(`sha256 ${sha256}`);
