@@ -14,7 +14,8 @@ describe('skillUrls', () => {
     mkdirSync(join(skill, 'references'), { recursive: true });
     writeFileSync(
       join(skill, 'SKILL.md'),
-      'See [envelope](https://developers.clicksign.com/docs/envelope.md) and https://developers.clicksign.com/v1.0/llms.txt.\n',
+      'See [envelope](https://developers.clicksign.com/docs/envelope.md) and https://developers.clicksign.com/v1.0/llms.txt.\n' +
+        'Legacy pages follow `https://developers.clicksign.com/v1.0/docs/<slug>.md`.\n',
     );
     writeFileSync(
       join(skill, 'references', 'map.md'),

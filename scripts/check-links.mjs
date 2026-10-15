@@ -18,17 +18,29 @@ function walk(dir) {
   });
 }
 
-/** Unique developers.clicksign.com URLs cited in skills/<name>/**.md, sorted. */
-export function skillUrls(root) {
+/** developers.clicksign.com URLs cited in a Markdown text, without trailing punctuation. */
+export function urlsIn(text) {
+  const urls = [];
+  for (const match of text.matchAll(URL_PATTERN)) {
+    // A URL cut by a placeholder such as `<slug>` is a pattern in prose, not a cited page.
+    if (text[match.index + match[0].length] === '<') continue;
+    urls.push(match[0].replace(/[.,;:]+$/, ''));
+  }
+  return urls;
+}
+
+/** Markdown files of skills/<name>/, skipping skills/README.md. */
+export function skillFiles(root) {
   const skills = join(root, 'skills');
   if (!existsSync(skills)) return [];
-  const files = readdirSync(skills, { withFileTypes: true })
+  return readdirSync(skills, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .flatMap((entry) => walk(join(skills, entry.name)));
-  const urls = new Set();
-  for (const file of files) {
-    for (const match of readFileSync(file, 'utf8').matchAll(URL_PATTERN)) urls.add(match[0].replace(/[.,;:]+$/, ''));
-  }
+}
+
+/** Unique developers.clicksign.com URLs cited in skills/<name>/**.md, sorted. */
+export function skillUrls(root) {
+  const urls = new Set(skillFiles(root).flatMap((file) => urlsIn(readFileSync(file, 'utf8'))));
   return [...urls].sort();
 }
 
