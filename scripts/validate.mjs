@@ -143,7 +143,7 @@ export function validate(root, { release = false } = {}) {
       if (!ui[field]) error(file, `${at(field)} is required`);
     }
     if (!ui.composerIcon) error(file, `${at('composerIcon')} is required by Codex`);
-    if (ui.category && !CATEGORIES.includes(ui.category)) {
+    if (ui.category && !PLACEHOLDER.test(ui.category) && !CATEGORIES.includes(ui.category)) {
       error(file, `${at('category')} "${ui.category}" is not an accepted category (${CATEGORIES.join(', ')})`);
     }
     maxLength(file, at('displayName'), ui.displayName, 30);

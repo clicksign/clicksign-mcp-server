@@ -94,6 +94,18 @@ describe('validate', () => {
     assertError(validate(dir), /category "Business" is not an accepted category/);
   });
 
+  it('treats a category placeholder as unfinished in a draft', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = '<category>'));
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = '<category>'));
+
+    const draft = validate(dir);
+    assert.deepEqual(draft.errors, []);
+    assert.ok(draft.warnings.some((message) => /placeholder at .*interface\/category/.test(message)));
+
+    assertError(validate(dir, { release: true }), /placeholder at .*interface\/category/);
+  });
+
   it('rejects a Codex marketplace category that differs from plugin.json', () => {
     const dir = copyRepo();
     editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = 'Productivity'));
