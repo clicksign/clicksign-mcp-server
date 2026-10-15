@@ -89,7 +89,7 @@ Each row becomes one `POST /envelopes/{id}/requirements` with `action: provide_e
 
 | 1.9 | 3.0 `auth` | Note |
 |---|---|---|
-| `auths: ["email"]` | `email` | Set `communicate_events.signature_request: email` |
+| `auths: ["email"]` | `email` | `communicate_events.signature_request` is a separate choice (default `email`): keep the channel the integration uses, `none` if it notifies outside Clicksign |
 | `auths: ["sms"]` | `sms` | Set `communicate_events.signature_request: sms` if the request also goes by SMS |
 | `auths: ["whatsapp"]` | `whatsapp` | Same for WhatsApp. Only one token type per signer |
 | `auths: ["pix"]` | `pix` | CPF required |
