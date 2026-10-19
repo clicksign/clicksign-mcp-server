@@ -52,6 +52,7 @@ Search the code for:
 - `app.clicksign.com` or `sandbox.clicksign.com` with `/api/v1/` or `/api/v2/`;
 - `access_token=` in URLs;
 - JSON roots `document`, `signer`, `list`, `batch`, and fields `request_signature_key`, `signer_key`, `document_key`, `list_key`, `sign_as`, `auths`, `secret_hmac_sha256`;
+- a `signers` array inside the `document` root, `send_email`, and paths `/documents/{key}/signers` and `/signers/{key}/notify` (1.9 calls the 1.9 pages in `sources.md` do not show, mapped in `endpoint-map.md`);
 - Widget code: `embedded.min-1.0.0.js`, `new Clicksign(`, `tokenlessWidget.js`, `TokenlessWidget`;
 - webhook handlers reading `event.name`, `document.key`, `Content-Hmac`.
 
@@ -82,7 +83,7 @@ Watch these changes in behaviour, they cause most migration bugs:
 
 ### 4. Handle what has no direct equivalent
 
-Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, delete, cancel, signer reuse and contacts, notification `url`, `sign_as` values missing from the 3.0 docs, in-person email and the no-token widget. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
+Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, delete, cancel, signer reuse and contacts, notification `url`, `sign_as` values missing from the 3.0 docs, the in-person token sent to the signer and the no-token widget. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
 
 ### 5. Propose the change
 

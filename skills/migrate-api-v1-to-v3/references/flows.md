@@ -36,6 +36,10 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents
 
 `remind_interval` is sent as `null` because its default changed (1.9: disabled; 3.0: `3`). `block_after_refusal` and `locale` are always sent with what the 1.9 code used (here `true`, the 1.9 default, and the `pt-BR` the 1.9 call sends), so the result does not depend on a 3.0 default. Several documents go into the same envelope with more `POST .../documents` calls.
 
+### 1.9 code that sends `signers[]` inside `document`
+
+The 1.9 API also accepts a `signers` array inside the `document` root of `POST /api/v1/documents`, with `send_email` on every item. The 1.9 pages in `sources.md` do not show it. That one call creates the document, the signers and their lists, and notifies each signer whose `send_email` is not `false`. In 3.0 it becomes this flow, then flow 3 for each item (signer fields and `auths` to the signer and authentication requirements, `sign_as` to the qualification requirement), then flow 4: activate, and notify each signer whose `send_email` was not `false`, with the item's `message`.
+
 Sources: https://developers.clicksign.com/reference/api-criar-envelope.md, https://developers.clicksign.com/reference/api-upload-documentos.md
 
 ## 2. Create a document from a template

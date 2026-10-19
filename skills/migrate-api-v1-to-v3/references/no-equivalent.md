@@ -60,11 +60,12 @@ These values are in the 1.9 list but not in the documented 3.0 qualification rol
 
 Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md, https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
 
-## In-person signature: email to the signer
+## In-person signature: token sent to the signer
 
-- **1.9:** `POST /api/v1/send_presential_signature_request/email` lets the code choose `recipient: signer` or `signature_host` and customize every text block.
-- **3.0:** the host set in `signature_host` receives the token by email after activation; the documented notification customization is `email_customization`. Sending the token directly to the signer is not documented.
-- Source: https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md
+- **1.9:** `POST /api/v1/send_presential_signature_request/email` lets the code choose `recipient: signer` or `signature_host` and customize every text block. `POST /api/v1/send_presential_signature_request/sms` sends the token to the signer by SMS. The 1.9 API also accepts `POST /api/v1/send_presential_signature_request` (email to the host) and `GET /api/v1/sign_presential_url` (signing URL for a token), which the 1.9 pages in `sources.md` do not list.
+- **3.0:** only the host set in `signature_host` receives the token, by email, after activation; the documented notification customization is `email_customization`. Sending the token to the signer, by email or SMS, and looking up a signing URL from the token are not documented.
+- **Alternative:** in the documented 3.0 flow the host is present at the signature and the signer enters the token there. If the 1.9 flow sent the token to the signer, ask the developer whether that works for the business, and confirm with Clicksign before promising another channel.
+- Sources: https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-e-mail.md, https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-sms.md, https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md
 
 ## No-token Widget (`auths: ["tokenless"]`)
 

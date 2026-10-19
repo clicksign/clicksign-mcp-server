@@ -20,10 +20,13 @@ JSON:API client libraries recommended by Clicksign (any language): see https://d
 
 ## Endpoints
 
+Rows marked **Undocumented 1.9** are calls the 1.9 API accepts but that are missing from the 1.9 pages listed in `sources.md`. They are here only to recognize and migrate existing code.
+
 | API 1.9 | API 3.0 | Notes | Source (3.0) |
 |---|---|---|---|
 | `GET /api/v1/accounts` (test the token) | `GET /api/v3/envelopes` | No account endpoint in the 3.0 reference; listing envelopes validates the token | https://developers.clicksign.com/docs/primeiros-passos.md |
 | `POST /api/v1/documents` (upload) | `POST /api/v3/envelopes`, then `POST /api/v3/envelopes/{id}/documents` | Settings go to the envelope, the file to the document. Field map below | https://developers.clicksign.com/reference/api-upload-documentos.md |
+| `POST /api/v1/documents` with `signers[]` inside `document` | Envelope and document as above, then `POST .../signers`, requirements, activation, and a notification for each signer whose `send_email` is not `false` | **Undocumented 1.9.** One call creates the document, its signers and their lists, and notifies them. Each item carries signer fields (`name`, `email`, `phone_number`, `documentation`, `birthday`, `has_documentation`, `auths`, `delivery`), list fields (`sign_as`, `refusable`), `send_email` (required on every item) and `message`. Map them with the tables below; see `flows.md` | https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md |
 | `POST /api/v1/templates/{key}/documents` | `POST /api/v3/envelopes/{id}/documents` with `template: {key, data}` | `filename` ends in `.docx` | https://developers.clicksign.com/reference/criar-documento-por-modelo.md |
 | `POST /api/v2/templates` (multipart) | `POST /api/v3/templates` (JSON:API, `name`, `content_base64` of the `.docx`, `color`) | Content cannot be edited later: delete and create again | https://developers.clicksign.com/reference/api-criar-modelo.md |
 | `GET /api/v2/templates` | `GET /api/v3/templates` | `403` if the plan has no templates | https://developers.clicksign.com/reference/api-listar-modelos.md |
@@ -39,6 +42,9 @@ JSON:API client libraries recommended by Clicksign (any language): see https://d
 | `GET /api/v1/signers/{key}` | `GET /api/v3/envelopes/{id}/signers/{signer_id}` | | https://developers.clicksign.com/reference/api-detalhes-do-signatario.md |
 | `GET /api/v2/signers` (account-wide) | `GET /api/v3/envelopes/{id}/signers` (per envelope) | No account-wide signer listing | https://developers.clicksign.com/reference/api-listar-signatarios.md |
 | `DELETE /api/v2/signers/{key}` | `DELETE /api/v3/envelopes/{id}/signers/{signer_id}` | Only if the signer has not started signing | https://developers.clicksign.com/reference/api-excluir-signatario.md |
+| `POST /api/v1/documents/{key}/signers` (`signers[]`) | `POST /api/v3/envelopes/{id}/signers`; in a `running` envelope its requirements go through `bulk_requirements`; then the signer notification | **Undocumented 1.9.** Adds signers to an existing document and notifies them unless `send_email` is `false`. Items carry signer and list fields (`sign_as`, `refusable`, `auths`), plus `send_email` and `message` | https://developers.clicksign.com/reference/bulk-requirements.md |
+| `DELETE /api/v1/documents/{key}/signers` or `.../signers/{signer_key}` | Same as `DELETE /api/v1/lists/{key}` below, or `DELETE /api/v3/envelopes/{id}/signers/{signer_id}` when the signer leaves the whole envelope | **Undocumented 1.9.** Removes the signers from that document | https://developers.clicksign.com/reference/bulk-requirements.md |
+| `POST /api/v1/signers/{key}/notify` | `POST /api/v3/envelopes/{id}/signers/{signer_id}/notifications` | **Undocumented 1.9.** Notifies one signer, with an optional `message` | https://developers.clicksign.com/reference/api-notificar-signatario.md |
 | `GET /api/v2/contacts` | None | See `no-equivalent.md` | |
 | `POST /api/v1/lists` | `POST /api/v3/envelopes/{id}/requirements` twice: `agree` + `role`, and `provide_evidence` + `auth` | `group` and `refusable` move to the signer. `message` moves to the notification | https://developers.clicksign.com/reference/criar-requisito-qualificacao.md |
 | `DELETE /api/v1/lists/{key}` | `DELETE /api/v3/envelopes/{id}/requirements/{requirement_id}` (`draft`) or `bulk_requirements` with `op: remove` (`running`) | | https://developers.clicksign.com/reference/bulk-requirements.md |
@@ -48,7 +54,8 @@ JSON:API client libraries recommended by Clicksign (any language): see https://d
 | `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data.kind`: `token_email`, `token_sms` | https://developers.clicksign.com/reference/criar-evento-customizado.md |
 | `POST /api/v2/documents/{key}/images` | Same events endpoint with `name: add_image`, `content_base64`, `data.title`, `data.occurred_at` | | https://developers.clicksign.com/reference/criar-evento-com-imagem-para-o-documento.md |
 | `POST /api/v2/webhooks`, `GET /api/v2/webhooks` | `POST /api/v3/webhooks`, `GET /api/v3/webhooks`, plus `PATCH` and `DELETE /api/v3/webhooks/{id}` | JSON:API body with `endpoint`, `status`, `events` | https://developers.clicksign.com/reference/api-criar-webhook.md |
-| `POST /api/v1/send_presential_signature_request/email` | Signer with `signature_host` + `auth: presential` requirement, then the notification endpoint | The host gets a 6-character token valid for 24 h after activation | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
+| `POST /api/v1/send_presential_signature_request/email`, `.../sms` | Signer with `signature_host` + `auth: presential` requirement, then the notification endpoint | The host gets a 6-character token by email, valid for 24 h after activation. Sending the token to the signer (`recipient: signer`, `/sms`) has no documented 3.0 equivalent, see `no-equivalent.md` | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
+| `POST /api/v1/send_presential_signature_request`, `GET /api/v1/sign_presential_url` | Same as the row above | **Undocumented 1.9.** The first emails the token to the host, the second returns the signing URL for a token. No documented 3.0 equivalent for the URL lookup | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
 
 ## Document settings: 1.9 document to 3.0 envelope
 
@@ -94,6 +101,7 @@ Each row becomes one `POST /envelopes/{id}/requirements` with `action: provide_e
 | `auths: ["whatsapp"]` | `whatsapp` | Same for WhatsApp. Only one token type per signer |
 | `auths: ["pix"]` | `pix` | CPF required |
 | `auths: ["icp_brasil"]` | `icp_brasil` | |
+| `auths: ["registro_civil"]` | None documented | The 1.9 API accepts it, but the 1.9 pages in `sources.md` do not list it, and no `registro_civil` `auth` is documented in 3.0. Ask the developer and Clicksign before mapping it |
 | `auths: ["api"]` | `auto_signature` | Needs the automatic signature term, see `flows.md` |
 | `auths: ["tokenless"]` | `embedded_signature` | Signer gives name, CPF, birth date and location |
 | `auths: ["presential"]` | `presential` | Signer needs `signature_host` |

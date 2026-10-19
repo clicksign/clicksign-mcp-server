@@ -111,3 +111,5 @@ Use these pages only to understand what the existing code does. Never use them t
 | Webhook events | https://developers.clicksign.com/v1.0/docs/eventos.md |
 | Widget Embedded | https://developers.clicksign.com/v1.0/docs/instalacao-do-widget-embedded.md |
 | In-person signature | https://developers.clicksign.com/v1.0/docs/cadastrar-a-assinatura-presencial-de-signatarios.md |
+| In-person signature: token by email | https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-e-mail.md |
+| In-person signature: token by SMS | https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-sms.md |

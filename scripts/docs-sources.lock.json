@@ -323,6 +323,14 @@
     "updatedAt": "2025-10-06T15:22:34.000Z",
     "sha256": "559bd128efaf4bb4921e447afa98376f3881f5a061411c5dcdd2eefe92d2b557"
   },
+  "https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-e-mail.md": {
+    "updatedAt": "2025-07-24T00:04:37.000Z",
+    "sha256": "d28bf75dab2197923668fb3faf27bed3b97458a758bd6e3e1a852254b0f7452f"
+  },
+  "https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-sms.md": {
+    "updatedAt": "2025-09-12T14:00:34.000Z",
+    "sha256": "770d6e2c1b99b49008454f23ad77878aad635070ceed1837a4ec28c1d8d14aff"
+  },
   "https://developers.clicksign.com/v1.0/docs/solicitar-assinatura-por-email.md": {
     "updatedAt": "2025-07-24T00:02:33.000Z",
     "sha256": "271bb01d548e857ff1e8ed3fb51bb50eb87882660f2ba18007e21ee6c9bb2473"
