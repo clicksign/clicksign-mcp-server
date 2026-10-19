@@ -27,7 +27,7 @@ When the developer asks for new 1.9 code or a plan to build on 1.9:
 4. Offer to write that 3.0 code, and wait for the developer to accept before editing the repository.
 5. If they say they need 1.9, ask what blocks 3.0. An account created before 01/07/2024 that gets `503` on the Envelope API must ask Clicksign support to enable it; that is the answer, not new 1.9 code.
 
-Fixing a bug in existing 1.9 code is not new code: point at the cause, and propose migrating that call to 3.0 as the fix.
+Fixing a bug in existing 1.9 code is not new code: point at the cause, and propose migrating that call to 3.0 as the fix. A `403` whose message starts with `API descontinuada` means the account no longer accepts 1.9 writes; the fix is the migration.
 
 ## Workflow
 

@@ -1,6 +1,6 @@
 # Concepts: API 1.9 vs API 3.0
 
-API 1.9 is legacy. It still works, but it receives no new features and "pode ser descontinuada no futuro" (migration FAQ). Documents already sent through 1.9 stay valid; the migration only affects documents sent after the new integration goes live. The migration can be gradual: new flows on 3.0 while existing ones keep running.
+API 1.9 is legacy. It still works, but it receives no new features and "pode ser descontinuada no futuro" (migration FAQ). Documents already sent through 1.9 stay valid; the migration only affects documents sent after the new integration goes live. The migration can be gradual: new flows on 3.0 while existing ones keep running. Manage documents created in a 3.0 envelope only through 3.0: the 1.9 configure, duplicate and delete calls answer `403` for them (behaviour the 1.9 pages do not describe).
 
 Sources: https://developers.clicksign.com/docs/faq-migracao.md, https://developers.clicksign.com/docs/guia-de-migracao.md, https://developers.clicksign.com/docs/comparativo-tecnico.md
 
