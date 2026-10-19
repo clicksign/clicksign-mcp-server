@@ -53,7 +53,7 @@ Rows marked **Undocumented 1.9** are calls the 1.9 API accepts but that are miss
 | `POST /api/v1/sign` | Automatic signature: term + `auth: auto_signature` | See `no-equivalent.md` and `flows.md` | https://developers.clicksign.com/docs/assinatura-automatica.md |
 | `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data.kind`: `token_email`, `token_sms` | https://developers.clicksign.com/reference/criar-evento-customizado.md |
 | `POST /api/v2/documents/{key}/images` | Same events endpoint with `name: add_image`, `content_base64`, `data.title`, `data.occurred_at` | | https://developers.clicksign.com/reference/criar-evento-com-imagem-para-o-documento.md |
-| `POST /api/v2/webhooks`, `GET /api/v2/webhooks` | `POST /api/v3/webhooks`, `GET /api/v3/webhooks`, plus `PATCH` and `DELETE /api/v3/webhooks/{id}` | JSON:API body with `endpoint`, `status`, `events` | https://developers.clicksign.com/reference/api-criar-webhook.md |
+| `POST /api/v2/webhooks`, `GET /api/v2/webhooks` | `POST /api/v3/webhooks`, `GET /api/v3/webhooks`, plus `PATCH` and `DELETE /api/v3/webhooks/{id}` | JSON:API body with `endpoint`, `status`, `events`. Always send `events` with the event names the handler uses, even though the create page marks only `endpoint` as required. If the 3.0 webhook endpoints answer `403` on the account, register the webhook in the account settings or ask Clicksign | https://developers.clicksign.com/reference/api-criar-webhook.md |
 | `POST /api/v1/send_presential_signature_request/email`, `.../sms` | Signer with `signature_host` + `auth: presential` requirement, then the notification endpoint | The host gets a 6-character token by email, valid for 24 h after activation. Sending the token to the signer (`recipient: signer`, `/sms`) has no documented 3.0 equivalent, see `no-equivalent.md` | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
 | `POST /api/v1/send_presential_signature_request`, `GET /api/v1/sign_presential_url` | Same as the row above | **Undocumented 1.9.** The first emails the token to the host, the second returns the signing URL for a token. No documented 3.0 equivalent for the URL lookup | https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md |
 
@@ -124,19 +124,21 @@ Source: https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticaca
 | Register | App settings or `POST /api/v2/webhooks` | App settings or `POST /api/v3/webhooks` |
 | Delivery | `POST` JSON, header `Event: <name>` | Same |
 | Signature | `Content-Hmac: sha256=<hex>`, HMAC-SHA256 of the raw body with the webhook secret | Same |
-| Retries, timeout | 5 s timeout, 10 attempts over about a day, redirects are errors | Respond `2xx` fast, redirects are errors |
+| Retries, timeout | 5 s timeout, 10 attempts over about a day, redirects are errors | Same |
 | Event names | `upload`, `add_signer`, `remove_signer`, `sign`, `refusal`, `auto_close`, `close`, `document_closed`, `cancel`, `deadline`, `update_deadline`, `update_auto_close`, `custom`, `add_image`, `attempts_by_whatsapp_exceeded`, `facematch_refused` | Same names, plus `signature_started`, `update_locale`, `liveness_refused`, `biometric_refused`, `identity_biometrics_refused`, `documentscopy_refused`, `ocr_refused`, `attempts_by_liveness_or_facematch_exceeded` |
+| WhatsApp acceptance events | `acceptance_term_enqueued`, `acceptance_term_sent`, `acceptance_term_completed`, `acceptance_term_refused`, `acceptance_term_canceled`, `acceptance_term_expired`, `acceptance_term_error` | Same names |
 | Payload | `{"event": {...}, "document": {...}}` | Same outer shape; `document` keeps `key`, `status`, `downloads`, `signers`, `events` |
+| `document.signers[]` items | Signer fields plus list fields (`list_key`, `request_signature_key`, `sign_as`, `auths`, `delivery`, `refusable`, `url`) | Signer fields only (`key`, `name`, `email`, `phone_number`, `documentation`, `has_documentation`, `birthday`, `created_at`). Read roles and authentications from the envelope requirements instead |
 
 Re-check every field the handler reads against a real 3.0 sandbox delivery: the documented examples are partial, and the ids your database stores change from 1.9 `key` values to 3.0 ids.
 
-Sources: https://developers.clicksign.com/docs/introducao-a-webhooks.md, https://developers.clicksign.com/reference/api-listar-webhooks.md, https://developers.clicksign.com/docs/evento-document-closed.md
+Sources: https://developers.clicksign.com/docs/disparos-de-webhooks.md, https://developers.clicksign.com/docs/seguranca-de-webhooks.md, https://developers.clicksign.com/docs/melhores-praticas-webhooks.md, https://developers.clicksign.com/docs/eventos.md, https://developers.clicksign.com/docs/exemplo-documento.md, https://developers.clicksign.com/docs/exemplo-signers.md, https://developers.clicksign.com/reference/api-listar-webhooks.md
 
 ## Signed file download
 
-The 3.0 document resource documents `links.files.original` (a signed S3 URL valid for about 5 minutes). The `document_closed` webhook payload carries `document.downloads.signed_file_url`. Use the webhook to fetch the signed file, and confirm the link field on a closed document in sandbox before relying on the REST response.
+The 3.0 document resource documents `links.files.original` (a signed S3 URL valid for about 5 minutes). The webhook `document` payload carries `downloads.signed_file_url`. Use the `document_closed` webhook to fetch the signed file as soon as it arrives, and confirm the link field on a closed document in sandbox before relying on the REST response.
 
-Sources: https://developers.clicksign.com/reference/api-listar-documentos.md, https://developers.clicksign.com/docs/evento-document-closed.md
+Sources: https://developers.clicksign.com/reference/api-listar-documentos.md, https://developers.clicksign.com/docs/exemplo-documento.md, https://developers.clicksign.com/docs/evento-document-closed.md
 
 ## Widget Embedded
 
