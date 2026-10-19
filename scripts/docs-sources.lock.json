@@ -19,6 +19,14 @@
     "updatedAt": "2026-10-02T16:17:47.000Z",
     "sha256": "52960f73af7a21b8a86a2439dcb4bf58521f87bed4da235ef14bfac1c66d27a8"
   },
+  "https://developers.clicksign.com/docs/ativacao-escala-performatica.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "735c21e9561c1e672756d2b95cf34626d087970540d5ede7172149e3c55a1f6c"
+  },
+  "https://developers.clicksign.com/docs/cancelamento-e-erros-comuns.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "15981c50189c38d8bc3314be8dd4db7ea9ddf98391943ac576ff86ccd2d755d7"
+  },
   "https://developers.clicksign.com/docs/comparativo-tecnico.md": {
     "updatedAt": "2026-10-02T15:16:28.000Z",
     "sha256": "2088eee05a6ae635c8715e7a1c1d1b8aa921fd889773c3ebf65b243a82b60973"
@@ -26,6 +34,10 @@
   "https://developers.clicksign.com/docs/descubra-sua-versao-da-api.md": {
     "updatedAt": "2026-10-02T15:16:28.000Z",
     "sha256": "ef49602afd7ba5977f1a81525a72171e76c48eee42f4572518f7436717882f3f"
+  },
+  "https://developers.clicksign.com/docs/disparos-de-webhooks.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "6a683e3f15ea565e0eef1db2568f6edd0d6c359ae8af2a6a751a08fe1d82f3b9"
   },
   "https://developers.clicksign.com/docs/docs-modelos.md": {
     "updatedAt": "2026-10-02T16:14:34.000Z",
@@ -39,9 +51,25 @@
     "updatedAt": "2026-09-29T13:36:16.000Z",
     "sha256": "e08cd5230162183d3660a5043f91e3341a8a319b6224ab6e3e92b9fc3ddc831d"
   },
+  "https://developers.clicksign.com/docs/envelope.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "66106ffe94a37092b06d2f909ae373ce57362727794ad2544451a25fe2933172"
+  },
   "https://developers.clicksign.com/docs/evento-document-closed.md": {
     "updatedAt": "2026-09-28T23:29:22.000Z",
     "sha256": "ffab20b237fd95bb0b34e209670c3c4c2ed3aa155ea238537f391ce093bd156a"
+  },
+  "https://developers.clicksign.com/docs/eventos.md": {
+    "updatedAt": "2026-10-02T16:15:43.000Z",
+    "sha256": "91b04ec46ff02ee06c8f26762369e2e6ec0d4e2e066e47dd74f1fa2f46308ebd"
+  },
+  "https://developers.clicksign.com/docs/exemplo-documento.md": {
+    "updatedAt": "2026-10-02T16:20:09.000Z",
+    "sha256": "c8c1bcf6bc60367c5dd15ba15df82480305befd186965b3b1d00671f6cf880ba"
+  },
+  "https://developers.clicksign.com/docs/exemplo-signers.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "372c72e6efc0a2f32c43801c0b2fc9dc874c4f6dce13b6c9062aa73254cbf540"
   },
   "https://developers.clicksign.com/docs/faq-duvidas-e-problemas-comuns.md": {
     "updatedAt": "2026-10-09T20:56:26.000Z",
@@ -71,9 +99,17 @@
     "updatedAt": "2026-10-09T18:54:00.000Z",
     "sha256": "a22db5defd9de9d46799f102a29e3cd81a658249ab93ac8d34fc69de89d5f466"
   },
+  "https://developers.clicksign.com/docs/instalacao-de-widget-assinatura-tokenless.md": {
+    "updatedAt": "2026-10-02T16:18:01.000Z",
+    "sha256": "101d06681d1c7a393f2386a73c9c8a2392116a1df5c1864bbfd1eeef880b3e0c"
+  },
   "https://developers.clicksign.com/docs/integracao-resiliente.md": {
     "updatedAt": "2026-10-19T14:15:47.000Z",
     "sha256": "272b4cb94e455c4147929ed2b1c5b0da724874246392dc4b21e7f444b2fa46a1"
+  },
+  "https://developers.clicksign.com/docs/introducao-a-assinatura-presencial.md": {
+    "updatedAt": "2026-10-02T16:18:07.000Z",
+    "sha256": "048cc0cb2b7029d61e921c3a1073669ae4088e9b4eaef850f6749ae45003ec00"
   },
   "https://developers.clicksign.com/docs/introducao-a-webhooks.md": {
     "updatedAt": "2026-10-09T20:56:26.000Z",
@@ -107,6 +143,10 @@
     "updatedAt": "2026-10-02T15:20:07.000Z",
     "sha256": "46011ccb32fd6f849ca987095de31a0778311f74ff27f5ffb9bfec8152fa9f99"
   },
+  "https://developers.clicksign.com/docs/seguranca-de-webhooks.md": {
+    "updatedAt": "2026-10-02T16:16:47.000Z",
+    "sha256": "3f775e42fdf7c573f3d114b52baa3786e20bf2ea97610014d2981cdcc23095ea"
+  },
   "https://developers.clicksign.com/docs/signatarios.md": {
     "updatedAt": "2026-09-29T13:36:16.000Z",
     "sha256": "0a13f29b11dec53244633cc8fd9880d24b618217bbe7185a0a975d601f49a670"
@@ -122,6 +162,10 @@
   "https://developers.clicksign.com/llms.txt": {
     "updatedAt": null,
     "sha256": "39be283073a4c08a6bdf293c492bb0f7aa761ae4e6cd30301ab5d146d2b230a0"
+  },
+  "https://developers.clicksign.com/reference/api-criar-aceite-whatsapp.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "da92f3c45a2986f9baf77f34ad4435dcc1299c308e5afa584f858152eb8df6c8"
   },
   "https://developers.clicksign.com/reference/api-criar-envelope.md": {
     "updatedAt": "2026-06-25T20:35:27.000Z",
@@ -143,9 +187,17 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "f449a43bb7d5c9a1bfe07f44b0178cf0fda0db261ed51d78a4a080c5352c228b"
   },
+  "https://developers.clicksign.com/reference/api-detalhes-do-envelope.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "abf8d70a12420c2fa4c4b38e5e2f777d76de296fb3c51ca5c40d0a3b5751cf6b"
+  },
   "https://developers.clicksign.com/reference/api-detalhes-do-signatario.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "817d294e0ef091707cac8653410690f329b8a7384b98bfb9e349155148c752ed"
+  },
+  "https://developers.clicksign.com/reference/api-detalhes-do-webhook.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "415c4dab2cce9d2eae53c080cfb278b97a5978b7853b60489eb2324c63d4fe2b"
   },
   "https://developers.clicksign.com/reference/api-duplicar-documento.md": {
     "updatedAt": "2026-10-07T17:06:36.000Z",
@@ -155,6 +207,14 @@
     "updatedAt": "2026-05-28T19:04:45.000Z",
     "sha256": "20f50710507fe9af2ae89bce0989cac77690817f3eb8eb02ec3f649f82eb86c3"
   },
+  "https://developers.clicksign.com/reference/api-editar-modelo.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "f03bae0e24f1d4a2013811736c2cfa5b45f756ff59e07295fbb6a6e0e392dad5"
+  },
+  "https://developers.clicksign.com/reference/api-editar-webhook.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "36b5289a177b51b632b96d544491aff9475146955cfb2e7edb74193c0d8fc6ce"
+  },
   "https://developers.clicksign.com/reference/api-excluir-documento.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "dfb53b0932474bfc53104bf81742f1da77a931c1a9ee87275a7a00369c5e7978"
@@ -163,9 +223,25 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "4c3a3c62f542b24020811b948d04bea50c2f0e9669eca31c4ea7f3c7d615591b"
   },
+  "https://developers.clicksign.com/reference/api-excluir-modelo.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "adc40c1e1a39f6a2241a2ea60316419a55cac88cd1b461232ccc2c52a0d0f112"
+  },
+  "https://developers.clicksign.com/reference/api-excluir-requisito.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "71771b57c131c5a0ae98ca208de9b5c048b0333d7139f14684bf2e4f3d08fb53"
+  },
   "https://developers.clicksign.com/reference/api-excluir-signatario.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "3bc9af23f26b8b67f0dde22640b5630b09954c14aa30258386afbedb6777a46a"
+  },
+  "https://developers.clicksign.com/reference/api-excluir-webhook.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "5862f378e20790378976986e7d317e8ab9816f5143b4678e200b0a934cb6672b"
+  },
+  "https://developers.clicksign.com/reference/api-listar-aceites-via-whatsapp.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "23cb45edbc9e895e6d3c09d139e829d6f83de539cbcab25f809daccff0a14670"
   },
   "https://developers.clicksign.com/reference/api-listar-documentos.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
@@ -179,6 +255,10 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "7425c4725ecbde841dfa465262b02e1e3de7f94d4f2582533a5b4aa344bd86b6"
   },
+  "https://developers.clicksign.com/reference/api-listar-pastas.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "115b400bc25555b2a10141d9f44455746b35f96cc081a824e852b7d98e578d50"
+  },
   "https://developers.clicksign.com/reference/api-listar-signatarios.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "1c4fefb2db7af5e8b0a06e2d72081121b440bc9b419391272d27ac700f2d5e44"
@@ -186,6 +266,10 @@
   "https://developers.clicksign.com/reference/api-listar-webhooks.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "2fe0d9984fd7203a41481eb859d7a5e48da08b75c24f71d0ac212b72ca3c6975"
+  },
+  "https://developers.clicksign.com/reference/api-notificacoes.md": {
+    "updatedAt": "2026-09-15T14:39:04.000Z",
+    "sha256": "fe50010caeaede6bab428cd7353a3e51e6a0bf165c0bd8daca65bf668fbaf0f2"
   },
   "https://developers.clicksign.com/reference/api-notificar-envelope.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
@@ -195,9 +279,17 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "a47cd8ed5d0d7d237643f71e9888f7ac6fb62a0a160fe84e8ef0a78f2dae85cb"
   },
+  "https://developers.clicksign.com/reference/api-requisitos.md": {
+    "updatedAt": "2026-09-15T14:39:04.000Z",
+    "sha256": "95df147c78e54826404dd869e5b1405316c49c948cf7f4b506fcd178fd0b0f64"
+  },
   "https://developers.clicksign.com/reference/api-upload-documentos.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "348eafc63a708902ed5917f72daedce85cd5936d2bf9531a46d9dcc04a353088"
+  },
+  "https://developers.clicksign.com/reference/api-visualizar-modelo.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "38c310e48837b48ec2d49e91fe8161a8d7e8b2d24336c12e3d871f6becd34ea8"
   },
   "https://developers.clicksign.com/reference/bulk-requirements.md": {
     "updatedAt": "2026-10-07T12:19:55.000Z",
@@ -214,6 +306,10 @@
   "https://developers.clicksign.com/reference/criar-evento-customizado.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "df4da404eb0c2ada4ac5ba5f13098947ec3e0985dacfab977bc7daf3f4370315"
+  },
+  "https://developers.clicksign.com/reference/criar-pasta.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "6765edf32c18dc8be8bbc1b9cc052c3514b5604fa34d35af151688a1961cd942"
   },
   "https://developers.clicksign.com/reference/criar-requisito-de-autenticacao.md": {
     "updatedAt": "2026-05-28T20:30:36.000Z",
@@ -239,6 +335,10 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "f5a5b815d7c2700bbdb4ab8302950b1bd4e8abac3f41134d003f01d23ee1babe"
   },
+  "https://developers.clicksign.com/reference/editar-um-aceite-via-whatsapp.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "4cbd35d0f3524709d63e65b2fced79ee35e768e74bc4a8bc01ea90c582ebd929"
+  },
   "https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md": {
     "updatedAt": "2026-09-15T14:39:04.000Z",
     "sha256": "8088c999c993dbd7d75db76d515750bb2f717897c5609faddb0b75728c8ac351"
@@ -259,6 +359,10 @@
     "updatedAt": "2026-09-15T14:39:04.000Z",
     "sha256": "d1dcfdccf4530f3a54ebbeb25864261bd8d9cacb279894b2ba53a2a909d63305"
   },
+  "https://developers.clicksign.com/reference/visualizar-um-aceite-via-whatsapp.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "55ac6379273f7f6c5f16bafda941302e620f0beb737da862c2db38fd7a211609"
+  },
   "https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md": {
     "updatedAt": "2025-07-24T00:01:55.000Z",
     "sha256": "0d94f9174ffb6fa0591adbcc3d47f464598f12843adca26ed555790a6f879cae"
@@ -271,13 +375,25 @@
     "updatedAt": "2025-07-24T00:04:33.000Z",
     "sha256": "b72e85f9c2311d03511c45f502d2a03ea34a2eac102a9f6f4a473ae77e808512"
   },
+  "https://developers.clicksign.com/v1.0/docs/cadastro-de-webhooks-via-api.md": {
+    "updatedAt": "2025-07-24T00:03:14.000Z",
+    "sha256": "bee06b2ee26fd413edaefd35e81c98cdb6efb0b0b0f020707f6e1c4f149fb51b"
+  },
   "https://developers.clicksign.com/v1.0/docs/cancelar-documento.md": {
     "updatedAt": "2025-07-24T00:01:47.000Z",
     "sha256": "fe026fadec8e1cb09cf263159acf57c6d6cedf75c211bda5ae97737b7603a209"
   },
+  "https://developers.clicksign.com/v1.0/docs/cancelar-envio-do-aceite-via-whatsapp.md": {
+    "updatedAt": "2025-07-24T00:03:04.000Z",
+    "sha256": "48f6039ce3d550991c636adfe8dfd0efb14288a073b8b4bcd9cdf5db9cb07b28"
+  },
   "https://developers.clicksign.com/v1.0/docs/configurar-documento.md": {
     "updatedAt": "2025-07-24T00:01:45.000Z",
     "sha256": "491a7517d6d012be83fe202e3b234375d84e63d7e67d44ebdcdbbfdddab36441"
+  },
+  "https://developers.clicksign.com/v1.0/docs/criando-um-aceite-via-whatsapp.md": {
+    "updatedAt": "2026-02-24T13:35:58.000Z",
+    "sha256": "c5d8c3886d02a11d439d09eeb7df1176cb42f3f32ed837ac36fb8dbf06d6dbe5"
   },
   "https://developers.clicksign.com/v1.0/docs/criar-documento-via-modelos.md": {
     "updatedAt": "2025-07-24T00:01:41.000Z",
@@ -291,6 +407,10 @@
     "updatedAt": "2025-07-24T02:13:04.000Z",
     "sha256": "f0d3fab45d5267e90b0e25b5f333c5fe168cc2a29dec315f28a985fbbcc37167"
   },
+  "https://developers.clicksign.com/v1.0/docs/criar-modelo-via-upload.md": {
+    "updatedAt": "2025-07-24T00:01:40.000Z",
+    "sha256": "6f7d005679e61804e8906e128b9d91469111fd4bd52bcb932630fb5d1f20c19e"
+  },
   "https://developers.clicksign.com/v1.0/docs/criar-signatario.md": {
     "updatedAt": "2025-07-24T00:01:51.000Z",
     "sha256": "2f4eb247d13990bc0a25ff87c3792f72f09141393a1b6d120a966b592cc188dd"
@@ -303,6 +423,14 @@
     "updatedAt": "2025-07-24T00:01:48.000Z",
     "sha256": "4b167f577e49e54a394f1bac1f3d8570d5b60055f332a9d018290ad8f7d0e00f"
   },
+  "https://developers.clicksign.com/v1.0/docs/eventos-aceite-via-whatsapp.md": {
+    "updatedAt": "2025-07-24T00:03:39.000Z",
+    "sha256": "ba8bd70e3b53234b4ebf1d45c4123aeca4c2f9fce218acc5a4d7813a9cff46e3"
+  },
+  "https://developers.clicksign.com/v1.0/docs/eventos-customizados.md": {
+    "updatedAt": "2025-07-24T00:04:21.000Z",
+    "sha256": "032dd856b6de277330ed213259a50b202acb482214500fa88ed7db0b1daee54b"
+  },
   "https://developers.clicksign.com/v1.0/docs/eventos.md": {
     "updatedAt": "2025-07-24T00:03:16.000Z",
     "sha256": "da6e72c6a8fb075512f8812ddc31afa5f996c23ef395f8027684608f68f3b329"
@@ -311,17 +439,41 @@
     "updatedAt": "2025-07-24T00:01:49.000Z",
     "sha256": "760a250d7971ef56c7dc239b401e4bb050c0ddddd2b93c1c3e14ea9fc2ac5682"
   },
+  "https://developers.clicksign.com/v1.0/docs/excluir-signatário-2.md": {
+    "updatedAt": "2025-07-24T00:01:57.000Z",
+    "sha256": "0e0a6fa9fb727e14fcb6012a5528518dbf1ec6cddeb5b2e6bb49eef9dff5ed64"
+  },
   "https://developers.clicksign.com/v1.0/docs/finalizar-documento.md": {
     "updatedAt": "2025-07-24T00:01:46.000Z",
     "sha256": "38c5b31f29c744765876fc648ecc00693a93db587a9201cf85960601df1a4b74"
+  },
+  "https://developers.clicksign.com/v1.0/docs/implementacao-teste-tokenless.md": {
+    "updatedAt": "2025-07-24T00:04:20.000Z",
+    "sha256": "2bd3bc47b958905162c6f102174132619126885d2d4e1aa14b095597d7f1e2cf"
   },
   "https://developers.clicksign.com/v1.0/docs/informacoes-gerais.md": {
     "updatedAt": "2025-08-08T18:49:01.000Z",
     "sha256": "813a0df787ebb2572c421e8fefde13ad46ea0cdb10d34366e9fe6b7fd4a3e48d"
   },
+  "https://developers.clicksign.com/v1.0/docs/instalacao-do-widget-assinatura-sem-token.md": {
+    "updatedAt": "2026-02-20T21:19:12.000Z",
+    "sha256": "bb811320f71e77f25e4b830b6d69e17097a60fba5328000dfa1c7c52b70f9446"
+  },
   "https://developers.clicksign.com/v1.0/docs/instalacao-do-widget-embedded.md": {
     "updatedAt": "2025-10-06T15:22:34.000Z",
     "sha256": "559bd128efaf4bb4921e447afa98376f3881f5a061411c5dcdd2eefe92d2b557"
+  },
+  "https://developers.clicksign.com/v1.0/docs/limite-de-requisicoes.md": {
+    "updatedAt": "2026-02-20T21:16:40.000Z",
+    "sha256": "c72b88928c7b77e26c8ee3eb2013ec7cf54444ddec85982d6b7f2418997b7b86"
+  },
+  "https://developers.clicksign.com/v1.0/docs/listar-contatos-da-agenda.md": {
+    "updatedAt": "2025-07-24T00:01:58.000Z",
+    "sha256": "ed9a5ab5146174dc1d4afe84788842dbd0b6db898d73fdeffdf4223c930b8867"
+  },
+  "https://developers.clicksign.com/v1.0/docs/mensagens-de-erro.md": {
+    "updatedAt": "2026-02-20T21:16:02.000Z",
+    "sha256": "721db35c2e27139c5dac63468f62f753f75e4aff69220ced9111efd570dcd21a"
   },
   "https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-e-mail.md": {
     "updatedAt": "2025-07-24T00:04:37.000Z",
@@ -330,6 +482,18 @@
   "https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-sms.md": {
     "updatedAt": "2025-09-12T14:00:34.000Z",
     "sha256": "770d6e2c1b99b49008454f23ad77878aad635070ceed1837a4ec28c1d8d14aff"
+  },
+  "https://developers.clicksign.com/v1.0/docs/primeiros-passos.md": {
+    "updatedAt": "2025-07-24T00:01:28.000Z",
+    "sha256": "1489f2f68014fc34473522f117eed196283fde360a7beaae6253d5544faaefcd"
+  },
+  "https://developers.clicksign.com/v1.0/docs/remover-signatario-de-documeto.md": {
+    "updatedAt": "2025-07-24T00:01:56.000Z",
+    "sha256": "cfb48cc128d650d8ba04edb44936f9adc7505646044dfee7fb9401daa47d12ff"
+  },
+  "https://developers.clicksign.com/v1.0/docs/seguranca-de-webhooks.md": {
+    "updatedAt": "2026-09-29T17:17:55.000Z",
+    "sha256": "65ab6725cc58d2e8a747038d64430ccd0deb10a3e5d201efe2a2aed25d29c0eb"
   },
   "https://developers.clicksign.com/v1.0/docs/solicitar-assinatura-por-email.md": {
     "updatedAt": "2025-07-24T00:02:33.000Z",
@@ -343,9 +507,29 @@
     "updatedAt": "2025-07-24T00:02:34.000Z",
     "sha256": "4b451eb5c5586f57218a4660bdc470ef1911b6991599ac2bdefa058d8ca9b94c"
   },
+  "https://developers.clicksign.com/v1.0/docs/visualizar-aceite-via-whatsapp.md": {
+    "updatedAt": "2026-02-24T13:37:59.000Z",
+    "sha256": "2e4d63234fdc9ed4339bd4017c046754e3b32ea78cb96e9a4f82f52f6588a514"
+  },
   "https://developers.clicksign.com/v1.0/docs/visualizar-documento.md": {
     "updatedAt": "2025-07-24T00:01:42.000Z",
     "sha256": "8f0ecb4ab1b34ac208f74c8177b9c74e1aa6009894295fc1ff292048310c0731"
+  },
+  "https://developers.clicksign.com/v1.0/docs/visualizar-signatario.md": {
+    "updatedAt": "2025-07-24T00:01:54.000Z",
+    "sha256": "ef5d060258e8e077b30a40e06f4fc8202ec1fc94a907955bd2c701f5dcb01730"
+  },
+  "https://developers.clicksign.com/v1.0/docs/visualizar-todos-os-aceites-enviados-através-do-aceite-via-whatsapp.md": {
+    "updatedAt": "2025-07-24T01:50:44.000Z",
+    "sha256": "d91205deec7553f21b8be01a33d90fb1efc02aedc2d33b777466b098be4ee008"
+  },
+  "https://developers.clicksign.com/v1.0/docs/visualizar-todos-os-documentos.md": {
+    "updatedAt": "2025-07-24T00:01:44.000Z",
+    "sha256": "399d2c85104438157e24688f67ace59fbffa978857b15e61cec44aebc90a6472"
+  },
+  "https://developers.clicksign.com/v1.0/docs/visualizar-todos-os-signatários.md": {
+    "updatedAt": "2025-07-24T00:01:59.000Z",
+    "sha256": "d1c948107e9e4913c5b65844d1c77994dcae472fb9e614d6c31e645f26c0ed88"
   },
   "https://developers.clicksign.com/v1.0/llms.txt": {
     "updatedAt": null,
