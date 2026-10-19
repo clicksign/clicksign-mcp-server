@@ -7,7 +7,7 @@ When the code uses one of these, explain the difference, give the alternative an
 - **1.9:** the application decides when to sign. Signer with `auths: ["api"]`, a `secret` delivered by Clicksign after an authorization term, and a call with `request_signature_key` + `secret_hmac_sha256`.
 - **3.0:** there is no `/sign` endpoint. Use automatic signature: request the term once with `POST /api/v3/auto_signature/terms`; the account admin and the signer sign it. In each envelope, create the signer with exactly the same `name`, `email`, `documentation` and `birthday` as the term, and an authentication requirement `auth: auto_signature`. The API validates the term when the requirement is created.
 - **Limitations:** the signature happens automatically when the envelope reaches the signer's `group`, not when the application calls an endpoint. To control the moment, put the signer in a later `group` or activate the envelope only when it should sign. Only accounts registered as a company (pessoa jurídica) with company data filled in. Not combinable with in-person signature. The HMAC secret code is removed. If the sandbox account answers `403` to the term or to `auth: auto_signature`, ask Clicksign before changing the approach.
-- Sources: https://developers.clicksign.com/docs/comparativo-tecnico.md, https://developers.clicksign.com/docs/assinatura-automatica.md, https://developers.clicksign.com/reference/api-criar-termo.md
+- Sources: https://developers.clicksign.com/docs/comparativo-tecnico.md, https://developers.clicksign.com/docs/assinatura-automatica.md, https://developers.clicksign.com/reference/api-criar-termo.md, https://developers.clicksign.com/docs/introducao-a-assinatura-presencial.md
 
 ## Batch (`POST /api/v1/batches`)
 
@@ -27,13 +27,14 @@ When the code uses one of these, explain the difference, give the alternative an
 
 - **1.9:** one call per document, `PATCH /api/v1/documents/{key}/cancel`.
 - **3.0:** no cancel on the envelope. Cancel each `running` document with `PATCH .../documents/{document_id}` and `status: canceled`. An envelope can be deleted only in `draft`.
-- Source: https://developers.clicksign.com/docs/comparativo-tecnico.md
+- Sources: https://developers.clicksign.com/docs/comparativo-tecnico.md, https://developers.clicksign.com/reference/editar-documento.md, https://developers.clicksign.com/reference/api-excluir-envelope.md
 
 ## Reusing signers and the contact list
 
 - **1.9:** a signer is created once (`POST /api/v1/signers`) and its `key` is reused in any document; `GET /api/v2/signers` and `GET /api/v2/contacts` list them for the account.
 - **3.0:** signers are created inside each envelope and cannot be edited. The 3.0 reference has no account-wide signer or contact listing.
 - **Alternative:** keep the signer data in the developer's own database and create the signer in each envelope. Drop any code that stores 1.9 signer keys for reuse.
+- Sources: https://developers.clicksign.com/v1.0/docs/criar-signatario.md, https://developers.clicksign.com/v1.0/docs/visualizar-todos-os-signatários.md, https://developers.clicksign.com/v1.0/docs/listar-contatos-da-agenda.md, https://developers.clicksign.com/docs/signatarios.md
 
 ## Notification with a custom link (`url`)
 
@@ -46,13 +47,13 @@ When the code uses one of these, explain the difference, give the alternative an
 
 - **1.9:** the code requests each signature on demand through its `request_signature_key`; the 1.9 pages document no per-minute notification limit.
 - **3.0:** only signers of the active `group` can be notified, the envelope must be `running`, and each endpoint accepts 1 notification per minute. Later groups are notified automatically when their turn comes.
-- Source: https://developers.clicksign.com/docs/notificacoes.md
+- Sources: https://developers.clicksign.com/docs/notificacoes.md, https://developers.clicksign.com/reference/api-notificacoes.md, https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md
 
 ## Editing a signer
 
 - **1.9:** the signer exists on its own; it can be removed from a document (`DELETE /api/v1/lists/{key}`) and added again.
 - **3.0:** a signer cannot be changed after it is created. Delete it (only if it has not started signing) and create a new one; in a `running` envelope, its requirements go through `bulk_requirements`.
-- Source: https://developers.clicksign.com/docs/signatarios.md
+- Sources: https://developers.clicksign.com/v1.0/docs/remover-signatario-de-documeto.md, https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md, https://developers.clicksign.com/docs/signatarios.md, https://developers.clicksign.com/reference/api-excluir-signatario.md
 
 ## `sign_as` values missing from the 3.0 docs
 
@@ -71,7 +72,7 @@ Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-docum
 
 - **1.9:** beta, closed to new customers, `tokenlessWidget.js`.
 - **3.0:** `auth: embedded_signature` and the `noWidget` client from Clicksign's `embedded-test` repository, started with the signer id. It runs without an iframe.
-- Source: https://developers.clicksign.com/docs/assinatura-incorporada-implementacoes-e-testes.md
+- Sources: https://developers.clicksign.com/v1.0/docs/instalacao-do-widget-assinatura-sem-token.md, https://developers.clicksign.com/v1.0/docs/implementacao-teste-tokenless.md, https://developers.clicksign.com/docs/instalacao-de-widget-assinatura-tokenless.md, https://developers.clicksign.com/docs/assinatura-incorporada-implementacoes-e-testes.md
 
 ## Clicksign operator calls
 
@@ -81,4 +82,4 @@ Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-docum
 
 `/api/v1` is also used by current Clicksign products on their own hosts (ClickFlow, ClickForm, acceptance and notification modules). Only `/api/v1` and `/api/v2` on `app.clicksign.com` or `sandbox.clicksign.com` are API 1.9. Do not migrate calls to other hosts.
 
-Source: https://developers.clicksign.com/docs/informacoes-gerais.md
+Sources: https://developers.clicksign.com/docs/informacoes-gerais.md, https://developers.clicksign.com/docs/descubra-sua-versao-da-api.md

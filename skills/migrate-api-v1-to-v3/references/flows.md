@@ -40,7 +40,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents
 
 The 1.9 API also accepts a `signers` array inside the `document` root of `POST /api/v1/documents`, with `send_email` on every item. The 1.9 pages in `sources.md` do not show it. That one call creates the document, the signers and their lists, and notifies each signer whose `send_email` is not `false`. In 3.0 it becomes this flow, then flow 3 for each item (signer fields and `auths` to the signer and authentication requirements, `sign_as` to the qualification requirement), then flow 4: activate, and notify each signer whose `send_email` was not `false`, with the item's `message`.
 
-Sources: https://developers.clicksign.com/reference/api-criar-envelope.md, https://developers.clicksign.com/reference/api-upload-documentos.md
+Sources: https://developers.clicksign.com/reference/api-criar-envelope.md, https://developers.clicksign.com/reference/api-upload-documentos.md, https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/v1.0/docs/criar-documento.md
 
 ## 2. Create a document from a template
 
@@ -62,7 +62,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents
 
 Template variables keep the same names (`{{nome}}` in the `.docx`, `"nome"` in `data`). Look up `template.key` with `GET /api/v3/templates` (it is the template `data.id`) instead of assuming the key stored by the 1.9 code still applies.
 
-Source: https://developers.clicksign.com/reference/criar-documento-por-modelo.md
+Sources: https://developers.clicksign.com/v1.0/docs/criar-documento-via-modelos.md, https://developers.clicksign.com/reference/criar-documento-por-modelo.md, https://developers.clicksign.com/reference/api-listar-modelos.md
 
 ## 3. Add a signer with qualification and authentication
 
@@ -102,7 +102,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/requirements
 
 `selfie_enabled: true` becomes a second `provide_evidence` requirement with `auth: selfie`. Repeat both requirements for each document the signer signs; activation fails without them. For many documents or signers, send the requirements in one `POST .../bulk_requirements` call with `atomic:operations`.
 
-Sources: https://developers.clicksign.com/reference/api-criar-signatario.md, https://developers.clicksign.com/reference/criar-requisito-qualificacao.md, https://developers.clicksign.com/reference/criar-requisito-de-autenticacao.md, https://developers.clicksign.com/reference/bulk-requirements.md
+Sources: https://developers.clicksign.com/v1.0/docs/criar-signatario.md, https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md, https://developers.clicksign.com/reference/api-criar-signatario.md, https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md, https://developers.clicksign.com/reference/criar-requisito-qualificacao.md, https://developers.clicksign.com/reference/criar-requisito-de-autenticacao.md, https://developers.clicksign.com/reference/bulk-requirements.md
 
 ## 4. Activate and notify
 
@@ -130,7 +130,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/notifications
 
 One signer: `POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/signers/{{signer_id}}/notifications`. SMS and WhatsApp use the same endpoints; the channel comes from the signer's `communicate_events.signature_request`, and `message` applies to email only.
 
-Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, https://developers.clicksign.com/reference/api-notificar-envelope.md, https://developers.clicksign.com/docs/notificacoes.md
+Sources: https://developers.clicksign.com/v1.0/docs/solicitar-assinatura-por-email.md, https://developers.clicksign.com/reference/api-editar-envelope.md, https://developers.clicksign.com/reference/api-notificar-envelope.md, https://developers.clicksign.com/reference/notificacao-campos-e-regras-de-negocio.md, https://developers.clicksign.com/docs/notificacoes.md
 
 ## 5. Automatic signature (replaces sign through the API)
 
@@ -160,4 +160,4 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/requirements
 
 After activation, the signer signs by itself when the envelope reaches its `group`. Remove the HMAC code and the stored signer secret. See `no-equivalent.md` for the limitations.
 
-Sources: https://developers.clicksign.com/docs/assinatura-automatica.md, https://developers.clicksign.com/reference/api-criar-termo.md
+Sources: https://developers.clicksign.com/v1.0/docs/assinar-documentos-via-api.md, https://developers.clicksign.com/docs/assinatura-automatica.md, https://developers.clicksign.com/reference/api-criar-termo.md

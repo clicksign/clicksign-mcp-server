@@ -23,6 +23,8 @@ Sources: https://developers.clicksign.com/docs/faq-migracao.md, https://develope
 | `POST /api/v1/sign` | Automatic signature (`auth: auto_signature`) | See `no-equivalent.md`. |
 | Custom JSON, `{"document": {...}}` roots | JSON:API, `{"data": {"type", "attributes", "relationships"}}` | Media type `application/vnd.api+json`. |
 
+Sources: https://developers.clicksign.com/docs/guia-de-migracao.md, https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/reference/documento-campos-e-regras-de-negocio.md, https://developers.clicksign.com/docs/signatarios.md, https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md
+
 ## Envelope lifecycle (3.0)
 
 1. `POST /api/v3/envelopes`: status `draft`, visible only to the API user.
@@ -35,7 +37,7 @@ The documented activation rules are that every signer has at least one **authent
 
 A signer only signs the documents it has requirements on, which replaces the 1.9 rule that every signer signs every document of a batch.
 
-Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, https://developers.clicksign.com/docs/docs-requisitos.md, https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md
+Sources: https://developers.clicksign.com/docs/envelope.md, https://developers.clicksign.com/reference/api-editar-envelope.md, https://developers.clicksign.com/docs/ativacao-escala-performatica.md, https://developers.clicksign.com/reference/api-requisitos.md, https://developers.clicksign.com/docs/guia-de-migracao.md, https://developers.clicksign.com/reference/editar-documento.md, https://developers.clicksign.com/docs/docs-requisitos.md, https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md
 
 ## What can change after activation (3.0)
 
@@ -52,7 +54,7 @@ Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, http
 | Add a signature watcher | Yes |
 | Notify | Only while `running` |
 
-Sources: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/docs/signatarios.md
+Sources: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/docs/signatarios.md, https://developers.clicksign.com/reference/api-excluir-envelope.md, https://developers.clicksign.com/reference/api-excluir-documento.md, https://developers.clicksign.com/reference/api-requisitos.md, https://developers.clicksign.com/reference/bulk-requirements.md, https://developers.clicksign.com/reference/editar-documento.md, https://developers.clicksign.com/reference/api-excluir-signatario.md, https://developers.clicksign.com/docs/observador-de-assinatura.md, https://developers.clicksign.com/docs/notificacoes.md
 
 ## Things that are new in 3.0
 
@@ -63,7 +65,7 @@ Useful to mention when the developer asks what they gain, never as a reason to c
 - rubric requirements and positioned signature in templates (`{{~position_sign_<ID>}}`);
 - signature watchers (`/signature_watchers`);
 - `deadline_partial_signature_action` (`closed` or `canceled`) for documents with partial signatures at the deadline;
-- finer per-signer channels through `communicate_events`: `signature_request` adds `sms` and `none`, and `signature_reminder` and `document_signed` are set apart;
+- finer per-signer channels through `communicate_events`: `signature_request` documents `sms` and `none` besides the 1.9 options, and `signature_reminder` and `document_signed` are set apart;
 - webhook events such as `signature_started`, `liveness_refused`, `documentscopy_refused`.
 
-Sources: https://developers.clicksign.com/docs/migracao-da-api-19-para-30.md, https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md
+Sources: https://developers.clicksign.com/docs/migracao-da-api-19-para-30.md, https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md, https://developers.clicksign.com/docs/docs-modelos.md, https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md, https://developers.clicksign.com/reference/api-listar-webhooks.md
