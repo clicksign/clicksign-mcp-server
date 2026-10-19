@@ -25,7 +25,7 @@ When the developer asks for new 1.9 code or a plan to build on 1.9:
 2. Say in one or two sentences that API 1.9 is legacy, receives no new features, and that new work targets 3.0.
 3. Give the 3.0 equivalent of what they asked, mapped with [references/flows.md](references/flows.md) and [references/endpoint-map.md](references/endpoint-map.md). For example, the first call of a send is `POST /api/v3/envelopes`, not `POST /api/v1/documents`.
 4. Offer to write that 3.0 code, and wait for the developer to accept before editing the repository.
-5. If they say they need 1.9, ask what blocks 3.0. An account created before 01/07/2024 that gets `503` on the Envelope API must ask Clicksign support to enable it; that is the answer, not new 1.9 code.
+5. If they say they need 1.9, ask what blocks 3.0. An account that gets `503 service_unavailable` on the Envelope API must ask Clicksign support to enable it (the docs say it is active for accounts created from 01/07/2024); that is the answer, not new 1.9 code.
 
 Fixing a bug in existing 1.9 code is not new code: point at the cause, and propose migrating that call to 3.0 as the fix. A `403` whose message starts with `API descontinuada` means the account no longer accepts 1.9 writes; the fix is the migration.
 
@@ -41,7 +41,7 @@ Read what the developer shared and the relevant code in the repository. Ask for 
 - How signers are notified: Clicksign email, SMS or WhatsApp, a Clicksign email that carries a link to the developer's page (the `url` parameter), or the developer's own channel.
 - Whether the code uses webhooks, the Widget Embedded, the no-token widget, in-person signature, templates, WhatsApp acceptance (`/api/v2/acceptance_term/whatsapps`), or sign through the API (`/api/v1/sign`).
 - Which 1.9 ids (`key`, `request_signature_key`, `list_key`) are stored in their database and who reads them.
-- Whether the Clicksign account already has the Envelope API (accounts created before 01/07/2024 get `503` and must contact support) and a sandbox account for tests.
+- Whether the Clicksign account already has the Envelope API (the docs say it is active for accounts created from 01/07/2024; an account that gets `503 service_unavailable` must contact support) and a sandbox account for tests.
 
 If the developer only shared a fragment, migrate the fragment but list the assumptions you made about the rest.
 
@@ -49,10 +49,10 @@ If the developer only shared a fragment, migrate the fragment but list the assum
 
 Search the code for:
 
-- `app.clicksign.com` or `sandbox.clicksign.com` with `/api/v1/` or `/api/v2/`;
-- `access_token=` in URLs;
-- JSON roots `document`, `signer`, `list`, `batch`, and fields `request_signature_key`, `signer_key`, `document_key`, `list_key`, `sign_as`, `auths`, `secret_hmac_sha256`;
-- a `signers` array inside the `document` root, `send_email`, and paths `/documents/{key}/signers` and `/signers/{key}/notify` (1.9 calls the 1.9 pages in `sources.md` do not show, mapped in `endpoint-map.md`);
+- `/api/v1` and `/api/v2` paths, with or without a host or a trailing slash, and the hosts `app.clicksign.com` and `sandbox.clicksign.com` on their own, since the base URL often lives in configuration;
+- `access_token` in any form (query string, request params, configuration). Classify each hit by the path it goes with: the 3.0 getting-started page also shows it on `/api/v3`;
+- JSON roots `document`, `signer`, `list`, `batch`, `template`, `event`, `attachment`, `acceptance_term`, `hooks` and a top-level `signers`, and fields `request_signature_key`, `signer_key`, `document_key`, `list_key`, `sign_as`, `auths`, `secret_hmac_sha256`;
+- a `signers` array inside the `document` root, `send_email`, and paths `/documents/{key}/signers`, `/signers/{key}/notify` (1.9 calls the 1.9 pages in `sources.md` do not show, mapped in `endpoint-map.md`) and `/acceptance_term/whatsapps`;
 - Widget code: `embedded.min-1.0.0.js`, `new Clicksign(`, `tokenlessWidget.js`, `TokenlessWidget`;
 - webhook handlers reading `event.name`, `document.key`, `Content-Hmac`.
 
@@ -83,7 +83,7 @@ Watch these changes in behaviour, they cause most migration bugs:
 
 ### 4. Handle what has no direct equivalent
 
-Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, delete, cancel, signer reuse and contacts, notification `url`, `sign_as` values missing from the 3.0 docs, the in-person token sent to the signer and the no-token widget. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
+Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, delete, cancel, signer reuse and contacts, notification `url`, notification rules, editing a signer, `sign_as` values missing from the 3.0 docs, the in-person token sent to the signer, the no-token widget, Clicksign operator calls and the version detection pitfall. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
 
 ### 5. Propose the change
 
