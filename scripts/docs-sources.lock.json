@@ -72,8 +72,8 @@
     "sha256": "a22db5defd9de9d46799f102a29e3cd81a658249ab93ac8d34fc69de89d5f466"
   },
   "https://developers.clicksign.com/docs/integracao-resiliente.md": {
-    "updatedAt": "2026-10-09T20:34:39.000Z",
-    "sha256": "c1b2f67a3aad52aa07fe98acd405a3267cad19766d3903108b57be3fa95e5a49"
+    "updatedAt": "2026-10-19T14:15:47.000Z",
+    "sha256": "272b4cb94e455c4147929ed2b1c5b0da724874246392dc4b21e7f444b2fa46a1"
   },
   "https://developers.clicksign.com/docs/introducao-a-webhooks.md": {
     "updatedAt": "2026-10-09T20:56:26.000Z",
@@ -121,7 +121,7 @@
   },
   "https://developers.clicksign.com/llms.txt": {
     "updatedAt": null,
-    "sha256": "95d941af741a6d87657aebd9d1bac837ac46be10e1f16739213ea5fecf1551a2"
+    "sha256": "39be283073a4c08a6bdf293c492bb0f7aa761ae4e6cd30301ab5d146d2b230a0"
   },
   "https://developers.clicksign.com/reference/api-criar-envelope.md": {
     "updatedAt": "2026-06-25T20:35:27.000Z",
