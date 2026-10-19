@@ -34,7 +34,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents
 {"data": {"type": "documents", "attributes": {"filename": "contrato-exemplo.pdf", "content_base64": "data:application/pdf;base64,{{BASE64}}"}}}
 ```
 
-`block_after_refusal` and `remind_interval` are sent explicitly because their defaults changed (1.9: `true` and disabled; 3.0: `false` and `3`). Several documents go into the same envelope with more `POST .../documents` calls.
+`remind_interval` is sent as `null` because its default changed (1.9: disabled; 3.0: `3`). `block_after_refusal` and `locale` are always sent with what the 1.9 code used (here `true`, the 1.9 default, and the `pt-BR` the 1.9 call sends), so the result does not depend on a 3.0 default. Several documents go into the same envelope with more `POST .../documents` calls.
 
 Sources: https://developers.clicksign.com/reference/api-criar-envelope.md, https://developers.clicksign.com/reference/api-upload-documentos.md
 

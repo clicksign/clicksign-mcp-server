@@ -12,7 +12,7 @@ Base paths: 1.9 is `https://{host}/api/v1` (and some `/api/v2`), 3.0 is `https:/
 | IDs | `key` (e.g. `document.key`, `signer.key`, `list.key`) | `data.id` (UUID) | same |
 | Pagination | `?page=N`, 30 per page, `page_infos` object | `?page[number]=N&page[size]=M`, `links.next`/`prev`, `meta.record_count` | https://developers.clicksign.com/docs/gerenciamento-consultas-envelope.md |
 | Filters | None documented on lists | `filter[status]`, `filter[name]` (full name), `filter[created]`, `filter[modified]`, `filter[deadline_at]`, `sort=name` / `-name` | https://developers.clicksign.com/reference/api-listar-envelopes.md |
-| Errors | `{"errors": ["<message>"]}` | `{"errors": [{"code", "status", "title", "detail", "source": {"pointer": "/data/attributes/<field>"}}]}`. Unknown attribute: `400 "<field> não está disponível"` | https://developers.clicksign.com/docs/mensagens-de-erro.md |
+| Errors | `{"errors": ["<message>"]}` | `{"errors": [{"code", "status", "title", "detail", "source": {"pointer": "/data/attributes/<field>"}}]}` | https://developers.clicksign.com/docs/mensagens-de-erro.md |
 | Rate limit | 50 req / 10 s per account (production), 20 in sandbox, `429` | Same limits and headers. Notifications: 1 per minute per endpoint. Polling not allowed: use webhooks | https://developers.clicksign.com/docs/limite-de-requisicoes.md |
 | Account readiness | n/a | Envelope API is enabled for accounts created from 01/07/2024; older accounts get `503 service_unavailable` and must contact support | https://developers.clicksign.com/docs/mensagens-de-erro.md |
 
@@ -25,14 +25,14 @@ JSON:API client libraries recommended by Clicksign (any language): see https://d
 | `GET /api/v1/accounts` (test the token) | `GET /api/v3/envelopes` | No account endpoint in the 3.0 reference; listing envelopes validates the token | https://developers.clicksign.com/docs/primeiros-passos.md |
 | `POST /api/v1/documents` (upload) | `POST /api/v3/envelopes`, then `POST /api/v3/envelopes/{id}/documents` | Settings go to the envelope, the file to the document. Field map below | https://developers.clicksign.com/reference/api-upload-documentos.md |
 | `POST /api/v1/templates/{key}/documents` | `POST /api/v3/envelopes/{id}/documents` with `template: {key, data}` | `filename` ends in `.docx` | https://developers.clicksign.com/reference/criar-documento-por-modelo.md |
-| `POST /api/v2/templates` (multipart) | `POST /api/v3/templates` (JSON:API, `content_base64` of the `.docx`, `name` with `.docx`, `color`) | Content cannot be edited later: delete and create again | https://developers.clicksign.com/reference/api-criar-modelo.md |
+| `POST /api/v2/templates` (multipart) | `POST /api/v3/templates` (JSON:API, `name`, `content_base64` of the `.docx`, `color`) | Content cannot be edited later: delete and create again | https://developers.clicksign.com/reference/api-criar-modelo.md |
 | `GET /api/v2/templates` | `GET /api/v3/templates` | `403` if the plan has no templates | https://developers.clicksign.com/reference/api-listar-modelos.md |
 | `GET /api/v1/documents/{key}` | `GET /api/v3/envelopes/{id}`, `.../documents/{document_id}`, `.../signers`, `.../requirements` | The document no longer embeds signers and events. Events: `GET .../documents/{document_id}/events` | https://developers.clicksign.com/reference/detalhes-do-documento.md |
 | `GET /api/v1/documents?page=N` | `GET /api/v3/envelopes` with filters, then `GET .../documents` per envelope | No account-wide document listing | https://developers.clicksign.com/reference/api-listar-envelopes.md |
 | `PATCH /api/v1/documents/{key}` (settings) | `PATCH /api/v3/envelopes/{id}` | Settings are per envelope, not per document | https://developers.clicksign.com/reference/api-editar-envelope.md |
 | `PATCH /api/v1/documents/{key}/finish` | `PATCH /api/v3/envelopes/{id}/documents/{document_id}` with `status: closed` | Only for `running` documents | https://developers.clicksign.com/reference/editar-documento.md |
 | `PATCH /api/v1/documents/{key}/cancel` | `PATCH /api/v3/envelopes/{id}/documents/{document_id}` with `status: canceled` | Per document; there is no cancel on the envelope | https://developers.clicksign.com/reference/editar-documento.md |
-| `POST /api/v1/documents/{key}/duplicate` | `POST /api/v3/envelopes/{id}/documents` with `filename` and `duplicate: {key: <document id>}` | Behaviour differs, see `no-equivalent.md` | https://developers.clicksign.com/reference/api-duplicar-documento.md |
+| `POST /api/v1/documents/{key}/duplicate` | `POST /api/v3/envelopes/{id}/documents` with `filename` and `duplicate: {key: <document id>}` | The source must be closed. As in 1.9, the copy is a new document without the previous signatures | https://developers.clicksign.com/reference/api-duplicar-documento.md |
 | `DELETE /api/v1/documents/{key}` | `DELETE /api/v3/envelopes/{id}/documents/{document_id}` or `DELETE /api/v3/envelopes/{id}` | Only in `draft`, see `no-equivalent.md` | https://developers.clicksign.com/reference/api-excluir-documento.md |
 | `POST /api/v1/batches` | One envelope with all documents and requirements for that signer | See `no-equivalent.md` | https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md |
 | `POST /api/v1/signers` | `POST /api/v3/envelopes/{id}/signers` | Created per envelope; cannot be edited. Field map below | https://developers.clicksign.com/reference/api-criar-signatario.md |
@@ -58,13 +58,13 @@ JSON:API client libraries recommended by Clicksign (any language): see https://d
 | `content_base64` | Document `content_base64` (same `data:<mime>;base64,` prefix) | n/a | n/a |
 | `deadline_at` | Envelope `deadline_at` (max 90 days, must be in the future) | +30 days | +30 days |
 | `auto_close` | Envelope `auto_close` | `true` | `true` |
-| `locale` | Envelope `locale` (`pt-BR`, `en-US`) | `pt-BR` | `pt-BR` |
+| `locale` | Envelope `locale` (`pt-BR`, `en-US`) | `pt-BR` | send it explicitly |
 | `remind_interval` | Envelope `remind_interval` (`1`, `2`, `3`, `7`, `14`, `null`) | disabled | **`3`** |
-| `block_after_refusal` | Envelope `block_after_refusal` | **`true`** | **`false`** |
+| `block_after_refusal` | Envelope `block_after_refusal` | `true` | send it explicitly |
 | `sequence_enabled` | Signer `group` | `false` | groups always on, default `1` |
 | (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` | | |
 
-Two defaults changed. Send `remind_interval` and `block_after_refusal` explicitly when the 1.9 code relied on the old defaults.
+The `remind_interval` default changed: send `null` to keep reminders off as in 1.9, or the interval the integration needs. Always send `block_after_refusal` and `locale` too, with the values the 1.9 code sent or relied on. Do not rely on a 3.0 default for these two.
 
 Source: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md
 
@@ -101,13 +101,13 @@ Each row becomes one `POST /envelopes/{id}/requirements` with `action: provide_e
 | `handwritten_enabled: true` | `handwritten` | |
 | `official_document_enabled: true` | `official_document` | |
 | `liveness_enabled: true` | `liveness` | |
-| `facial_biometrics_enabled: true` | `facial_biometrics` | Not combinable with `official_document`, `liveness`, `selfie`. Billed per successful check |
+| `facial_biometrics_enabled: true` | `facial_biometrics` | Not combinable with `official_document`, `liveness`, `selfie`, `identity_biometrics`. Billed per successful check |
 
 Source: https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md
 
 ## `sign_as` to `role`
 
-`role` (qualification requirement, `action: agree`) accepts the same identifiers as `sign_as`, for example `sign`, `party`, `witness`, `contractor`, `contractee`, `approve`, `receipt`. Two 1.9 values are not in the 3.0 list: `condominium_member` and `signed` (see `no-equivalent.md`). Full list: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
+`role` (qualification requirement, `action: agree`) takes the same identifier as `sign_as` when the value is in the documented 3.0 list, for example `sign`, `party`, `witness`, `contractor`, `contractee`, `approve`, `receipt`. These 1.9 values are not in that list: `account_holder`, `building_manager`, `co_responsible`, `collateral_provider`, `condominium_member`, `consenting_intervenor`, `guarantor_spouse`, `insurance_broker`, `intervening_guarantor`, `joint_debtor`, `legal_guardian`, `legal_representative`, `real_estate_broker`, `service_provider`. Ask before mapping them (see `no-equivalent.md`). Full list: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
 
 ## Webhooks
 

@@ -75,14 +75,14 @@ Then apply the transport changes: `Authorization` header instead of `access_toke
 Watch these changes in behaviour, they cause most migration bugs:
 
 - activation fails if a signer has no authentication requirement;
-- `block_after_refusal` and `remind_interval` defaults changed;
+- the `remind_interval` default changed, and `block_after_refusal` and `locale` must be sent explicitly instead of relying on a 3.0 default;
 - signers cannot be edited, and requirements can be created through `/requirements` only in `draft`;
 - notifications work only while `running`, for the active group, 1 per minute per endpoint;
 - the Widget starts with the signer id, not `request_signature_key`.
 
 ### 4. Handle what has no direct equivalent
 
-Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, duplicate, delete, cancel, signer reuse and contacts, notification `url`, missing `sign_as` values, in-person email and the no-token widget. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
+Check [references/no-equivalent.md](references/no-equivalent.md) for sign through the API, batches, delete, cancel, signer reuse and contacts, notification `url`, `sign_as` values missing from the 3.0 docs, in-person email and the no-token widget. For each one that the code uses: explain the difference, give the 3.0 alternative, state the limitation, and ask the developer to choose when the alternative changes the business flow.
 
 ### 5. Propose the change
 

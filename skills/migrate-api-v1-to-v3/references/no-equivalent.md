@@ -11,17 +11,10 @@ When the code uses one of these, explain the difference, give the alternative an
 
 ## Batch (`POST /api/v1/batches`)
 
-- **1.9:** groups up to 500 already running documents for one `signer_key` and returns one `request_signature_key` for a single signing session.
+- **1.9:** groups up to 500 documents for one `signer_key` and returns one `request_signature_key` for a single signing session.
 - **3.0:** build one envelope with all documents and create the requirements for that signer on each document. Use `bulk_requirements` to create many requirements in one call.
-- **Limitations:** documents must be added while the envelope is `draft`; there is no way to group documents that were already sent in separate envelopes. Size limits: 10 MB per file, 100 MB per envelope. No document count limit is documented, so validate large batches in sandbox. If the 1.9 code created batches from documents produced at different times, the developer has to change when the envelope is built.
+- **Limitations:** there is no way to group documents that were already sent in separate envelopes. Size limits: 10 MB per file, 100 MB per envelope. No document count limit is documented, so validate large batches in sandbox. If the 1.9 code created batches from documents produced at different times, the developer has to change when the envelope is built.
 - Sources: https://developers.clicksign.com/v1.0/docs/criar-lote.md, https://developers.clicksign.com/reference/bulk-requirements.md, https://developers.clicksign.com/docs/faq-duvidas-e-problemas-comuns.md
-
-## Duplicate document
-
-- **1.9:** `POST /api/v1/documents/{key}/duplicate` creates a new running document from the **signed** file of a closed document.
-- **3.0:** `POST /api/v3/envelopes/{id}/documents` with `filename` and `duplicate: {key: <document id>}` into a `draft` envelope. The source must be closed, and the copy takes the **unsigned** content.
-- **Limitation:** the 3.0 copy does not carry the previous signatures. If the 1.9 flow relied on that (for example adding a new party on top of a signed contract), ask the developer what the business needs: a fresh signature round of the original, or the signed PDF uploaded as a new document (`content_base64`).
-- Sources: https://developers.clicksign.com/v1.0/docs/duplicar-documento.md, https://developers.clicksign.com/docs/documentos.md
 
 ## Delete a finished or canceled document
 
@@ -61,11 +54,11 @@ When the code uses one of these, explain the difference, give the alternative an
 - **3.0:** a signer cannot be changed after it is created. Delete it (only if it has not started signing) and create a new one; in a `running` envelope, its requirements go through `bulk_requirements`.
 - Source: https://developers.clicksign.com/docs/signatarios.md
 
-## `sign_as` values missing in 3.0
+## `sign_as` values missing from the 3.0 docs
 
-`condominium_member` and `signed` exist in the 1.9 list but not in the 3.0 qualification roles. Ask the developer which listed `role` fits (for example `resident`, `owner` or `sign`) instead of guessing.
+These values are in the 1.9 list but not in the documented 3.0 qualification roles: `account_holder`, `building_manager`, `co_responsible`, `collateral_provider`, `condominium_member`, `consenting_intervenor`, `guarantor_spouse`, `insurance_broker`, `intervening_guarantor`, `joint_debtor`, `legal_guardian`, `legal_representative`, `real_estate_broker`, `service_provider`. Do not map them on your own: ask the developer to confirm with Clicksign that the value is accepted in 3.0, or to choose a role from the documented list.
 
-Source: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
+Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md, https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
 
 ## In-person signature: email to the signer
 
