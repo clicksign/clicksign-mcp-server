@@ -11,7 +11,7 @@ When the code uses one of these, explain the difference, give the alternative an
 
 ## Batch (`POST /api/v1/batches`)
 
-- **1.9:** groups up to 500 documents for one `signer_key` and returns one `request_signature_key` for a single signing session.
+- **1.9:** groups up to 500 documents for one `signer_key` and returns one `request_signature_key` for a single signing session. The 1.9 API also updates a batch and appends documents to it (`PATCH /api/v1/batches/{key}`, `PUT /api/v1/batches/{key}/append`), which the 1.9 pages in `sources.md` do not list.
 - **3.0:** build one envelope with all documents and create the requirements for that signer on each document. Use `bulk_requirements` to create many requirements in one call.
 - **Limitations:** there is no way to group documents that were already sent in separate envelopes. Size limits: 10 MB per file, 100 MB per envelope. No document count limit is documented, so validate large batches in sandbox. If the 1.9 code created batches from documents produced at different times, the developer has to change when the envelope is built.
 - Sources: https://developers.clicksign.com/v1.0/docs/criar-lote.md, https://developers.clicksign.com/reference/bulk-requirements.md, https://developers.clicksign.com/docs/faq-duvidas-e-problemas-comuns.md
@@ -72,6 +72,10 @@ Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-docum
 - **1.9:** beta, closed to new customers, `tokenlessWidget.js`.
 - **3.0:** `auth: embedded_signature` and the `noWidget` client from Clicksign's `embedded-test` repository, started with the signer id. It runs without an iframe.
 - Source: https://developers.clicksign.com/docs/assinatura-incorporada-implementacoes-e-testes.md
+
+## Clicksign operator calls
+
+`POST /api/v1/accounts`, `POST /api/v1/accounts/create_subscription`, `POST /api/v1/accounts/{id}/functionalities/{code}/denieds` and `/api/v1/admin_users` are not in the 1.9 pages and answer `403` unless the token belongs to a Clicksign operator. The 3.0 reference has no account creation or subscription endpoint. If the code calls them, do not map them: ask Clicksign.
 
 ## Version detection pitfall
 
