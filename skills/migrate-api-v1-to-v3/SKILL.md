@@ -76,7 +76,7 @@ Then apply the transport changes: `Authorization` header instead of `access_toke
 Watch these changes in behaviour, they cause most migration bugs:
 
 - activation fails unless each signer has a qualification and an authentication requirement on each document it signs;
-- the `remind_interval` default changed, and `block_after_refusal` and `locale` must be sent explicitly instead of relying on a 3.0 default;
+- the `remind_interval` default changed, and `block_after_refusal`, `locale` and each signer's `group` must be sent explicitly instead of relying on a 3.0 default;
 - signers cannot be edited, and requirements can be created through `/requirements` only in `draft`;
 - notifications work only while `running`, for the active group, 1 per minute per endpoint;
 - the Widget starts with the signer id, not `request_signature_key`.

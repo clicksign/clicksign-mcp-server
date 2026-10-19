@@ -68,7 +68,7 @@ Rows marked **Undocumented 1.9** are calls the 1.9 API accepts but that are miss
 | `locale` | Envelope `locale` (`pt-BR`, `en-US`) | `pt-BR` | send it explicitly |
 | `remind_interval` | Envelope `remind_interval` (`1`, `2`, `3`, `7`, `14`, `null`) | disabled | **`3`** |
 | `block_after_refusal` | Envelope `block_after_refusal` | `true` | send it explicitly |
-| `sequence_enabled` | Signer `group` | `false` | groups always on, default `1` |
+| `sequence_enabled` | Signer `group`, sent on every signer (the same group for all when 1.9 had `sequence_enabled: false`) | `false` | groups always on; send it explicitly |
 | (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` | | |
 
 The `remind_interval` default changed: send `null` to keep reminders off as in 1.9, or the interval the integration needs. Always send `block_after_refusal` and `locale` too, with the values the 1.9 code sent or relied on. Do not rely on a 3.0 default for these two.
@@ -83,7 +83,7 @@ Source: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-n
 | `location_required_enabled` | Same attribute on the signer |
 | `communicate_by` (`email`, `whatsapp`) | `communicate_events.signature_request` and `communicate_events.document_signed` |
 | `delivery` | `communicate_events.document_signed` |
-| List `group` | Signer `group` |
+| List `group` | Signer `group`, now per envelope instead of per document |
 | List `refusable` | Signer `refusable` |
 | List `sign_as` | Qualification requirement `role` |
 | `auths` and `*_enabled` | Authentication requirements, table below |

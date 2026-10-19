@@ -19,7 +19,7 @@ Sources: https://developers.clicksign.com/docs/faq-migracao.md, https://develope
 | Signature | Evidence | Proof the signer produced to fulfil a requirement. |
 | Batch (`/api/v1/batches`) | One envelope with several documents and requirements for the same signer | No endpoint to group documents that were already sent. See `no-equivalent.md`. |
 | `request_signature_key` (notifications, Widget, sign through API) | Signer `id` | Notifications are sent per envelope or per signer id; the Widget is started with the signer id. |
-| `sequence_enabled` + list `group` | Signer `group` | Groups are always on (default `1`). Higher groups sign only after every earlier group. |
+| `sequence_enabled` + list `group` | Signer `group` | Groups are always on: higher groups sign only after every earlier group. Send `group` on every signer instead of relying on its default. 1.9 ignored `group` when `sequence_enabled` was `false`, so in that case give every signer the same group. |
 | `POST /api/v1/sign` | Automatic signature (`auth: auto_signature`) | See `no-equivalent.md`. |
 | Custom JSON, `{"document": {...}}` roots | JSON:API, `{"data": {"type", "attributes", "relationships"}}` | Media type `application/vnd.api+json`. |
 

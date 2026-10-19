@@ -80,7 +80,7 @@ POST {{BASE_URL}}/api/v1/lists?access_token={{CLICKSIGN_ACCESS_TOKEN}}
 {"list": {"document_key": "{{DOCUMENT_KEY}}", "signer_key": "{{SIGNER_KEY}}", "sign_as": "contractor", "refusable": true}}
 ```
 
-API 3.0: create the signer in the envelope, then one qualification requirement and one authentication requirement per extra check, for each document.
+API 3.0: create the signer in the `draft` envelope, with `group` always sent, then one qualification requirement and one authentication requirement per extra check, for each document. Before reusing this payload for a signer added to a `running` envelope, test it in sandbox.
 
 ```http
 POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/signers
