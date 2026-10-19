@@ -27,7 +27,7 @@ Sources: https://developers.clicksign.com/docs/faq-migracao.md, https://develope
 
 1. `POST /api/v3/envelopes`: status `draft`, visible only to the API user.
 2. Add documents, signers and requirements. Requirements through `/requirements` only while `draft`.
-3. `PATCH /api/v3/envelopes/{id}` with `status: running`: activates. Irreversible.
+3. `PATCH /api/v3/envelopes/{id}` with `status: running`: activates. Irreversible. The docs also describe an asynchronous `POST /api/v3/envelopes/{id}/activate`, marked as in development; use the `PATCH`.
 4. `POST /api/v3/envelopes/{id}/notifications` (or per signer): sends the signature request. Activation alone does not notify.
 5. The envelope becomes `closed` when every requirement is met (with `auto_close`) or `canceled`. Documents are canceled or closed one by one.
 
@@ -44,7 +44,7 @@ Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, http
 | Edit envelope settings (`deadline_at`, `locale`, `auto_close`, `remind_interval`, `block_after_refusal`, `default_message`) | Yes. `default_subject` only in `draft`. |
 | Add a document | Not documented; plan documents before activation |
 | Delete envelope or document | No (`403`, only in `draft`) |
-| Remove a requirement | Only through `bulk_requirements` with `op: remove`; a direct `DELETE .../requirements/{id}` works only in `draft` |
+| Remove a requirement | A direct `DELETE .../requirements/{id}` works only in `draft`. `bulk_requirements` documents `op: remove` without a status rule: test it in sandbox before relying on it while `running` |
 | Cancel or close a document; edit `metadata` | Yes |
 | Add a signer | Yes, and its requirements must go through `bulk_requirements` |
 | Edit a signer | Never |
@@ -63,7 +63,7 @@ Useful to mention when the developer asks what they gain, never as a reason to c
 - rubric requirements and positioned signature in templates (`{{~position_sign_<ID>}}`);
 - signature watchers (`/signature_watchers`);
 - `deadline_partial_signature_action` (`closed` or `canceled`) for documents with partial signatures at the deadline;
-- per-signer channels through `communicate_events`;
+- finer per-signer channels through `communicate_events`: `signature_request` adds `sms` and `none`, and `signature_reminder` and `document_signed` are set apart;
 - webhook events such as `signature_started`, `liveness_refused`, `documentscopy_refused`.
 
 Sources: https://developers.clicksign.com/docs/migracao-da-api-19-para-30.md, https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md

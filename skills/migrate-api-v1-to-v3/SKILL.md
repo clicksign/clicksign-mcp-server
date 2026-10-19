@@ -38,7 +38,7 @@ Read what the developer shared and the relevant code in the repository. Ask for 
 - Language, framework and HTTP client (or Clicksign SDK) in use.
 - The business flow: what triggers a send, how many documents and signers per send, whether the same signer signs several documents together (1.9 batches), signing order.
 - How signers authenticate (`auths`, `selfie_enabled` and the other flags) and their roles (`sign_as`).
-- How signers are notified: Clicksign email, SMS, WhatsApp, or the developer's own channel (the `url` parameter).
+- How signers are notified: Clicksign email, SMS or WhatsApp, a Clicksign email that carries a link to the developer's page (the `url` parameter), or the developer's own channel.
 - Whether the code uses webhooks, the Widget Embedded, the no-token widget, in-person signature, templates, WhatsApp acceptance (`/api/v2/acceptance_term/whatsapps`), or sign through the API (`/api/v1/sign`).
 - Which 1.9 ids (`key`, `request_signature_key`, `list_key`) are stored in their database and who reads them.
 - Whether the Clicksign account already has the Envelope API (accounts created before 01/07/2024 get `503` and must contact support) and a sandbox account for tests.

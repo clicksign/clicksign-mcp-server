@@ -13,8 +13,8 @@ When the code uses one of these, explain the difference, give the alternative an
 
 - **1.9:** groups up to 500 documents for one `signer_key` and returns one `request_signature_key` for a single signing session. The 1.9 API also updates a batch and appends documents to it (`PATCH /api/v1/batches/{key}`, `PUT /api/v1/batches/{key}/append`), which the 1.9 pages in `sources.md` do not list.
 - **3.0:** build one envelope with all documents and create the requirements for that signer on each document. Use `bulk_requirements` to create many requirements in one call.
-- **Limitations:** there is no way to group documents that were already sent in separate envelopes. Size limits: 10 MB per file, 100 MB per envelope. No document count limit is documented, so validate large batches in sandbox. If the 1.9 code created batches from documents produced at different times, the developer has to change when the envelope is built.
-- Sources: https://developers.clicksign.com/v1.0/docs/criar-lote.md, https://developers.clicksign.com/reference/bulk-requirements.md, https://developers.clicksign.com/docs/faq-duvidas-e-problemas-comuns.md
+- **Limitations:** no API endpoint groups documents that were already sent in separate envelopes. The migration overview lists a logged-out bulk signing that lets signers sign documents from separate envelopes at once, but describes no API call for it; confirm with Clicksign before relying on it. Size limits: 10 MB per file, 100 MB per envelope. No document count limit is documented, so validate large batches in sandbox. If the 1.9 code created batches from documents produced at different times, the developer has to change when the envelope is built.
+- Sources: https://developers.clicksign.com/v1.0/docs/criar-lote.md, https://developers.clicksign.com/reference/bulk-requirements.md, https://developers.clicksign.com/docs/faq-duvidas-e-problemas-comuns.md, https://developers.clicksign.com/docs/migracao-da-api-19-para-30.md
 
 ## Delete a finished or canceled document
 
@@ -42,9 +42,9 @@ When the code uses one of these, explain the difference, give the alternative an
 - **Alternative:** if the signer must land on the developer's page, send that link through the developer's own channel and use the Widget with the signer id, or set `communicate_events.signature_request: none` and notify outside Clicksign. Confirm with the developer which experience they need.
 - Sources: https://developers.clicksign.com/v1.0/docs/solicitar-assinatura-por-email.md, https://developers.clicksign.com/reference/notificacao-campos-e-regras-de-negocio.md
 
-## Notifying a signer outside its turn
+## Notification rules
 
-- **1.9:** any `request_signature_key` can be notified at any time.
+- **1.9:** the code requests each signature on demand through its `request_signature_key`; the 1.9 pages document no per-minute notification limit.
 - **3.0:** only signers of the active `group` can be notified, the envelope must be `running`, and each endpoint accepts 1 notification per minute. Later groups are notified automatically when their turn comes.
 - Source: https://developers.clicksign.com/docs/notificacoes.md
 
@@ -63,7 +63,7 @@ Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-docum
 ## In-person signature: token sent to the signer
 
 - **1.9:** `POST /api/v1/send_presential_signature_request/email` lets the code choose `recipient: signer` or `signature_host` and customize every text block. `POST /api/v1/send_presential_signature_request/sms` sends the token to the signer by SMS. The 1.9 API also accepts `POST /api/v1/send_presential_signature_request` (email to the host) and `GET /api/v1/sign_presential_url` (signing URL for a token), which the 1.9 pages in `sources.md` do not list.
-- **3.0:** only the host set in `signature_host` receives the token, by email, after activation; the documented notification customization is `email_customization`. Sending the token to the signer, by email or SMS, and looking up a signing URL from the token are not documented.
+- **3.0:** the documented flow emails the token to the host set in `signature_host` when the notification is sent, after activation; the documented notification customization is `email_customization`. Sending the token to the signer, by email or SMS, and looking up a signing URL from the token are not documented.
 - **Alternative:** in the documented 3.0 flow the host is present at the signature and the signer enters the token there. If the 1.9 flow sent the token to the signer, ask the developer whether that works for the business, and confirm with Clicksign before promising another channel.
 - Sources: https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-e-mail.md, https://developers.clicksign.com/v1.0/docs/notificacao-da-assinatura-presencial-por-sms.md, https://developers.clicksign.com/reference/fluxo-completo-da-assinatura-presencial.md
 
