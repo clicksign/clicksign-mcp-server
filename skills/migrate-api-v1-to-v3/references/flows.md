@@ -1,6 +1,6 @@
 # Essential flows, side by side
 
-Raw HTTP, so the agent can translate it into the developer's language and HTTP client. All values are fictitious. `{{BASE_URL}}` is `https://sandbox.clicksign.com` while testing. Every 3.0 request carries:
+Raw HTTP, so the agent can translate it into the developer's language and HTTP client. All values are fictitious. `{{BASE_URL}}` is `https://sandbox.clicksign.com` while testing. `{{SIGNER_CPF}}` is a fictitious CPF with valid check digits, formatted `000.000.000-00`: the API answers `422` (`documentation - inválido`) to an invalid one. `{{DEADLINE_AT}}` is a date and time in the future, at most 90 days ahead, with its offset (`YYYY-MM-DDTHH:MM:SS-03:00`). Every 3.0 request carries:
 
 ```http
 Authorization: {{CLICKSIGN_ACCESS_TOKEN}}
@@ -17,7 +17,7 @@ API 1.9: one call creates the document with its settings.
 ```http
 POST {{BASE_URL}}/api/v1/documents?access_token={{CLICKSIGN_ACCESS_TOKEN}}
 
-{"document": {"path": "/Contratos/contrato-exemplo.pdf", "content_base64": "data:application/pdf;base64,{{BASE64}}", "deadline_at": "2026-12-31T23:59:59-03:00", "auto_close": true, "locale": "pt-BR"}}
+{"document": {"path": "/Contratos/contrato-exemplo.pdf", "content_base64": "data:application/pdf;base64,{{BASE64}}", "deadline_at": "{{DEADLINE_AT}}", "auto_close": true, "locale": "pt-BR"}}
 ```
 
 API 3.0: the envelope holds the settings, the document holds the file. Keep `data.id` of each response.
@@ -25,7 +25,7 @@ API 3.0: the envelope holds the settings, the document holds the file. Keep `dat
 ```http
 POST {{BASE_URL}}/api/v3/envelopes
 
-{"data": {"type": "envelopes", "attributes": {"name": "Contrato exemplo", "deadline_at": "2026-12-31T23:59:59-03:00", "auto_close": true, "locale": "pt-BR", "block_after_refusal": true, "remind_interval": null}}}
+{"data": {"type": "envelopes", "attributes": {"name": "Contrato exemplo", "deadline_at": "{{DEADLINE_AT}}", "auto_close": true, "locale": "pt-BR", "block_after_refusal": true, "remind_interval": null}}}
 ```
 
 ```http
@@ -71,7 +71,7 @@ API 1.9: the signer carries the authentication, the list carries the role.
 ```http
 POST {{BASE_URL}}/api/v1/signers?access_token={{CLICKSIGN_ACCESS_TOKEN}}
 
-{"signer": {"name": "Fulano de Tal", "email": "fulano@example.com", "auths": ["email"], "documentation": "000.000.000-00", "birthday": "1990-01-01", "has_documentation": true, "selfie_enabled": true}}
+{"signer": {"name": "Fulano de Tal", "email": "fulano@example.com", "auths": ["email"], "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01", "has_documentation": true, "selfie_enabled": true}}
 ```
 
 ```http
@@ -85,7 +85,7 @@ API 3.0: create the signer in the envelope, then one qualification requirement a
 ```http
 POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/signers
 
-{"data": {"type": "signers", "attributes": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "000.000.000-00", "birthday": "1990-01-01", "has_documentation": true, "refusable": true, "group": 1, "communicate_events": {"signature_request": "email", "signature_reminder": "email", "document_signed": "email"}}}}
+{"data": {"type": "signers", "attributes": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01", "has_documentation": true, "refusable": true, "group": 1, "communicate_events": {"signature_request": "email", "signature_reminder": "email", "document_signed": "email"}}}}
 ```
 
 ```http
@@ -147,7 +147,7 @@ API 3.0: request the term once per signer; the account admin and the signer sign
 ```http
 POST {{BASE_URL}}/api/v3/auto_signature/terms
 
-{"data": {"type": "auto_signature_terms", "attributes": {"signer": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "000.000.000-00", "birthday": "1990-01-01"}, "api_email": "api@example.com", "admin_email": "admin@example.com"}}}
+{"data": {"type": "auto_signature_terms", "attributes": {"signer": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01"}, "api_email": "api@example.com", "admin_email": "admin@example.com"}}}
 ```
 
 Then, in each envelope, create the signer with the same `name`, `email`, `documentation` and `birthday`, a qualification requirement, and:

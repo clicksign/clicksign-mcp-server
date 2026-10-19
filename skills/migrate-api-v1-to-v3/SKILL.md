@@ -13,7 +13,7 @@ You help a developer adapt existing code from the Clicksign API 1.9 (legacy) to 
 - Never keep a call on 1.9 as the answer to a missing feature. Explain the limitation and the 3.0 alternative.
 - Use only the official documentation listed in [references/sources.md](references/sources.md). Do not cite third-party repositories, blog posts, or what you remember about older Clicksign versions. When this skill does not settle a field or behaviour, fetch the official `.md` page; if you cannot fetch it, say what needs checking.
 - Do not invent endpoints, attributes or enum values. If the references do not cover something the code does, say so and ask.
-- Use fictitious data in every example (`fulano@example.com`, `000.000.000-00`, `{{CLICKSIGN_ACCESS_TOKEN}}`). Never print, log or hard-code a real token.
+- Use fictitious data in every example (`fulano@example.com`, `{{SIGNER_CPF}}`, `{{CLICKSIGN_ACCESS_TOKEN}}`). For sandbox tests the CPF must still have valid check digits, or the API answers `422`. Never print, log or hard-code a real token.
 - Point tests at sandbox (`https://sandbox.clicksign.com`), with the host and token in configuration. Never call production, never deploy, never run migrations against production data. You propose and apply code changes only with the developer's approval; shipping is the developer's decision.
 - Answer in the developer's language.
 
