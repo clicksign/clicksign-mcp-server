@@ -53,7 +53,7 @@ The 1.9 API also routes some calls under the other prefix (for example `PATCH` a
 | `GET /api/v2/contacts` | None | See `no-equivalent.md` | |
 | `POST /api/v1/lists` | `POST /api/v3/envelopes/{id}/requirements` twice: `agree` + `role`, and `provide_evidence` + `auth` | `group` and `refusable` move to the signer. `message` moves to the notification | https://developers.clicksign.com/reference/criar-requisito-qualificacao.md |
 | `DELETE /api/v1/lists/{key}` | `DELETE /api/v3/envelopes/{id}/requirements/{requirement_id}` (`draft`) or `bulk_requirements` with `op: remove` (`running`) | | https://developers.clicksign.com/reference/bulk-requirements.md |
-| `POST /api/v1/notifications` | `POST /api/v3/envelopes/{id}/signers/{signer_id}/notifications` or `POST /api/v3/envelopes/{id}/notifications` | Envelope must be `running`; only the active group is notified. `message` is used by email only; `email_customization` customizes the email | https://developers.clicksign.com/reference/api-notificar-signatario.md |
+| `POST /api/v1/notifications` | `POST /api/v3/envelopes/{id}/signers/{signer_id}/notifications` or `POST /api/v3/envelopes/{id}/notifications` | Envelope must be `running`; only the active group is notified. `message` is used by email only; `email_customization` customizes the email: test it in sandbox on the account before relying on it, and fall back to `message` if the API rejects it | https://developers.clicksign.com/reference/api-notificar-signatario.md |
 | `POST /api/v1/notify_by_sms`, `POST /api/v1/notify_by_whatsapp` | Same notification endpoints | The channel comes from the signer's `communicate_events.signature_request` (`email`, `sms`, `whatsapp`, `none`) | https://developers.clicksign.com/docs/notificacoes.md |
 | `POST /api/v1/sign` | Automatic signature: term + `auth: auto_signature` | See `no-equivalent.md` and `flows.md` | https://developers.clicksign.com/docs/assinatura-automatica.md |
 | `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data` keeps the 1.9 keys: `kind` (`token_email`, `token_sms`), `occurred_at` and `signer_name` are required, `signer_email` and `signer_phone_number` optional | https://developers.clicksign.com/reference/criar-evento-customizado.md |
@@ -80,7 +80,7 @@ The 1.9 API also routes some calls under the other prefix (for example `PATCH` a
 | `sequence_enabled` | Signer `group`, sent on every signer (the same group for all when 1.9 had `sequence_enabled: false`) | `false` | groups always on; send it explicitly |
 | `metadata` (the 1.9 pages show it only in responses) | Document `metadata`, sent with the document in webhooks | `{}` | `{}` |
 | `name`, `preview` (**Undocumented 1.9**) | No documented 3.0 attribute; ask what the code relies on before dropping them | | |
-| (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` | | |
+| (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` (optional; send it only if the integration needs it, after testing it in sandbox on the account) | | |
 
 The `remind_interval` default changed: send `null` to keep reminders off as in 1.9, or the interval the integration needs. Always send `block_after_refusal` and `locale` too, with the values the 1.9 code sent or relied on. Do not rely on a 3.0 default for these two.
 
@@ -121,6 +121,8 @@ Each row becomes one `POST /envelopes/{id}/requirements` with `action: provide_e
 | `official_document_enabled: true` | `official_document` | |
 | `liveness_enabled: true` | `liveness` | |
 | `facial_biometrics_enabled: true` | `facial_biometrics` | Not combinable with `official_document`, `liveness`, `selfie`, `identity_biometrics`. Billed per successful check |
+
+Create each signer's full set of requirements in sandbox before relying on it: the 3.0 pages document some combinations that are not allowed (`facial_biometrics` above, `auto_signature` with in-person signature), and the API may refuse others that the 1.9 code used.
 
 Source: https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md
 
