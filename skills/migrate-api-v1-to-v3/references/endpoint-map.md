@@ -115,7 +115,7 @@ Source: https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticaca
 
 ## `sign_as` to `role`
 
-`role` (qualification requirement, `action: agree`) takes the same identifier as `sign_as` when the value is in the documented 3.0 list, for example `sign`, `party`, `witness`, `contractor`, `contractee`, `approve`, `receipt`. These 1.9 values are not in that list: `account_holder`, `building_manager`, `co_responsible`, `collateral_provider`, `condominium_member`, `consenting_intervenor`, `guarantor_spouse`, `insurance_broker`, `intervening_guarantor`, `joint_debtor`, `legal_guardian`, `legal_representative`, `real_estate_broker`, `service_provider`. Ask before mapping them, and any other `sign_as` value that is not in the documented 3.0 list (see `no-equivalent.md`). Full list: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
+`role` (qualification requirement, `action: agree`) takes the same identifier as `sign_as` when the value is in the documented 3.0 list, for example `sign`, `party`, `witness`, `contractor`, `contractee`, `approve`, `receipt`. Two values of the 1.9 list are not in the 3.0 list: `condominium_member` and `signed`. Ask before mapping them, and any other `sign_as` value that is not in the documented 3.0 list (see `no-equivalent.md`). Full list: https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
 
 ## Webhooks
 
