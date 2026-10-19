@@ -100,7 +100,7 @@ POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/requirements
 {"data": {"type": "requirements", "attributes": {"action": "provide_evidence", "auth": "email"}, "relationships": {"document": {"data": {"type": "documents", "id": "{{document_id}}"}}, "signer": {"data": {"type": "signers", "id": "{{signer_id}}"}}}}}
 ```
 
-`selfie_enabled: true` becomes a second `provide_evidence` requirement with `auth: selfie`. Without at least one authentication requirement per signer, activation fails. For many documents or signers, send the requirements in one `POST .../bulk_requirements` call with `atomic:operations`.
+`selfie_enabled: true` becomes a second `provide_evidence` requirement with `auth: selfie`. Repeat both requirements for each document the signer signs; activation fails without them. For many documents or signers, send the requirements in one `POST .../bulk_requirements` call with `atomic:operations`.
 
 Sources: https://developers.clicksign.com/reference/api-criar-signatario.md, https://developers.clicksign.com/reference/criar-requisito-qualificacao.md, https://developers.clicksign.com/reference/criar-requisito-de-autenticacao.md, https://developers.clicksign.com/reference/bulk-requirements.md
 

@@ -31,12 +31,9 @@ Sources: https://developers.clicksign.com/docs/faq-migracao.md, https://develope
 4. `POST /api/v3/envelopes/{id}/notifications` (or per signer): sends the signature request. Activation alone does not notify.
 5. The envelope becomes `closed` when every requirement is met (with `auto_close`) or `canceled`. Documents are canceled or closed one by one.
 
-Activation fails unless:
+The documented activation rules are that every signer has at least one **authentication** requirement and every document has at least one **qualification** requirement for each signer who signs it. The creation guide also checks that every document has at least two requirements. Create both on every document a signer signs: one qualification and at least one authentication for that signer on that document. Do not rely on one authentication requirement covering the signer's other documents.
 
-- every signer has at least one **authentication** requirement;
-- every document has at least one **qualification** requirement for each signer who signs it.
-
-In other words, every document needs at least two requirements per signer. A signer only signs the documents it has requirements on, which replaces the 1.9 rule that every signer signs every document of a batch.
+A signer only signs the documents it has requirements on, which replaces the 1.9 rule that every signer signs every document of a batch.
 
 Sources: https://developers.clicksign.com/reference/api-editar-envelope.md, https://developers.clicksign.com/docs/docs-requisitos.md, https://developers.clicksign.com/docs/guia-de-criacao-o-passo-a-passo-padrao.md
 
