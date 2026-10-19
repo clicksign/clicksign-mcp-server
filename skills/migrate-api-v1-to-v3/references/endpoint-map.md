@@ -56,7 +56,7 @@ The 1.9 API also routes some calls under the other prefix (for example `PATCH` a
 | `POST /api/v1/notifications` | `POST /api/v3/envelopes/{id}/signers/{signer_id}/notifications` or `POST /api/v3/envelopes/{id}/notifications` | Envelope must be `running`; only the active group is notified. `message` is used by email only; `email_customization` customizes the email | https://developers.clicksign.com/reference/api-notificar-signatario.md |
 | `POST /api/v1/notify_by_sms`, `POST /api/v1/notify_by_whatsapp` | Same notification endpoints | The channel comes from the signer's `communicate_events.signature_request` (`email`, `sms`, `whatsapp`, `none`) | https://developers.clicksign.com/docs/notificacoes.md |
 | `POST /api/v1/sign` | Automatic signature: term + `auth: auto_signature` | See `no-equivalent.md` and `flows.md` | https://developers.clicksign.com/docs/assinatura-automatica.md |
-| `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data.kind`: `token_email`, `token_sms` | https://developers.clicksign.com/reference/criar-evento-customizado.md |
+| `POST /api/v2/documents/{key}/events` (custom token) | `POST /api/v3/envelopes/{id}/documents/{document_id}/events` with `name: custom` | `data` keeps the 1.9 keys: `kind` (`token_email`, `token_sms`), `occurred_at` and `signer_name` are required, `signer_email` and `signer_phone_number` optional | https://developers.clicksign.com/reference/criar-evento-customizado.md |
 | `POST /api/v2/documents/{key}/images` | Same events endpoint with `name: add_image`, `content_base64`, `data.title`, `data.occurred_at` | | https://developers.clicksign.com/reference/criar-evento-com-imagem-para-o-documento.md |
 | `POST /api/v2/webhooks`, `GET /api/v2/webhooks` | `POST /api/v3/webhooks`, `GET /api/v3/webhooks`, plus `PATCH` and `DELETE /api/v3/webhooks/{id}` | JSON:API body with `endpoint`, `status`, `events`. Always send `events` with the event names the handler uses, even though the create page marks only `endpoint` as required. If the 3.0 webhook endpoints answer `403` on the account, register the webhook in the account settings or ask Clicksign | https://developers.clicksign.com/reference/api-criar-webhook.md |
 | `GET`, `PATCH`, `DELETE /api/v2/webhooks/{id}`, `POST /api/v2/webhooks/{id}/activate` | `GET`, `PATCH`, `DELETE /api/v3/webhooks/{id}`; activate becomes `PATCH` with `status: active` | **Undocumented 1.9.** | https://developers.clicksign.com/reference/api-detalhes-do-webhook.md, https://developers.clicksign.com/reference/api-editar-webhook.md, https://developers.clicksign.com/reference/api-excluir-webhook.md |
@@ -70,7 +70,7 @@ The 1.9 API also routes some calls under the other prefix (for example `PATCH` a
 
 | 1.9 (`document`) | 3.0 | Default 1.9 | Default 3.0 |
 |---|---|---|---|
-| `path` (folder + filename) | Document `filename`; folder through the envelope `folder` relationship | n/a | n/a |
+| `path` (folder + filename) | Document `filename`; the folder goes to the envelope `folder` relationship, with the id of an existing folder. 1.9 created missing folders; in 3.0 find the folder with `GET /api/v3/folders` or create it with `POST /api/v3/folders` first. The folder applies to the whole envelope | n/a | n/a |
 | `content_base64` | Document `content_base64` (same `data:<mime>;base64,` prefix) | n/a | n/a |
 | `deadline_at` | Envelope `deadline_at` (max 90 days, must be in the future) | +30 days | +30 days |
 | `auto_close` | Envelope `auto_close` | `true` | `true` |
@@ -78,11 +78,13 @@ The 1.9 API also routes some calls under the other prefix (for example `PATCH` a
 | `remind_interval` | Envelope `remind_interval` (`1`, `2`, `3`, `7`, `14`, `null`) | disabled | **`3`** |
 | `block_after_refusal` | Envelope `block_after_refusal` | `true` | send it explicitly |
 | `sequence_enabled` | Signer `group`, sent on every signer (the same group for all when 1.9 had `sequence_enabled: false`) | `false` | groups always on; send it explicitly |
+| `metadata` (the 1.9 pages show it only in responses) | Document `metadata`, sent with the document in webhooks | `{}` | `{}` |
+| `name`, `preview` (**Undocumented 1.9**) | No documented 3.0 attribute; ask what the code relies on before dropping them | | |
 | (none) | Envelope `name` (required), `default_subject`, `default_message`, `deadline_partial_signature_action` | | |
 
 The `remind_interval` default changed: send `null` to keep reminders off as in 1.9, or the interval the integration needs. Always send `block_after_refusal` and `locale` too, with the values the 1.9 code sent or relied on. Do not rely on a 3.0 default for these two.
 
-Source: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md
+Sources: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md, https://developers.clicksign.com/reference/api-criar-envelope.md, https://developers.clicksign.com/reference/api-listar-pastas.md, https://developers.clicksign.com/reference/criar-pasta.md, https://developers.clicksign.com/reference/documento-campos-e-regras-de-negocio.md
 
 ## Signer fields
 
@@ -90,8 +92,8 @@ Source: https://developers.clicksign.com/reference/envelope-campos-e-regras-de-n
 |---|---|
 | `name`, `email`, `phone_number`, `documentation`, `birthday`, `has_documentation` | Same attributes on the 3.0 signer |
 | `location_required_enabled` | Same attribute on the signer |
-| `communicate_by` (`email`, `whatsapp`) | `communicate_events.signature_request` and `communicate_events.document_signed` |
-| `delivery` | `communicate_events.document_signed` |
+| `communicate_by` (`email`, `whatsapp`; the 1.9 API also accepts `none` and `sms`, which the 1.9 pages do not list) | `communicate_events.signature_request` (`email`, `whatsapp`, `sms`, `none`) and `communicate_events.document_signed` (`email`, `whatsapp` only: ask before mapping `none` or `sms` there) |
+| `delivery` | `communicate_events.document_signed`. `delivery: none`, which the 1.9 pages do not list, has no documented `document_signed` value: ask |
 | List `group` | Signer `group`, now per envelope instead of per document |
 | List `refusable` | Signer `refusable` |
 | List `sign_as` | Qualification requirement `role` |
