@@ -71,7 +71,7 @@ Use [references/endpoint-map.md](references/endpoint-map.md) for endpoints, fiel
 5. `PATCH /api/v3/envelopes/{id}` with `status: running`;
 6. `POST .../notifications`.
 
-Then apply the transport changes: `Authorization` header instead of `access_token`, `application/vnd.api+json`, JSON:API bodies, `data.id` instead of `key`, JSON:API errors and pagination. [references/flows.md](references/flows.md) has the five essential flows side by side.
+Then apply the transport changes: `Authorization` header instead of `access_token`, `application/vnd.api+json`, JSON:API bodies, `data.id` instead of `key`, JSON:API errors and pagination, and `429` retried with backoff instead of a fixed request rate. [references/flows.md](references/flows.md) has the five essential flows side by side.
 
 Watch these changes in behaviour, they cause most migration bugs:
 
