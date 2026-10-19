@@ -56,7 +56,7 @@ When the code uses one of these, explain the difference, give the alternative an
 
 ## `sign_as` values missing from the 3.0 docs
 
-These values are in the 1.9 list but not in the documented 3.0 qualification roles: `account_holder`, `building_manager`, `co_responsible`, `collateral_provider`, `condominium_member`, `consenting_intervenor`, `guarantor_spouse`, `insurance_broker`, `intervening_guarantor`, `joint_debtor`, `legal_guardian`, `legal_representative`, `real_estate_broker`, `service_provider`. Do not map them on your own: ask the developer to confirm with Clicksign that the value is accepted in 3.0, or to choose a role from the documented list.
+These values are in the 1.9 list but not in the documented 3.0 qualification roles: `account_holder`, `building_manager`, `co_responsible`, `collateral_provider`, `condominium_member`, `consenting_intervenor`, `guarantor_spouse`, `insurance_broker`, `intervening_guarantor`, `joint_debtor`, `legal_guardian`, `legal_representative`, `real_estate_broker`, `service_provider`. The same applies to any other `sign_as` value the code sends that is not in the documented 3.0 list. Do not map them on your own: ask the developer to confirm with Clicksign that the value is accepted in 3.0, or to choose a role from the documented list.
 
 Sources: https://developers.clicksign.com/v1.0/docs/adicionar-signatario-a-documento.md, https://developers.clicksign.com/docs/adicionar-requisito-de-qualificacao.md
 
