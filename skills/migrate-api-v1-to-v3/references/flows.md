@@ -8,7 +8,7 @@ Content-Type: application/vnd.api+json
 Accept: application/vnd.api+json
 ```
 
-Every 1.9 request carries `?access_token={{CLICKSIGN_ACCESS_TOKEN}}` and `Content-Type: application/json`.
+Every 1.9 request carries `?access_token={{CLICKSIGN_ACCESS_TOKEN}}`, `Content-Type: application/json` and `Accept: application/json`.
 
 ## 1. Create the envelope and upload a document
 
@@ -149,6 +149,8 @@ POST {{BASE_URL}}/api/v3/auto_signature/terms
 
 {"data": {"type": "auto_signature_terms", "attributes": {"signer": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01"}, "api_email": "api@example.com", "admin_email": "admin@example.com"}}}
 ```
+
+`api_email` and `admin_email` are required, and the reference does not describe them. The guide asks for a user set as the API user in **Configurações > API** and for an account admin to sign the term: confirm in sandbox which addresses the API expects.
 
 Then, in each envelope, create the signer with the same `name`, `email`, `documentation` and `birthday`, a qualification requirement, and:
 
