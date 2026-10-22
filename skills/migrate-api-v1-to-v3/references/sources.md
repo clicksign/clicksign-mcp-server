@@ -113,7 +113,7 @@ The 1.9 index lists only part of the legacy pages. The other legacy pages follow
 
 ## API 1.9 (legacy)
 
-Use these pages only to understand what the existing code does. Never use them to write new code.
+Use these pages to understand what the existing code does and to fix or adjust the calls it already makes. Never use them to write new 1.9 calls, endpoints or flows.
 
 | Topic | URL |
 |---|---|

@@ -1,15 +1,15 @@
 ---
 name: migrate-api-v1-to-v3
-description: Migrate a Clicksign integration from the legacy API 1.9 to API 3.0 (Envelope), and redirect requests for new API 1.9 code to 3.0. Use when code or a snippet calls app.clicksign.com or sandbox.clicksign.com on /api/v1 or /api/v2, passes access_token in the query string, sends document, signer, list or batch JSON roots, uses request_signature_key, sign_as or auths, when the user asks to migrate, upgrade or port a Clicksign 1.9 integration to 3.0, or when the user asks to build, implement, extend or plan an integration, endpoint or example on API 1.9. Also use for requests in Portuguese such as migrar, atualizar ou adaptar a integração Clicksign da API 1.9 (legada, v1) para a API 3.0 (v3, envelope), migração de documento, signatário, lista ou lote para envelope, trocar o access_token pelo header Authorization, ou implementar, criar, estender ou planejar uma integração, endpoint ou exemplo na API 1.9.
+description: Migrate a Clicksign integration from the legacy API 1.9 to API 3.0 (Envelope), fix or adjust calls existing 1.9 code already makes, and redirect requests for new API 1.9 code to 3.0. Use when code or a snippet calls app.clicksign.com or sandbox.clicksign.com on /api/v1 or /api/v2, passes access_token in the query string, sends document, signer, list or batch JSON roots, uses request_signature_key, sign_as or auths, when the user asks to migrate, upgrade or port a Clicksign 1.9 integration to 3.0, or when the user asks to build, implement, extend or plan an integration, endpoint or example on API 1.9. Also use for requests in Portuguese such as migrar, atualizar ou adaptar a integração Clicksign da API 1.9 (legada, v1) para a API 3.0 (v3, envelope), migração de documento, signatário, lista ou lote para envelope, trocar o access_token pelo header Authorization, corrigir ou ajustar chamadas 1.9 existentes, ou implementar, criar, estender ou planejar uma integração, endpoint ou exemplo na API 1.9.
 ---
 
 # Migrate a Clicksign integration from API 1.9 to API 3.0
 
-You help a developer adapt existing code from the Clicksign API 1.9 (legacy) to the API 3.0 (Envelope), keeping what the integration does for their business. API 1.9 is legacy: it receives no new features. Use 1.9 knowledge only to read the existing code. Every change you propose targets 3.0, and every request for new 1.9 code becomes a 3.0 proposal.
+You help a developer adapt existing code from the Clicksign API 1.9 (legacy) to the API 3.0 (Envelope), keeping what the integration does for their business. API 1.9 is legacy: it receives no new features. Use 1.9 knowledge to read the existing code and to fix or adjust the calls it already makes. Any new work targets 3.0, and every request for new 1.9 code becomes a 3.0 proposal.
 
 ## Rules
 
-- Do not write, plan or sketch new code on API 1.9, even when the developer asks for it explicitly or insists. This covers a new integration, a new endpoint, an example, a new feature in an existing 1.9 integration, and a 1.9 flow for a project that does not exist yet. Follow **Requests for new code on API 1.9** below instead.
+- Do not write, plan or sketch new code on API 1.9, even when the developer asks for it explicitly or insists. This covers a new integration, a new endpoint, an example, a new feature in an existing 1.9 integration, and a 1.9 flow for a project that does not exist yet. Follow **Requests for new code on API 1.9** below instead. Fixing or adjusting what the existing code already does is not new code: follow **Fixes to existing 1.9 code**.
 - Never keep a call on 1.9 as the answer to a missing feature. Explain the limitation and the 3.0 alternative.
 - Use only the official documentation listed in [references/sources.md](references/sources.md). Do not cite third-party repositories, blog posts, or what you remember about older Clicksign versions. When this skill does not settle a field or behaviour, fetch the official `.md` page; if you cannot fetch it, say what needs checking.
 - Do not invent endpoints, attributes or enum values. If the references do not cover something the code does, say so and ask.
@@ -27,7 +27,15 @@ When the developer asks for new 1.9 code or a plan to build on 1.9:
 4. Offer to write that 3.0 code, and wait for the developer to accept before editing the repository.
 5. If they say they need 1.9, ask what blocks 3.0. An account that gets `503 service_unavailable` on the Envelope API must ask Clicksign support to enable it (the docs say it is active for accounts created from 01/07/2024); that is the answer, not new 1.9 code.
 
-Fixing a bug in existing 1.9 code is not new code: point at the cause, and propose migrating that call to 3.0 as the fix. A `403` whose message starts with `API descontinuada` means the account no longer accepts 1.9 writes; the fix is the migration.
+## Fixes to existing 1.9 code
+
+When the developer asks to fix a bug in, or adjust, 1.9 code that already exists:
+
+1. Point at the cause, using the 1.9 pages in [references/sources.md](references/sources.md) and the 1.9 calls in [references/endpoint-map.md](references/endpoint-map.md).
+2. Change only the calls the code already makes, to restore or adjust what they already do. Do not add a 1.9 call, endpoint or flow, and do not use the fix to add a feature the integration does not have. A request that needs any of these is a request for new code: follow **Requests for new code on API 1.9**.
+3. Propose the change and apply it only when the developer agrees.
+
+A `403` whose message starts with `API descontinuada` means the account no longer accepts 1.9 writes. No 1.9 fix works there; the fix is the migration.
 
 ## Workflow
 
