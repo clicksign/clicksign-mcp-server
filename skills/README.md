@@ -4,7 +4,7 @@ This directory holds [Agent Skills](https://agentskills.io) bundled with the Cli
 
 | Skill | What it does |
 |---|---|
-| [`migrate-api-v1-to-v3`](migrate-api-v1-to-v3/SKILL.md) | Guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope): asks for the missing context, maps each call, explains what has no direct equivalent and proposes the adapted code. A request for new 1.9 code gets the 3.0 equivalent instead. It does not need the MCP connection. |
+| [`migrate-api-v1-to-v3`](migrate-api-v1-to-v3/SKILL.md) | Guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope): asks for the missing context, maps each call, explains what has no direct equivalent and proposes the adapted code. It can fix or adjust the calls existing 1.9 code already makes; a request for new 1.9 code gets the 3.0 equivalent instead. It does not need the MCP connection. |
 
 Skills cite the official documentation at `developers.clicksign.com`. `npm run check:links` checks that every cited URL still answers.
 

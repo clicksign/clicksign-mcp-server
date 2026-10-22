@@ -10,7 +10,7 @@ All notable changes to this package are documented here. The format follows [Kee
 - Codex repo marketplace in `.agents/plugins/marketplace.json`.
 - Claude Code and Cursor manifests (not published yet).
 - Skills directory convention.
-- `migrate-api-v1-to-v3` skill: guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope) and answers requests for new 1.9 code with the 3.0 equivalent, with references distilled from the official documentation.
+- `migrate-api-v1-to-v3` skill: guides the migration of an integration from the legacy API 1.9 to API 3.0 (Envelope), fixes or adjusts calls existing 1.9 code already makes, and answers requests for new 1.9 code with the 3.0 equivalent, with references distilled from the official documentation.
 - Link check for the documentation URLs cited by skills (`npm run check:links`), also run in the validate workflow.
 - Weekly `docs-drift` workflow that compares the documentation pages cited by skills with `scripts/docs-sources.lock.json` and opens or updates a `docs-drift` issue when they change (`npm run check:docs-drift`, `npm run docs:lock`).
 - Validation (`npm run validate`), packaging (`npm run package`), connection smoke test (`npm run smoke`) and MCP Inspector helpers (`npm run inspect`, `npm run inspect:cli`).
