@@ -63,7 +63,7 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 skills/                            Agent Skills bundled with the plugin
 assets/                            Listing icons
 docs/                              Setup guides for ChatGPT and Codex
-scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
+scripts/                           Validation, packaging, smoke test, MCP Inspector, link check and docs-drift helpers
 ```
 
 Opening this repository in Claude Code offers `clicksign` as a project MCP server, because `.mcp.json` sits at the root. That file is the Claude plugin's server config; approve it only if you want to connect.
@@ -74,7 +74,7 @@ Requires Node.js 22 or later (`.tool-versions` pins the version used here).
 
 ```sh
 npm install
-npm test                    # validator test suite
+npm test                    # tests for the validator, the link check and the docs-drift check
 npm run validate            # check every manifest; placeholders are warnings
 npm run package             # validate, then build dist/clicksign-<version>.zip
 npm run package -- --release  # same, but placeholders are errors
@@ -154,7 +154,7 @@ Para a skill não ficar desatualizada, o workflow `docs-drift` roda toda segunda
 
 ```sh
 npm install
-npm test                      # testes do validador
+npm test                      # testes do validador, do link check e do docs-drift
 npm run validate              # valida os manifests; placeholders viram aviso
 npm run package               # gera dist/clicksign-<versão>.zip
 npm run package -- --release  # placeholders viram erro
