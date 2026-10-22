@@ -44,6 +44,14 @@ Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugi
 
 Sending an envelope or a reminder notifies the signers and cannot be undone. The connector never signs documents on anyone's behalf.
 
+## Skills
+
+| Skill | What it does |
+|---|---|
+| `migrate-api-v1-to-v3` | Helps a developer migrate code from the legacy Clicksign API 1.9 to API 3.0 (Envelope). It asks for missing context, maps endpoints, payloads and flows, explains features without a direct equivalent, and proposes the adapted code to test in sandbox. It can fix or adjust the calls existing 1.9 code already makes, but does not write new code on API 1.9: a request for new 1.9 code gets the 3.0 equivalent instead. Works without signing in to the MCP server. |
+
+Ask the assistant, in a project with 1.9 code, something like *"Migrate my Clicksign integration from API 1.9 to 3.0"*.
+
 ## Repository layout
 
 ```
@@ -52,9 +60,10 @@ mcp.json                           MCP server for ChatGPT and Codex (streamable 
 .agents/plugins/marketplace.json   Codex marketplace that installs the plugin from this repo
 .claude-plugin/, .mcp.json         Claude Code plugin and marketplace (not published)
 .cursor-plugin/                    Cursor plugin (not published)
+skills/                            Agent Skills bundled with the plugin
 assets/                            Listing icons
 docs/                              Setup guides for ChatGPT and Codex
-scripts/                           Validation, packaging, smoke test and MCP Inspector helpers
+scripts/                           Validation, packaging, smoke test, MCP Inspector, link check and docs-drift helpers
 ```
 
 Opening this repository in Claude Code offers `clicksign` as a project MCP server, because `.mcp.json` sits at the root. That file is the Claude plugin's server config; approve it only if you want to connect.
@@ -65,14 +74,14 @@ Requires Node.js 22 or later (`.tool-versions` pins the version used here).
 
 ```sh
 npm install
-npm test                    # validator test suite
+npm test                    # tests for the validator, the link check and the docs-drift check
 npm run validate            # check every manifest; placeholders are warnings
 npm run package             # validate, then build dist/clicksign-<version>.zip
 npm run package -- --release  # same, but placeholders are errors
 npm run package:dev         # build an isolated development ZIP named clicksign-dev
 ```
 
-`npm run package` puts only `plugin.json`, `mcp.json` and `assets/` in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
+`npm run package` puts only `plugin.json`, `mcp.json`, `assets/` and skill directories in the ZIP. That ZIP is what gets uploaded at [platform.openai.com/plugins](https://platform.openai.com/plugins). The build is reproducible: the same commit produces the same SHA-256.
 
 `npm run package:dev` does not change the repository manifest. It produces `dist/clicksign-dev-<version>.zip` with only the ZIP's internal plugin `name` changed to `clicksign-dev`, so it can be installed alongside a locally imported `clicksign` package. Do not use this artifact for release or directory submission.
 
@@ -88,6 +97,18 @@ npm run inspect:cli   # lists the tools, compares them with scripts/expected-too
 ```
 
 The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) runs the OAuth login itself and keeps the token in its own store, so the scripts never handle credentials. Set `CLICKSIGN_MCP_URL` to point these commands at another environment.
+
+### Keeping skills current
+
+These commands read the public documentation at `developers.clicksign.com`, not the MCP server.
+
+```sh
+npm run check:links       # checks that every documentation URL cited by a skill answers 200
+npm run check:docs-drift  # compares the cited documentation pages with scripts/docs-sources.lock.json
+npm run docs:lock         # records the current pages in the lock, after reviewing the skill
+```
+
+The `docs-drift` workflow runs every Monday and on demand. It compares the documentation pages cited by the skills with `scripts/docs-sources.lock.json` and opens or updates one issue labelled `docs-drift` when a page changed. It reads only public pages and uses the workflow's own `GITHUB_TOKEN`. The resolution steps are in [skills/README.md](skills/README.md). GitHub disables scheduled workflows in public repositories after 60 days without activity; re-enable it in the Actions tab if that happens.
 
 ### Releasing
 
@@ -123,15 +144,24 @@ Os guias estão em inglês e têm um resumo em português no fim.
 
 As 16 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete notifica os signatários e não pode ser desfeito. O conector nunca assina documentos em nome de ninguém.
 
+### Skill de migração da API 1.9 para a 3.0
+
+O plugin inclui a skill `migrate-api-v1-to-v3`. Ela ajuda quem tem uma integração na API 1.9 (legada) a adaptar o código para a API 3.0 (Envelope): pede o contexto que faltar, mapeia endpoints, payloads e fluxos, explica o que não tem equivalência direta e propõe o código para testar em sandbox. Ela pode corrigir ou ajustar as chamadas que o código 1.9 já faz, mas não escreve código novo na API 1.9: um pedido de código novo na 1.9 recebe a proposta equivalente na 3.0. Não precisa de login no servidor MCP. Peça ao assistente, no projeto com o código 1.9, algo como *"Migre minha integração Clicksign da API 1.9 para a 3.0"*.
+
+Para a skill não ficar desatualizada, o workflow `docs-drift` roda toda segunda e sob demanda: compara as páginas da documentação citadas com `scripts/docs-sources.lock.json` e abre ou atualiza uma issue com a label `docs-drift` quando alguma muda. Os passos para resolver estão em [skills/README.md](skills/README.md).
+
 ### Desenvolvimento
 
 ```sh
 npm install
-npm test                      # testes do validador
+npm test                      # testes do validador, do link check e do docs-drift
 npm run validate              # valida os manifests; placeholders viram aviso
 npm run package               # gera dist/clicksign-<versão>.zip
 npm run package -- --release  # placeholders viram erro
 npm run smoke                 # checa o desafio 401 e a descoberta OAuth (produção, sem login)
+npm run check:links           # checa se os links da documentação citados pelas skills respondem 200
+npm run check:docs-drift      # compara as páginas citadas com scripts/docs-sources.lock.json
+npm run docs:lock             # registra as páginas atuais no lock, depois de revisar a skill
 npm run inspect               # abre o MCP Inspector para login OAuth e testes manuais
 npm run inspect:cli           # compara as tools com scripts/expected-tools.json
 ```

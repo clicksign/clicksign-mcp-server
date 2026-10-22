@@ -1,0 +1,45 @@
+name: docs-drift
+
+on:
+  schedule:
+    - cron: '0 11 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-drift
+
+jobs:
+  docs-drift:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .tool-versions
+      - name: Compare the cited documentation with the lock
+        id: drift
+        run: |
+          set +e
+          node scripts/check-docs-drift.mjs --report "$RUNNER_TEMP/docs-drift.md"
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          [ "$status" -ne 1 ]
+      - name: Open or update the docs-drift issue
+        if: steps.drift.outputs.status == '2'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create docs-drift --color FBCA04 --description "Documentation cited by a skill changed" --force
+          number="$(gh issue list --label docs-drift --state open --limit 1 --json number --jq '.[0].number // empty')"
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file "$RUNNER_TEMP/docs-drift.md"
+          else
+            gh issue create --title "Documentation cited by skills changed" --label docs-drift --body-file "$RUNNER_TEMP/docs-drift.md"
+          fi

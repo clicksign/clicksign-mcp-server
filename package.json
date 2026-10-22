@@ -14,6 +14,9 @@
     "package:dev": "node scripts/package.mjs --dev",
     "test": "node --test test/",
     "smoke": "node scripts/smoke.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:docs-drift": "node scripts/check-docs-drift.mjs",
+    "docs:lock": "node scripts/check-docs-drift.mjs --update",
     "inspect": "node scripts/inspect.mjs web",
     "inspect:cli": "node scripts/inspect.mjs cli"
   },
