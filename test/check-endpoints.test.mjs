@@ -34,9 +34,8 @@ describe('mentionedOperations', () => {
     assert.deepEqual(mentionedOperations('Call POST /api/v1/documents to send.'), []);
   });
 
-  it('ignores an unrelated METHOD + URL that is not a known v3 resource, such as a webhook endpoint example', () => {
+  it('ignores a URL with no HTTP verb immediately in front of it, such as a JSON attribute value', () => {
     const text = '"endpoint": "https://example.com/webhooks/clicksign"';
-    // no HTTP verb immediately precedes the URL, so nothing is extracted
     assert.deepEqual(mentionedOperations(text), []);
   });
 

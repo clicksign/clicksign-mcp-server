@@ -4,10 +4,7 @@
 // Usage:
 //   node scripts/check-docs-drift.mjs [--report <file>]   exit 0 unchanged, 2 changed, 1 fetch error
 //   node scripts/check-docs-drift.mjs --update            rewrite the lock after reviewing the skill
-//   node scripts/check-docs-drift.mjs --add                record only the URLs a new skill just
-//                                                           started citing, leaving every existing
-//                                                           entry (including any pending drift)
-//                                                           untouched
+//   node scripts/check-docs-drift.mjs --add               record only a new skill's first citations
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -50,19 +47,12 @@ export function readLock(root) {
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {};
 }
 
-/** Tracked URLs the lock does not have an entry for yet, such as a new skill's first citations. */
-export function missingUrls(lock, urls) {
+export function urlsNotYetInLock(lock, urls) {
   return urls.filter((url) => !lock[url]);
 }
 
-/** The lock with `additions` merged in. An addition never overwrites an existing entry, so a
- * page already pending review (drifted) keeps its recorded, pre-drift snapshot. */
-export function mergeAdditions(lock, additions) {
-  const merged = { ...lock };
-  for (const [url, page] of Object.entries(additions)) {
-    if (!merged[url]) merged[url] = page;
-  }
-  return merged;
+export function withNewUrlsAdded(lock, newUrls) {
+  return { ...newUrls, ...lock };
 }
 
 /** Markdown body for the docs-drift issue. Lists URLs and dates only, never page content. */
@@ -119,21 +109,21 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const lock = readLock(root);
 
   if (args.includes('--add')) {
-    const toAdd = missingUrls(lock, urls);
-    if (!toAdd.length) {
+    const newUrls = urlsNotYetInLock(lock, urls);
+    if (!newUrls.length) {
       console.log(`✔ ${urls.length} page(s) already in ${LOCK_PATH}; nothing to add`);
       process.exit(0);
     }
-    const { current: additions, errors: addErrors } = await snapshot(toAdd);
-    if (addErrors.length) {
-      for (const line of addErrors) console.error(`✖ ${line}`);
-      console.error(`\n✖ could not fetch ${addErrors.length} of ${toAdd.length} new page(s)`);
+    const { current: newPages, errors: fetchErrors } = await snapshot(newUrls);
+    if (fetchErrors.length) {
+      for (const line of fetchErrors) console.error(`✖ ${line}`);
+      console.error(`\n✖ could not fetch ${fetchErrors.length} of ${newUrls.length} new page(s)`);
       process.exit(1);
     }
-    const merged = mergeAdditions(lock, additions);
-    const sorted = Object.fromEntries(Object.keys(merged).sort().map((url) => [url, merged[url]]));
+    const updatedLock = withNewUrlsAdded(lock, newPages);
+    const sorted = Object.fromEntries(Object.keys(updatedLock).sort().map((url) => [url, updatedLock[url]]));
     writeFileSync(join(root, LOCK_PATH), `${JSON.stringify(sorted, null, 2)}\n`);
-    console.log(`✔ added ${toAdd.length} new page(s) to ${LOCK_PATH}; left ${Object.keys(lock).length} existing entries untouched`);
+    console.log(`✔ added ${newUrls.length} new page(s) to ${LOCK_PATH}; left ${Object.keys(lock).length} existing entries untouched`);
     process.exit(0);
   }
 

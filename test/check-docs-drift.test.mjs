@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { after, describe, it } from 'node:test';
-import { diffLock, mergeAdditions, missingUrls, parsePage, readLock, renderReport, trackedUrls } from '../scripts/check-docs-drift.mjs';
+import { diffLock, parsePage, readLock, renderReport, trackedUrls, urlsNotYetInLock, withNewUrlsAdded } from '../scripts/check-docs-drift.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -60,23 +60,23 @@ describe('trackedUrls', () => {
   });
 });
 
-describe('missingUrls', () => {
+describe('urlsNotYetInLock', () => {
   it('returns only the tracked URLs the lock has no entry for yet', () => {
     const lock = { a: { sha256: '1', updatedAt: null } };
-    assert.deepEqual(missingUrls(lock, ['a', 'b', 'c']), ['b', 'c']);
+    assert.deepEqual(urlsNotYetInLock(lock, ['a', 'b', 'c']), ['b', 'c']);
   });
 
   it('returns nothing when every tracked URL is already in the lock', () => {
     const lock = { a: { sha256: '1', updatedAt: null } };
-    assert.deepEqual(missingUrls(lock, ['a']), []);
+    assert.deepEqual(urlsNotYetInLock(lock, ['a']), []);
   });
 });
 
-describe('mergeAdditions', () => {
+describe('withNewUrlsAdded', () => {
   it('adds a new URL without touching an existing entry, even a stale (drifted) one', () => {
     const lock = { a: { sha256: 'stale', updatedAt: 'old' } };
-    const additions = { a: { sha256: 'fresh', updatedAt: 'new' }, b: { sha256: '2', updatedAt: null } };
-    assert.deepEqual(mergeAdditions(lock, additions), {
+    const newUrls = { a: { sha256: 'fresh', updatedAt: 'new' }, b: { sha256: '2', updatedAt: null } };
+    assert.deepEqual(withNewUrlsAdded(lock, newUrls), {
       a: { sha256: 'stale', updatedAt: 'old' },
       b: { sha256: '2', updatedAt: null },
     });

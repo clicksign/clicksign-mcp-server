@@ -2,21 +2,14 @@
 // Checks that every official documentation URL cited by a skill still answers 200,
 // so a skill never points the agent to a page that was renamed or removed.
 // Usage: node scripts/check-links.mjs
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { markdownFilesIn, skillDirectories } from './lib/markdown-files.mjs';
 
 const TIMEOUT_MS = 15_000;
 const CONCURRENCY = 8;
 const URL_PATTERN = /https:\/\/developers\.clicksign\.com\/[^\s)`"'<>\]]+/g;
-
-function walk(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) return walk(path);
-    return entry.name.endsWith('.md') ? [path] : [];
-  });
-}
 
 /** developers.clicksign.com URLs cited in a Markdown text, without trailing punctuation. */
 export function urlsIn(text) {
@@ -31,11 +24,7 @@ export function urlsIn(text) {
 
 /** Markdown files of skills/<name>/, skipping skills/README.md. */
 export function skillFiles(root) {
-  const skills = join(root, 'skills');
-  if (!existsSync(skills)) return [];
-  return readdirSync(skills, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .flatMap((entry) => walk(join(skills, entry.name)));
+  return skillDirectories(root).flatMap(({ dir }) => markdownFilesIn(dir));
 }
 
 /** Unique developers.clicksign.com URLs cited in skills/<name>/**.md, sorted. */

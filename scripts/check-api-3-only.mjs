@@ -1,28 +1,15 @@
 #!/usr/bin/env node
-// Checks that a skill does not recommend or show example calls to the legacy Clicksign API
-// 1.9 (`/api/v1`, `/api/v2`, `/v1.0/`), and does not use its request/response shape
-// (`access_token` in a query string, or fields such as `request_signature_key`, `signer_key`,
-// `list_key`, `sign_as`, `auths`, `secret_hmac_sha256`).
-//
-// Three allowance levels, by skill directory name:
-//   full              every pattern is allowed anywhere (the skill's whole purpose is 1.9).
-//   recognition-only  a pattern is allowed in prose or inline code, to recognize existing 1.9
-//                      code and redirect elsewhere, but never inside a fenced code block,
-//                      which would read as an example to call.
-//   (default) none    no pattern is allowed anywhere.
-//
-// Usage: node scripts/check-api-3-only.mjs
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { markdownFilesIn, skillDirectories } from './lib/markdown-files.mjs';
 
-// The migration skill's entire purpose is reading and porting 1.9 code: every page cites it.
-export const FULL_EXEMPTION = new Set(['migrate-api-v1-to-v3']);
-// May recognize and redirect away from existing 1.9 code in prose or inline code, but must
-// never show a legacy call as a fenced example, the same bar every other skill meets fully.
-export const RECOGNITION_ONLY = new Set(['start-clicksign-integration']);
+export const SKILLS_ALLOWED_TO_FULLY_CITE_THE_LEGACY_API = new Set(['migrate-api-v1-to-v3']);
+export const SKILLS_ALLOWED_TO_NAME_THE_LEGACY_API_ONLY_TO_REDIRECT_AWAY_FROM_IT = new Set([
+  'start-clicksign-integration',
+]);
 
-const PATTERNS = [
+const LEGACY_API_SIGNALS = [
   [/\/api\/v1\b/, '/api/v1'],
   [/\/api\/v2\b/, '/api/v2'],
   [/\/v1\.0\//, '/v1.0/'],
@@ -35,52 +22,48 @@ const PATTERNS = [
   [/\bauths\b/, 'auths'],
 ];
 
-const FENCED_CODE_BLOCK = /```[^\n]*\n[\s\S]*?```/g;
-
-/** [start, end) byte ranges of every fenced code block in a Markdown text. */
-function codeBlockRanges(text) {
-  const ranges = [];
-  for (const match of text.matchAll(FENCED_CODE_BLOCK)) {
-    ranges.push([match.index, match.index + match[0].length]);
-  }
-  return ranges;
+function fencedCodeBlockRanges(text) {
+  return [...text.matchAll(/```[^\n]*\n[\s\S]*?```/g)].map((match) => [match.index, match.index + match[0].length]);
 }
 
-function insideAny(index, ranges) {
+function isWithinAnyRange(index, ranges) {
   return ranges.some(([start, end]) => index >= start && index < end);
 }
 
-function walk(dir) {
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) return walk(path);
-    return entry.name.endsWith('.md') ? [path] : [];
-  });
+function lineNumberAt(text, index) {
+  return text.slice(0, index).split('\n').length;
 }
 
-/** Legacy-pattern violations across every skill in `root`, respecting each skill's allowance level. */
-export function findViolations(root) {
+function legacyApiSignalsInsideFencedCodeBlocks(text) {
+  const fencedRanges = fencedCodeBlockRanges(text);
+  return legacyApiSignalsIn(text).filter((signal) => isWithinAnyRange(signal.index, fencedRanges));
+}
+
+function legacyApiSignalsIn(text) {
+  const findings = [];
+  for (const [pattern, label] of LEGACY_API_SIGNALS) {
+    for (const match of text.matchAll(new RegExp(pattern.source, 'gi'))) {
+      findings.push({ label, index: match.index, line: lineNumberAt(text, match.index) });
+    }
+  }
+  return findings;
+}
+
+export function findLegacyApiViolations(root) {
   const violations = [];
-  const skillsDir = join(root, 'skills');
-  if (!existsSync(skillsDir)) return violations;
+  for (const { name, dir } of skillDirectories(root)) {
+    if (SKILLS_ALLOWED_TO_FULLY_CITE_THE_LEGACY_API.has(name)) continue;
+    const mayNameItOnlyToRedirectAwayFromIt = SKILLS_ALLOWED_TO_NAME_THE_LEGACY_API_ONLY_TO_REDIRECT_AWAY_FROM_IT.has(
+      name,
+    );
 
-  for (const name of readdirSync(skillsDir)) {
-    const dir = join(skillsDir, name);
-    if (!statSync(dir).isDirectory()) continue;
-    if (FULL_EXEMPTION.has(name)) continue;
-    const recognitionOnly = RECOGNITION_ONLY.has(name);
-
-    for (const file of walk(dir)) {
+    for (const file of markdownFilesIn(dir)) {
       const text = readFileSync(file, 'utf8');
-      const ranges = recognitionOnly ? codeBlockRanges(text) : [];
-      for (const [pattern, label] of PATTERNS) {
-        const re = new RegExp(pattern.source, 'gi');
-        for (const match of text.matchAll(re)) {
-          if (recognitionOnly && !insideAny(match.index, ranges)) continue; // allowed: prose/inline recognition
-          const line = text.slice(0, match.index).split('\n').length;
-          violations.push(`${file}:${line}: found "${label}"${recognitionOnly ? ' inside a fenced code block' : ''}`);
-        }
-      }
+      const signals = mayNameItOnlyToRedirectAwayFromIt
+        ? legacyApiSignalsInsideFencedCodeBlocks(text)
+        : legacyApiSignalsIn(text);
+      const location = mayNameItOnlyToRedirectAwayFromIt ? ' inside a fenced code block' : '';
+      for (const { label, line } of signals) violations.push(`${file}:${line}: found "${label}"${location}`);
     }
   }
   return violations;
@@ -88,7 +71,7 @@ export function findViolations(root) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = resolve(fileURLToPath(import.meta.url), '..', '..');
-  const violations = findViolations(root);
+  const violations = findLegacyApiViolations(root);
   for (const line of violations) console.error(`✖ ${line}`);
   if (violations.length) {
     console.error(`\n✖ ${violations.length} legacy-api violation(s)`);
