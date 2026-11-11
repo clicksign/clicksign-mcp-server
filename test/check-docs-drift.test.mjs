@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { after, describe, it } from 'node:test';
-import { diffLock, parsePage, readLock, renderReport, trackedUrls } from '../scripts/check-docs-drift.mjs';
+import { diffLock, mergeAdditions, missingUrls, parsePage, readLock, renderReport, trackedUrls } from '../scripts/check-docs-drift.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -57,6 +57,29 @@ describe('trackedUrls', () => {
       'https://developers.clicksign.com/docs/envelope.md',
       'https://developers.clicksign.com/llms.txt',
     ]);
+  });
+});
+
+describe('missingUrls', () => {
+  it('returns only the tracked URLs the lock has no entry for yet', () => {
+    const lock = { a: { sha256: '1', updatedAt: null } };
+    assert.deepEqual(missingUrls(lock, ['a', 'b', 'c']), ['b', 'c']);
+  });
+
+  it('returns nothing when every tracked URL is already in the lock', () => {
+    const lock = { a: { sha256: '1', updatedAt: null } };
+    assert.deepEqual(missingUrls(lock, ['a']), []);
+  });
+});
+
+describe('mergeAdditions', () => {
+  it('adds a new URL without touching an existing entry, even a stale (drifted) one', () => {
+    const lock = { a: { sha256: 'stale', updatedAt: 'old' } };
+    const additions = { a: { sha256: 'fresh', updatedAt: 'new' }, b: { sha256: '2', updatedAt: null } };
+    assert.deepEqual(mergeAdditions(lock, additions), {
+      a: { sha256: 'stale', updatedAt: 'old' },
+      b: { sha256: '2', updatedAt: null },
+    });
   });
 });
 
