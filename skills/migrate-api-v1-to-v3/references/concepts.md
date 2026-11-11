@@ -29,7 +29,7 @@ Sources: https://developers.clicksign.com/docs/guia-de-migracao.md, https://deve
 
 1. `POST /api/v3/envelopes`: status `draft`, visible only to the API user.
 2. Add documents, signers and requirements. Requirements through `/requirements` only while `draft`.
-3. `PATCH /api/v3/envelopes/{id}` with `status: running`: activates. Irreversible. The docs also describe an asynchronous `POST /api/v3/envelopes/{id}/activate`, marked as in development; use the `PATCH`.
+3. `PATCH /api/v3/envelopes/{id}` with `status: running`: activates. Irreversible. The docs also describe an asynchronous activation endpoint (`/api/v3/envelopes/{id}/activate`), marked as in development; use the `PATCH` above instead.
 4. `POST /api/v3/envelopes/{id}/notifications` (or per signer): sends the signature request. Activation alone does not notify.
 5. The envelope becomes `closed` when every requirement is met (with `auto_close`) or `canceled`. Documents are canceled or closed one by one.
 
