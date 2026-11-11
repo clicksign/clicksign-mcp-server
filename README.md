@@ -49,8 +49,11 @@ Sending an envelope or a reminder notifies the signers and cannot be undone. The
 | Skill | What it does |
 |---|---|
 | `migrate-api-v1-to-v3` | Helps a developer migrate code from the legacy Clicksign API 1.9 to API 3.0 (Envelope). It asks for missing context, maps endpoints, payloads and flows, explains features without a direct equivalent, and proposes the adapted code to test in sandbox. It can fix or adjust the calls existing 1.9 code already makes, but does not write new code on API 1.9: a request for new 1.9 code gets the 3.0 equivalent instead. Works without signing in to the MCP server. |
+| `start-clicksign-integration` | Builds a brand-new Clicksign integration on API 3.0 only, with the least possible effort from the developer. It reads the client's repository, decides autonomously everything the official documentation already settles, asks only the open business rules in one short batch, and delivers a working integration (HTTP client, send function, webhook handler with HMAC validation, configuration, offline tests) directly in the client's code, plus a sandbox script up to the signed envelope and the received webhook. It never mentions the legacy API 1.9; a project that already has 1.9 code gets pointed to the migration skill instead. Works without signing in to the MCP server. |
 
-Ask the assistant, in a project with 1.9 code, something like *"Migrate my Clicksign integration from API 1.9 to 3.0"*.
+Ask the assistant, in a project with 1.9 code, something like *"Migrate my Clicksign integration from API 1.9 to 3.0"*. For a project with no Clicksign integration yet, ask something like *"Integrate Clicksign into my project to send contracts for signature"*.
+
+Both skills need permission to read and edit files, run the project's own commands, and reach `developers.clicksign.com` and `sandbox.clicksign.com`. Cursor, Claude Code and Codex each ask for this approval through their own run-mode settings; the skill asks once, up front, instead of per file.
 
 ## Repository layout
 
@@ -104,8 +107,14 @@ These commands read the public documentation at `developers.clicksign.com`, not 
 
 ```sh
 npm run check:links       # checks that every documentation URL cited by a skill answers 200
+npm run check:api-3-only  # checks that a skill (other than the migration one) never recommends
+                          # or shows an example call to the legacy API
+npm run check:endpoints   # checks that every endpoint a skill cites is a documented operation
+                          # on a page that same skill already lists in its own sources.md
 npm run check:docs-drift  # compares the cited documentation pages with scripts/docs-sources.lock.json
 npm run docs:lock         # records the current pages in the lock, after reviewing the skill
+npm run docs:lock:add     # records only a new skill's first citations, without touching
+                          # any existing (possibly still-drifted) entry
 ```
 
 The `docs-drift` workflow runs every Monday and on demand. It compares the documentation pages cited by the skills with `scripts/docs-sources.lock.json` and opens or updates one issue labelled `docs-drift` when a page changed. It reads only public pages and uses the workflow's own `GITHUB_TOKEN`. The resolution steps are in [skills/README.md](skills/README.md). GitHub disables scheduled workflows in public repositories after 60 days without activity; re-enable it in the Actions tab if that happens.
@@ -148,7 +157,13 @@ As 16 tools estão na tabela [Tools](#tools). Enviar um envelope ou lembrete not
 
 O plugin inclui a skill `migrate-api-v1-to-v3`. Ela ajuda quem tem uma integração na API 1.9 (legada) a adaptar o código para a API 3.0 (Envelope): pede o contexto que faltar, mapeia endpoints, payloads e fluxos, explica o que não tem equivalência direta e propõe o código para testar em sandbox. Ela pode corrigir ou ajustar as chamadas que o código 1.9 já faz, mas não escreve código novo na API 1.9: um pedido de código novo na 1.9 recebe a proposta equivalente na 3.0. Não precisa de login no servidor MCP. Peça ao assistente, no projeto com o código 1.9, algo como *"Migre minha integração Clicksign da API 1.9 para a 3.0"*.
 
-Para a skill não ficar desatualizada, o workflow `docs-drift` roda toda segunda e sob demanda: compara as páginas da documentação citadas com `scripts/docs-sources.lock.json` e abre ou atualiza uma issue com a label `docs-drift` quando alguma muda. Os passos para resolver estão em [skills/README.md](skills/README.md).
+### Skill de integração do zero na API 3.0
+
+O plugin também inclui a skill `start-clicksign-integration`, para quem ainda não tem nenhuma integração com a Clicksign. Ela lê o repositório do cliente, decide sozinha tudo o que a documentação oficial já resolve, pergunta só as regras de negócio que ficam em aberto, e entrega a integração pronta no próprio código do cliente: cliente HTTP, função de envio, webhook com validação HMAC, configuração e testes offline, além de um roteiro de sandbox até o envelope assinado e o webhook recebido. Nunca menciona nem recomenda a API 1.9: um projeto que já chama a 1.9 é direcionado à skill de migração. Não precisa de login no servidor MCP. Peça ao assistente, num projeto sem integração com a Clicksign, algo como *"Integre a Clicksign no meu projeto para enviar contratos para assinatura"*.
+
+As duas skills pedem permissão para ler e editar arquivos, rodar os comandos do próprio projeto e acessar `developers.clicksign.com` e `sandbox.clicksign.com`. Cursor, Claude Code e Codex pedem essa aprovação pelas próprias configurações de modo de execução; a skill avisa uma vez, no início, em vez de pedir arquivo por arquivo.
+
+Para as skills não ficarem desatualizadas, o workflow `docs-drift` roda toda segunda e sob demanda: compara as páginas da documentação citadas com `scripts/docs-sources.lock.json` e abre ou atualiza uma issue com a label `docs-drift` quando alguma muda. Os passos para resolver estão em [skills/README.md](skills/README.md).
 
 ### Desenvolvimento
 
@@ -160,8 +175,13 @@ npm run package               # gera dist/clicksign-<versão>.zip
 npm run package -- --release  # placeholders viram erro
 npm run smoke                 # checa o desafio 401 e a descoberta OAuth (produção, sem login)
 npm run check:links           # checa se os links da documentação citados pelas skills respondem 200
+npm run check:api-3-only      # checa se uma skill (fora a de migração) menciona ou recomenda a API legada
+npm run check:endpoints       # checa se todo endpoint citado é uma operação documentada numa página
+                               # que a própria skill já lista no seu sources.md
 npm run check:docs-drift      # compara as páginas citadas com scripts/docs-sources.lock.json
 npm run docs:lock             # registra as páginas atuais no lock, depois de revisar a skill
+npm run docs:lock:add         # registra só as primeiras citações de uma skill nova, sem tocar
+                               # em nenhuma entrada já existente
 npm run inspect               # abre o MCP Inspector para login OAuth e testes manuais
 npm run inspect:cli           # compara as tools com scripts/expected-tools.json
 ```
