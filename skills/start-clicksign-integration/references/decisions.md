@@ -38,9 +38,12 @@ Every decision made this way goes into the final report, with the value used, th
 
 ## Ask, with a suggested default
 
+Ask about a row below only when the discovery scan actually leaves it open. When discovery already resolves it without ambiguity (for example, the entity has exactly one plausible signer, or a template id is already on it), skip the question: decide it, and state the resolved value and why in the report instead, the same way as a "decide silently" item above.
+
 | Question | Why it cannot be decided silently | Suggested default to offer |
 |---|---|---|
 | Which event triggers the send, and which document(s) go in it | The business event is not in the documentation; guessing wrong sends the wrong thing to a real signer | The clearest single candidate found in discovery, stated as the default |
+| Where the document's content comes from, when discovery finds no file, stored path, or template id on the entity (see [discovery.md](discovery.md)) | Uploading or templating the wrong content is not reversible once a real signer is notified; the documentation cannot say what the developer's document is | A template already in the developer's Clicksign account, if one plausibly fits; otherwise ask for a sample file to upload as a placeholder, to be replaced later |
 | Who signs, with which role, and whether signing order matters | Changes who signs and in what order; not reversible once notified | One signer, role `sign`, single group, if discovery finds only one plausible signer entity |
 | Any channel beyond email (SMS, WhatsApp) or an authentication billed per check (biometrics, `pix`, `icp_brasil`) | Costs money or reaches a person by a channel the documentation does not let you assume | Email only, the lowest-cost documented default |
 | Deadline, refusal and cancellation business rules | Business policy, not an API default | The decide-silently defaults above, offered as the starting point |
