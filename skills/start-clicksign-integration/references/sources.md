@@ -1,6 +1,6 @@
 # Official sources
 
-Every page below is the official Clicksign documentation for the API 3.0 (Envelope), served as Markdown. Fetch the page when you need a field, enum or response that this skill does not spell out. Do not use any other source, and do not fetch any `/v1.0/` page or a migration page: this skill never reads, mentions or recommends the legacy API 1.9.
+Every page below is the official Clicksign documentation for the API 3.0 (Envelope), served as Markdown. You should not need to fetch most of them: [concepts.md](concepts.md), [flows.md](flows.md), [webhooks.md](webhooks.md), [decisions.md](decisions.md) and [delivery.md](delivery.md) already distill everything the default flow needs, with these same pages cited as their sources. Fetch one page here only for a field, enum or response none of those five files spell out, or for a gap [limits.md](limits.md) flags — never to double-check something already stated in this skill's own files. Do not use any other source, and do not fetch any `/v1.0/` page or a migration page: this skill never reads, mentions or recommends the legacy API 1.9.
 
 ## Index
 
