@@ -6,7 +6,7 @@ Everything here is generated in the project's own language, style, and test fram
 
 1. **A thin Clicksign client**: base URL from configuration (default `https://sandbox.clicksign.com`), the `Authorization`, `Content-Type` and `Accept` headers from [concepts.md](concepts.md), a small JSON:API body helper, and backoff-with-jitter on `429` per [flows.md](flows.md). Reuse the project's existing HTTP client library instead of adding a new one.
 2. **One send function** that runs the whole flow in [flows.md](flows.md) for one business record: create the envelope, add the document(s), add the signer(s), create the requirements, activate, notify. It is idempotent: before creating anything, it checks whether this business record already has a stored envelope id and, if so, does nothing. Wire it to the trigger point found in discovery only when discovery found one clear candidate; otherwise leave it as a function the developer calls, and say so in the report.
-3. **A webhook endpoint**, in the project's own routing style, that: validates the HMAC per [webhooks.md](webhooks.md), responds `200` immediately, reads the event and the document or envelope id, and does the rest of the work idempotently (update the business record's status, store the signed file link) either inline or through the project's existing background job mechanism.
+3. **A webhook endpoint**, in the project's own routing style, that: validates the HMAC per [webhooks.md](webhooks.md), responds `200` immediately, reads the event and the document or envelope id, and does the rest of the work idempotently (update the business record's status, download the signed file right away on `document_closed` since its URL is short-lived, update the status to canceled on `cancel`) either inline or through the project's existing background job mechanism.
 4. **Configuration**: `CLICKSIGN_ACCESS_TOKEN`, `CLICKSIGN_WEBHOOK_SECRET`, and `CLICKSIGN_BASE_URL` (defaulting to sandbox) added to `.env.example` or the project's own configuration file, never to a committed value. The client refuses to run against a non-sandbox, non-explicitly-configured host unless the developer has explicitly set a production URL.
 5. **Storage for the Clicksign ids**: if the business record needs to remember its `envelope_id`, `document_id`, and the ids of its signers, generate (do not apply) a database migration in the project's own migration format, adding nullable columns or a small related table. If the project has no migration system at all (a plain in-memory or ad hoc data structure), extend that structure directly instead, and say so in the report. Say in the report that a real migration still needs to run, when there is one.
 6. **Offline tests**: using the project's test framework, with the HTTP layer faked (no real network call), covering: the send function builds the expected request sequence, the webhook handler accepts a validly signed payload and rejects a badly signed one, and the idempotency check short-circuits a repeat.
@@ -35,7 +35,7 @@ Source: https://developers.clicksign.com/docs/access-token.md
 Also always part of the report:
 
 1. Check whether one is already registered: `GET {{BASE_URL}}/api/v3/webhooks`.
-2. If not, register it: `POST {{BASE_URL}}/api/v3/webhooks` with `endpoint` set to the public URL that reaches the webhook route this skill built, `status: "active"`, and `events` set to the event names this integration reads.
+2. If not, register it: `POST {{BASE_URL}}/api/v3/webhooks` with `endpoint` set to the public URL that reaches the webhook route this skill built, `status: "active"`, and `events` set to the exact array this integration reads — by default `["document_closed", "refusal", "cancel"]`, not "all events" from the dashboard's event picker. Add `sign` or `upload` only if the generated code reads them too.
 3. Copy `data.attributes.secret` from that response right away; a later plain `GET` does not show it again.
 
 Registering through the account settings UI works too, and skips the API call, but still do step 1 first, so the account does not end up with two webhooks pointing at the same place.
@@ -92,3 +92,4 @@ CLICKSIGN_BASE_URL=https://sandbox.clicksign.com
 ```
 Never commit these values. `.env.example` (or the project's equivalent) only documents the variable names, with no real value.
 ````
+
