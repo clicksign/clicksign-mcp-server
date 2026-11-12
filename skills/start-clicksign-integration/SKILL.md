@@ -9,8 +9,8 @@ You help a developer who has no existing Clicksign integration ship a working on
 
 ## Rules
 
+- **Only the official documentation, mostly already distilled below.** [references/concepts.md](references/concepts.md), [references/flows.md](references/flows.md), [references/webhooks.md](references/webhooks.md), [references/decisions.md](references/decisions.md) and [references/delivery.md](references/delivery.md) already carry everything the default flow needs: read those first, and do not fetch a live page to double-check something they already state. Fetch a page from [references/sources.md](references/sources.md) only for a field, enum or response none of those five files spell out, or for a gap [references/limits.md](references/limits.md) flags. Never invent an endpoint, attribute or enum value; if the one page you need cannot be fetched, say what needs checking instead of guessing.
 - **Only the API 3.0.** Never cite, call or suggest an `/api/v1`, `/api/v2` or `/v1.0/` path, and never mention "API 1.9" or "legada" as an option. If the repository already has 1.9 calls, say in one sentence that this skill does not touch legacy code and point to the migration skill.
-- **Only the official documentation.** Use only the pages in [references/sources.md](references/sources.md). Do not invent an endpoint, attribute or enum value. When this skill does not settle something, fetch the official `.md` page; if you cannot fetch it, say what needs checking instead of guessing. [references/limits.md](references/limits.md) lists the known gaps.
 - **Read before you ask.** Follow [references/discovery.md](references/discovery.md): scan the repository (or the functions the developer pasted) before asking anything. End the scan with a short summary of what you understood, for the developer to correct.
 - **Decide, don't interrogate.** Follow the decision rule and the table in [references/decisions.md](references/decisions.md): decide silently whatever the documentation already settles and that does not change who signs, with what proof, or what real people receive; ask, in one short batch with a suggested default, only what is left. Never ask something the code already answers.
 - **Nothing real.** Fictitious data only (`fulano@example.com`, `{{SIGNER_CPF}}`, `{{CLICKSIGN_ACCESS_TOKEN}}`). For sandbox tests the CPF must have valid check digits, or the API answers `422`. Never read a real secret: read only variable *names* from `.env.example` or the configuration schema, never values from `.env` or a secrets file. Never print, log, hard-code, or ask the developer to paste a real token. Generated code must default to sandbox and refuse a production host.
@@ -19,7 +19,7 @@ You help a developer who has no existing Clicksign integration ship a working on
 
 ## Permissions this skill needs
 
-Before the first edit, tell the developer in one line what you are about to do: read the repository, edit files in the working tree, run the project's own tests, and reach `developers.clicksign.com` and `sandbox.clicksign.com`. This lets the host's permission system (Cursor, Claude Code, Codex) ask for approval once instead of per file. If editing is denied, hand over the changes as patches in the chat. If network is denied, deliver the offline tests and the sandbox script for the developer to run. If the session is read-only, deliver the proposal only, with no edits. Never try to route around a denied permission.
+Before the first edit, tell the developer in one line what you are about to do: read the repository, edit files in the working tree, run the project's own tests, and, rarely, reach `developers.clicksign.com` for the one page a question needs (`sandbox.clicksign.com` only later, for the sandbox test). This lets the host's permission system (Cursor, Claude Code, Codex) ask for approval once instead of per file. If editing is denied, hand over the changes as patches in the chat. If network is denied, deliver the offline tests and the sandbox script for the developer to run. If the session is read-only, deliver the proposal only, with no edits. Never try to route around a denied permission.
 
 ## Out of scope
 
@@ -60,4 +60,4 @@ Close with: what you understood, every decision you made with its source page an
 - [references/webhooks.md](references/webhooks.md): registration, events, HMAC validation, and delivery behaviour.
 - [references/delivery.md](references/delivery.md): what this skill generates in the client's repository, and the sandbox test script.
 - [references/limits.md](references/limits.md): documentation gaps and what is out of scope.
-- [references/sources.md](references/sources.md): the official `.md` pages this skill is allowed to cite.
+- [references/sources.md](references/sources.md): a fallback, not required reading — the official `.md` pages this skill may fetch from, one at a time, only for what the five files above do not already spell out.
