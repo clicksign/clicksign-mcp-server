@@ -9,7 +9,7 @@ Source: https://developers.clicksign.com/docs/introducao-a-webhooks.md, https://
 ```http
 POST {{BASE_URL}}/api/v3/webhooks
 
-{"data": {"type": "webhooks", "attributes": {"endpoint": "https://example.com/webhooks/clicksign", "status": "active", "events": ["document_closed", "refusal"]}}}
+{"data": {"type": "webhooks", "attributes": {"endpoint": "https://example.com/webhooks/clicksign", "status": "active", "events": ["document_closed", "refusal", "cancel"]}}}
 ```
 
 `endpoint` and `events` are both required (at least one event). **The create response carries the HMAC secret**, in `data.attributes.secret`; store it as `CLICKSIGN_WEBHOOK_SECRET` right away, it is not shown again on a plain `GET`. Send `status: "active"` explicitly: the documented create example shows a webhook coming back `inactive` when status is left out.
@@ -24,7 +24,7 @@ Source: https://developers.clicksign.com/reference/api-criar-webhook.md, https:/
 
 ## Events
 
-Pick, in [decisions.md](decisions.md), only the events the generated code actually reads. The minimal flow needs at least one closing event:
+Pick, in [decisions.md](decisions.md), the events the generated code actually reads, plus `cancel` by default: an envelope can be canceled outside the application (dashboard, support), and the stored state should still reflect it even though the application's own code never requests a cancellation. The minimal flow needs at least:
 
 | Event | Meaning |
 |---|---|
@@ -37,6 +37,8 @@ Pick, in [decisions.md](decisions.md), only the events the generated code actual
 | `signature_started` | A signer opened the signing widget (useful for a "seen but not signed" follow-up; optional) |
 
 The envelope- and document-level payload keeps the outer shape `{"event": {...}, "document": {...}}`. The `document` object carries `key`, `status`, `downloads` (including `signed_file_url` once closed), `signers`, and `events`. Re-check the exact fields the handler reads against a real sandbox delivery before relying on the documented examples, they are partial.
+
+On `document_closed`, download the file at `downloads.signed_file_url` immediately: sandbox testing confirms it is a short-lived signed URL (about 5 minutes), not a permanent link, so storing it as-is for later leaves a dead link. On `cancel`, update the business record's status to canceled, the same way `refusal` is handled, even if nothing in this integration's own code ever cancels an envelope.
 
 Source: https://developers.clicksign.com/docs/eventos.md, https://developers.clicksign.com/docs/evento-document-closed.md, https://developers.clicksign.com/docs/evento-close.md, https://developers.clicksign.com/docs/exemplo-documento.md, https://developers.clicksign.com/docs/exemplo-signers.md
 
@@ -71,3 +73,4 @@ Source: https://developers.clicksign.com/docs/disparos-de-webhooks.md, https://d
 ## Idempotency
 
 A delivery can repeat (retry, or a duplicate from the developer's own infrastructure). Key the handler's side effects by the document or envelope id from the payload, and skip work already done for that id, per [decisions.md](decisions.md).
+
