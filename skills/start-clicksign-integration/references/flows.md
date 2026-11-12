@@ -41,10 +41,10 @@ Source: https://developers.clicksign.com/reference/api-upload-documentos.md, htt
 ```http
 POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/signers
 
-{"data": {"type": "signers", "attributes": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01", "has_documentation": true, "refusable": true, "group": 1, "communicate_events": {"signature_request": "email", "signature_reminder": "email", "document_signed": "email"}}}}
+{"data": {"type": "signers", "attributes": {"name": "Fulano de Tal", "email": "fulano@example.com", "documentation": "{{SIGNER_CPF}}", "birthday": "1990-01-01", "has_documentation": true, "refusable": true, "communicate_events": {"signature_request": "email", "signature_reminder": "email", "document_signed": "email"}}}}
 ```
 
-Keep `data.id` as `signer_id`. `group` is always sent, even with a single group, per [decisions.md](decisions.md).
+Keep `data.id` as `signer_id`. Never send `group`: the server assigns it on its own, ignores the value sent at creation, and answers `400` if `group` is sent while the envelope is `running` (for example, through `bulk_requirements` when adding a signer after activation). See [decisions.md](decisions.md) and [limits.md](limits.md).
 
 Source: https://developers.clicksign.com/reference/api-criar-signatario.md, https://developers.clicksign.com/reference/signatario-campos-e-regras-de-negocio.md
 
@@ -96,7 +96,7 @@ Source: https://developers.clicksign.com/reference/api-notificar-envelope.md, ht
 
 ## 7. After signing
 
-Once a document closes, the webhook carries `downloads.signed_file_url` (see [webhooks.md](webhooks.md)). A REST read also works: `GET {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents` lists the document, and the document resource documents `links.files.original`, a signed URL valid for about 5 minutes. Confirm the exact field on a closed document in sandbox before relying on the REST path; prefer the webhook.
+Once a document closes, the webhook carries `downloads.signed_file_url` (see [webhooks.md](webhooks.md)). Download the file as soon as that webhook arrives: sandbox testing confirms it is a short-lived signed URL (about 5 minutes), the same order of magnitude as `links.files.original` on a `GET {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents` read; neither is a permanent link to store. Confirm the exact field on a closed document in sandbox before relying on the REST path; prefer the webhook.
 
 Source: https://developers.clicksign.com/reference/api-listar-documentos.md, https://developers.clicksign.com/docs/exemplo-documento.md
 
@@ -108,3 +108,4 @@ Source: https://developers.clicksign.com/reference/api-listar-documentos.md, htt
 - Never poll an envelope or a document on a fixed interval instead of waiting on the webhook; polling is capped by the same rate limit as everything else.
 
 Source: https://developers.clicksign.com/docs/mensagens-de-erro.md, https://developers.clicksign.com/docs/limite-de-requisicoes.md, https://developers.clicksign.com/docs/integracao-resiliente.md
+
