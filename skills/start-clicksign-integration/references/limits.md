@@ -7,6 +7,7 @@
 - **`bulk_requirements` removal on a `running` envelope.** The reference documents `op: remove` with no explicit status rule. Confirm in sandbox before relying on removing a requirement from an already-`running` envelope; see [concepts.md](concepts.md).
 - **Duplicate and delete timing.** As with the migration skill's findings, `POST .../documents` with `duplicate` requires the source to be closed, and delete endpoints work only in `draft`; neither is usually needed for a first integration, but if the generated flow needs them, validate the exact behaviour in the target sandbox account first.
 - **Account readiness.** A `503 service_unavailable` on envelope or requirement calls means the account's Envelope API is not enabled; the documented rule is accounts created from 01/07/2024, and the fix is asking Clicksign support, never a workaround in code.
+- **How to actually configure sequential signing order.** The signer fields reference says the server assigns `group` on its own and ignores the value sent at creation (`400` if sent while the envelope is `running`), but does not document the call that requests a given signer be in a later group. If the business genuinely needs sequential signing (not the parallel default this skill builds), this is an open question: ask the developer to confirm the real flow in sandbox, or ask Clicksign support, instead of guessing a mechanism.
 
 ## Out of scope for this skill
 
@@ -15,3 +16,4 @@
 - **Signature watchers, rubric beyond a yes/no decision, positioned signature coordinates, the Widget Embedded, in-person signature, automatic signature (API-driven signing), and WhatsApp acceptance.** All exist in the API 3.0 and have their own documentation, but none is part of the minimal "first envelope, then webhook" flow this skill builds by default. Add one only when the developer explicitly asks for it, after reading its specific documentation page (not covered by [sources.md](sources.md) beyond rubric's existence) and following this skill's same rules: official docs only, fictitious data, sandbox first.
 - **Template, folder, and account management (creating or editing templates, folders, webhooks beyond registering one, members, users).** This skill consumes an existing template by id if the developer has one; it does not build template or account administration.
 - **Anything the documentation does not state.** Say so, point at what to check (a specific page, or Clicksign support), and ask instead of assuming a field, an enum value, or a behaviour.
+
