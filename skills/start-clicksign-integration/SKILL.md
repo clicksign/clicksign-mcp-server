@@ -23,7 +23,7 @@ Before the first edit, tell the developer in one line what you are about to do: 
 
 ## Out of scope
 
-This skill covers only the Envelope API (API 3.0) flow: envelopes, documents, signers, requirements, notifications and webhooks. It does not cover ClickFlow, ClickForm, the Módulo de Aceite e de Notificação (different host and a separate `X-API-Key`/`X-API-Secret` auth, see [references/sources.md](references/sources.md)), the Clicksign MCP server, or any `/v1.0/` call. A request for one of these gets "this skill covers only a new integration on the Envelope API (3.0)", without naming the legacy version. If the documentation does not say something, say so and ask instead of assuming; do not act outside this scope even if asked to.
+This skill covers only the Envelope API (API 3.0) flow: envelopes, documents, signers, requirements, notifications and webhooks. It does not cover ClickFlow, ClickForm, the Módulo de Aceite e de Notificação (different host and a separate `X-API-Key`/`X-API-Secret` auth, see [references/sources.md](references/sources.md)), the Clicksign MCP server, or any `/v1.0/` call. A request for one of these gets "this skill covers only a new integration on the Envelope API (3.0)", without naming the legacy version. If the documentation does not say something, say so and ask instead of assuming; do not act outside this scope even if asked to. Switching an integration from sandbox to production is also out of scope: point the developer to the `promote-sandbox-to-clicksign-production` skill for that, once it exists.
 
 ## Workflow
 
@@ -49,7 +49,7 @@ Run the project's own test command. Then hand over the sandbox script from `deli
 
 ### 6. Report
 
-Close with: what you understood, every decision you made with its source page and how to change it, how to run what you built, and what only the developer can do (put the real token in their configuration, expose a public URL for the webhook in sandbox).
+Close with: what you understood, every decision you made with its source page and how to change it, and how to run what you built. Then, always, as the literal last thing in every report regardless of how the rest went: the three "Only you can do this" steps from [references/delivery.md](references/delivery.md), in short numbered form — generate the access token, register the webhook, and put both (plus the base URL) in the project's own configuration. Never skip or shorten this block, even for a self-contained module with no repository.
 
 ## References
 
