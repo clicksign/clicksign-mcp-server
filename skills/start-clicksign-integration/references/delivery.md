@@ -25,7 +25,7 @@ Always part of the report (see "Report template" below), not only something to m
 1. Create a free account at <https://sandbox.clicksign.com/signup> if the developer does not have one yet.
 2. Sign in, go to **Configurações > API**.
 3. Click **Gerar Access Token**, type a description, and click **Gerar**.
-4. Copy the token now and treat it like a password; it is not shown again in full.
+4. Copy the token now and keep it as secret as a login credential; it is not shown again in full.
 5. On the same screen, associate the account's email with the API (**Salvar e-mail**) — without this step, API calls do not reach it.
 
 Source: https://developers.clicksign.com/docs/access-token.md
