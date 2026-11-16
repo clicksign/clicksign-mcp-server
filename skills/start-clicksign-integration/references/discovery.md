@@ -37,4 +37,10 @@ If the task has no repository to scan, or the developer only pasted one or more 
 
 ## Signs of an existing 1.9 integration
 
-Stop and point to the migration skill instead of continuing here when the code already has: a call to `/api/v1` or `/api/v2`, `access_token` in a query string, JSON roots named `document`, `signer`, `list` or `batch`, or fields such as `request_signature_key`, `signer_key`, `list_key`, `sign_as`, `auths` or `secret_hmac_sha256`. This skill builds only new integrations; it does not touch or extend 1.9 code.
+Stop and point to the migration skill only when the repository sends an outbound request to the legacy Envelope API. The evidence includes both the host and the endpoint: `app.clicksign.com` or `sandbox.clicksign.com`, together with a `/api/v1` or `/api/v2` path on that host.
+
+<!-- legacy-api-recognition -->
+Recognize that request by the call itself, for example `POST https://app.clicksign.com/api/v1/documents` or `POST https://sandbox.clicksign.com/api/v1/documents`, and by a legacy field carried on that same request (`request_signature_key`, `signer_key`, `list_key`, `sign_as`, `auths`, `secret_hmac_sha256`). A field name with no such outbound request is not evidence.
+<!-- /legacy-api-recognition -->
+
+Leave the integration on this skill when the only hits are a pattern API 3.0 also uses (`access_token` on `/api/v3`), an incoming Clicksign webhook, or `/api/v1` on another Clicksign product (ClickFlow, ClickForm, the acceptance and notification modules). This skill builds only new integrations; it does not touch or extend 1.9 code.

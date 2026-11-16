@@ -16,7 +16,7 @@ Every decision made this way goes into the final report, with the value used, th
 
 | Decision | Default used | Source |
 |---|---|---|
-| `locale` | The language the rest of the codebase already uses, or `pt-BR` if none is evident | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
+| `locale` | `pt-BR` or `en-US` only. Use the codebase language when it is already one of those two (treat `pt` as `pt-BR` and `en` as `en-US`); any other language, including one with no evident language, sends `pt-BR` | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
 | `auto_close` | `true` (close the envelope once every requirement is met) | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
 | `block_after_refusal` | `true` (one refusal blocks the rest of the flow) | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
 | `remind_interval` | `3` (the documented default; send it explicitly instead of omitting it) | https://developers.clicksign.com/reference/envelope-campos-e-regras-de-negocio.md |
@@ -30,7 +30,7 @@ Every decision made this way goes into the final report, with the value used, th
 | Downloading the signed file | Immediately, when `document_closed` arrives, instead of only storing `downloads.signed_file_url`: it is a short-lived signed URL (confirmed in sandbox testing, consistent with the ~5-minute validity documented for the analogous `links.files.original` field), not a permanent link | https://developers.clicksign.com/reference/api-listar-documentos.md |
 | HMAC validation on the webhook | Always on, computed from the raw request body | https://developers.clicksign.com/docs/seguranca-de-webhooks.md |
 | Webhook response | `200` immediately, with any slow work moved to a background job if the project already has one | https://developers.clicksign.com/docs/melhores-praticas-webhooks.md |
-| Idempotency on the webhook handler and on the send function | Always on: key the webhook by the event's document/envelope id, and the send by the business record's own id, so a retry or a duplicate trigger never creates two envelopes | https://developers.clicksign.com/docs/integracao-resiliente.md |
+| Idempotency on the webhook handler and on the send function | Always on. The webhook deduplicates by the event's own id scoped to the document, or by a fingerprint of the verified event name plus the document id, and marks that event handled only after its side effects succeed, so a handled `sign` still lets a later `document_closed` download the signed file. The send function stores which step finished, resumes an incomplete send for that business record, returns immediately only when the send already completed, and runs one trigger at a time for the same record, so a retry never creates a second envelope | https://developers.clicksign.com/docs/integracao-resiliente.md |
 | Retry on `429` | Exponential backoff with jitter, capped, waiting at least until `X-Rate-Limit-Reset` | https://developers.clicksign.com/docs/limite-de-requisicoes.md, https://developers.clicksign.com/docs/integracao-resiliente.md |
 | Names, folders, and code style | Match the project's own conventions found in discovery | n/a, not a documentation choice |
 | Where configuration lives | The project's existing convention, or `.env.example` if none | n/a, not a documentation choice |

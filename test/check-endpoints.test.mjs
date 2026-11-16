@@ -8,6 +8,11 @@ describe('normalizePath', () => {
     assert.equal(normalizePath('/api/v3/envelopes'), '/envelopes');
   });
 
+  it('strips a literal sandbox or production API origin', () => {
+    assert.equal(normalizePath('https://sandbox.clicksign.com/api/v3/envelopes'), '/envelopes');
+    assert.equal(normalizePath('https://app.clicksign.com/api/v3/envelopes'), '/envelopes');
+  });
+
   it('collapses every param segment to {}, regardless of its name or brace style', () => {
     assert.equal(normalizePath('/envelopes/{envelope_id}/documents/{document_id}'), '/envelopes/{}/documents/{}');
     assert.equal(normalizePath('{{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/signers'), '/envelopes/{}/signers');
@@ -23,6 +28,32 @@ describe('mentionedOperations', () => {
   it('extracts a full METHOD + path mention', () => {
     const ops = mentionedOperations('POST {{BASE_URL}}/api/v3/envelopes/{{envelope_id}}/documents\n');
     assert.deepEqual(ops, [{ method: 'POST', path: '/envelopes/{}/documents' }]);
+  });
+
+  it('extracts a fully qualified sandbox URL', () => {
+    const ops = mentionedOperations('POST https://sandbox.clicksign.com/api/v3/envelopes\n');
+    assert.deepEqual(ops, [{ method: 'POST', path: '/envelopes' }]);
+  });
+
+  it('expands grouped verbs onto their shared path', () => {
+    const ops = mentionedOperations('`GET`, `PATCH`, `DELETE /api/v3/templates/{id}`');
+    assert.deepEqual(ops, [
+      { method: 'GET', path: '/templates/{}' },
+      { method: 'PATCH', path: '/templates/{}' },
+      { method: 'DELETE', path: '/templates/{}' },
+    ]);
+  });
+
+  it('expands a group joined by and', () => {
+    const ops = mentionedOperations('plus `PATCH` and `DELETE /api/v3/webhooks/{id}`');
+    assert.deepEqual(ops, [
+      { method: 'PATCH', path: '/webhooks/{}' },
+      { method: 'DELETE', path: '/webhooks/{}' },
+    ]);
+  });
+
+  it('ignores a grouped legacy call', () => {
+    assert.deepEqual(mentionedOperations('`GET`, `PATCH`, `DELETE /api/v2/templates/{key}`'), []);
   });
 
   it('extracts a `...` shorthand as a suffix', () => {

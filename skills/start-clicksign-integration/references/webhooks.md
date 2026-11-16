@@ -57,7 +57,7 @@ Every delivery carries `Content-Hmac: sha256=<hex>`, the SHA-256 HMAC of the **r
 3. Compare it, in constant time, to the hex digest after `sha256=` in the `Content-Hmac` header.
 4. Reject the request (without processing it) if they do not match.
 
-Also use the `Event` header to route by event name without parsing the body first.
+The HMAC covers the raw body only, so the `Event` header is not authenticated. After the HMAC matches, read the event name from the payload (`event.name`) and route the status update from that name. When the `Event` header is present and differs from `event.name`, reject the delivery and leave the business record unchanged.
 
 Source: https://developers.clicksign.com/docs/seguranca-de-webhooks.md, https://developers.clicksign.com/docs/melhores-praticas-webhooks.md
 
@@ -72,5 +72,5 @@ Source: https://developers.clicksign.com/docs/disparos-de-webhooks.md, https://d
 
 ## Idempotency
 
-A delivery can repeat (retry, or a duplicate from the developer's own infrastructure). Key the handler's side effects by the document or envelope id from the payload, and skip work already done for that id, per [decisions.md](decisions.md).
+A delivery can repeat (retry, or a duplicate from the developer's own infrastructure). Deduplicate by a stable identifier of that event on that document: the event's own id when the payload includes one, otherwise a fingerprint of the verified event name plus the document id. Keying by the document or envelope id alone would treat a later `document_closed` as already done after `sign`, and the signed file would never be downloaded. Mark the event handled only after its side effects succeed (the status update, and the signed-file download on `document_closed`), so a failure is retried on the next delivery. The same rule is the webhook half of the idempotency row in [decisions.md](decisions.md).
 

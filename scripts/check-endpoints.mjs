@@ -25,8 +25,10 @@ const KNOWN_V3_TOP_LEVEL_RESOURCES = new Set([
   'acceptance_term',
 ]);
 
-function withoutBaseUrlPrefix(path) {
-  return path.replace(/^\{\{BASE_URL\}\}/, '');
+const API_ORIGIN = String.raw`(?:\{\{BASE_URL\}\}|https://(?:sandbox|app)\.clicksign\.com)`;
+
+function withoutApiOrigin(path) {
+  return path.replace(new RegExp(`^${API_ORIGIN}`), '');
 }
 
 function withoutApiV3Prefix(path) {
@@ -46,7 +48,7 @@ function withParamsAsPlaceholders(path) {
 }
 
 export function normalizePath(rawPath) {
-  const path = withoutApiV3Prefix(withoutBaseUrlPrefix(rawPath));
+  const path = withoutApiV3Prefix(withoutApiOrigin(rawPath));
   return withParamsAsPlaceholders(withoutTrailingPunctuation(withoutQueryString(path)));
 }
 
@@ -63,16 +65,44 @@ function isShorthandPath(path) {
   return path.startsWith(SHORTHAND_PATH_PREFIX);
 }
 
+function operationFromMention(method, path) {
+  if (LEGACY_API_PATH.test(path)) return null;
+  if (isShorthandPath(path)) {
+    return { method, suffix: normalizePath(path.slice(SHORTHAND_PATH_PREFIX.length)) };
+  }
+  if (isKnownV3Resource(path)) return { method, path: normalizePath(path) };
+  return null;
+}
+
+function verbsSharing(groupText, path) {
+  const head = groupText.slice(0, groupText.lastIndexOf(path));
+  return [...head.matchAll(new RegExp(`\\b(${HTTP_VERBS.join('|')})\\b`, 'gi'))].map((match) => match[1].toUpperCase());
+}
+
+function groupedVerbPattern() {
+  const verbToken = `\`?\\b(?:${HTTP_VERBS.join('|')})\\b\`?`;
+  return new RegExp(`${verbToken}(?:\\s*(?:,|and)\\s*${verbToken})+\\s+(\`?)([^\\s\`]*/[^\\s\`]*)\\1`, 'gi');
+}
+
 export function mentionedOperations(text) {
-  const verbAndPathPattern = new RegExp(`\\b(${HTTP_VERBS.join('|')})\\s+([^\\s\`]*\\/[^\\s\`]*)`, 'g');
   const operations = [];
-  for (const [, verb, path] of text.matchAll(verbAndPathPattern)) {
-    if (LEGACY_API_PATH.test(path)) continue;
-    if (isShorthandPath(path)) {
-      operations.push({ method: verb, suffix: normalizePath(path.slice(SHORTHAND_PATH_PREFIX.length)) });
-    } else if (isKnownV3Resource(path)) {
-      operations.push({ method: verb, path: normalizePath(path) });
+  const rangesCoveredByAGroup = [];
+  for (const match of text.matchAll(groupedVerbPattern())) {
+    const path = match[2];
+    const start = match.index;
+    rangesCoveredByAGroup.push([start, start + match[0].length]);
+    for (const method of verbsSharing(match[0], path)) {
+      const operation = operationFromMention(method, path);
+      if (operation) operations.push(operation);
     }
+  }
+
+  const singleVerbAndPath = new RegExp(`\\b(${HTTP_VERBS.join('|')})\\s+([^\\s\`]*\\/[^\\s\`]*)`, 'g');
+  for (const match of text.matchAll(singleVerbAndPath)) {
+    const insideAGroup = rangesCoveredByAGroup.some(([start, end]) => match.index >= start && match.index < end);
+    if (insideAGroup) continue;
+    const operation = operationFromMention(match[1], match[2]);
+    if (operation) operations.push(operation);
   }
   return operations;
 }

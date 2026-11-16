@@ -72,6 +72,43 @@ describe('findLegacyApiViolations', () => {
     assert.deepEqual(findLegacyApiViolations(dir), []);
   });
 
+  it('flags a recognition-only skill that recommends a legacy call in prose', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'start-clicksign-integration');
+    writeFileSync(
+      join(skill, 'SKILL.md'),
+      '---\nname: start-clicksign-integration\ndescription: Demo.\n---\n\n' +
+        'Call POST /api/v1/documents to send a document.\n',
+    );
+    const violations = findLegacyApiViolations(dir);
+    assert.ok(violations.some((v) => v.includes('SKILL.md') && v.includes('POST /api/v1/documents')));
+    assert.ok(violations.some((v) => v.includes('outside a fenced code block')));
+  });
+
+  it('flags an inline-code legacy call outside a fenced block', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'start-clicksign-integration');
+    writeFileSync(
+      join(skill, 'SKILL.md'),
+      '---\nname: start-clicksign-integration\ndescription: Demo.\n---\n\n' +
+        'Send it with `POST /api/v1/documents`.\n',
+    );
+    assert.ok(findLegacyApiViolations(dir).some((v) => v.includes('POST /api/v1/documents')));
+  });
+
+  it('lets a marked recognition region name the legacy call it is there to recognize', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'start-clicksign-integration');
+    writeFileSync(
+      join(skill, 'SKILL.md'),
+      '---\nname: start-clicksign-integration\ndescription: Demo.\n---\n\n' +
+        '<!-- legacy-api-recognition -->\n' +
+        'Recognize `POST https://app.clicksign.com/api/v1/documents` and point to the migration skill.\n' +
+        '<!-- /legacy-api-recognition -->\n',
+    );
+    assert.deepEqual(findLegacyApiViolations(dir), []);
+  });
+
   it('still flags a recognition-only skill that shows a legacy call as a fenced example', () => {
     const dir = copyRepo();
     const skill = join(dir, 'skills', 'start-clicksign-integration');

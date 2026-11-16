@@ -22,6 +22,11 @@ const LEGACY_API_SIGNALS = [
   [/\bauths\b/, 'auths'],
 ];
 
+const ACTIONABLE_LEGACY_CALL =
+  /\b(GET|POST|PATCH|PUT|DELETE)\s+`?((?:https?:\/\/[^\s`/]+)?\/(?:api\/v[12]\b|v1\.0\/)[^\s`]*)/gi;
+const LEGACY_API_RECOGNITION_REGION =
+  /<!--\s*legacy-api-recognition\s*-->[\s\S]*?<!--\s*\/legacy-api-recognition\s*-->/g;
+
 function fencedCodeBlockRanges(text) {
   return [...text.matchAll(/```[^\n]*\n[\s\S]*?```/g)].map((match) => [match.index, match.index + match[0].length]);
 }
@@ -37,6 +42,22 @@ function lineNumberAt(text, index) {
 function legacyApiSignalsInsideFencedCodeBlocks(text) {
   const fencedRanges = fencedCodeBlockRanges(text);
   return legacyApiSignalsIn(text).filter((signal) => isWithinAnyRange(signal.index, fencedRanges));
+}
+
+function textWithRecognitionRegionsBlanked(text) {
+  return text.replace(LEGACY_API_RECOGNITION_REGION, (region) => region.replace(/[^\n]/g, ' '));
+}
+
+function actionableLegacyCallsOutsideFencedBlocks(text) {
+  const fencedRanges = fencedCodeBlockRanges(text);
+  const visible = textWithRecognitionRegionsBlanked(text);
+  return [...visible.matchAll(ACTIONABLE_LEGACY_CALL)]
+    .filter((match) => !isWithinAnyRange(match.index, fencedRanges))
+    .map((match) => ({
+      label: `${match[1].toUpperCase()} ${match[2]}`,
+      index: match.index,
+      line: lineNumberAt(text, match.index),
+    }));
 }
 
 function legacyApiSignalsIn(text) {
@@ -59,11 +80,16 @@ export function findLegacyApiViolations(root) {
 
     for (const file of markdownFilesIn(dir)) {
       const text = readFileSync(file, 'utf8');
-      const signals = mayNameItOnlyToRedirectAwayFromIt
-        ? legacyApiSignalsInsideFencedCodeBlocks(text)
-        : legacyApiSignalsIn(text);
-      const location = mayNameItOnlyToRedirectAwayFromIt ? ' inside a fenced code block' : '';
-      for (const { label, line } of signals) violations.push(`${file}:${line}: found "${label}"${location}`);
+      if (mayNameItOnlyToRedirectAwayFromIt) {
+        for (const { label, line } of legacyApiSignalsInsideFencedCodeBlocks(text)) {
+          violations.push(`${file}:${line}: found "${label}" inside a fenced code block`);
+        }
+        for (const { label, line } of actionableLegacyCallsOutsideFencedBlocks(text)) {
+          violations.push(`${file}:${line}: found "${label}" outside a fenced code block`);
+        }
+        continue;
+      }
+      for (const { label, line } of legacyApiSignalsIn(text)) violations.push(`${file}:${line}: found "${label}"`);
     }
   }
   return violations;
