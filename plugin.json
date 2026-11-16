@@ -51,13 +51,13 @@
             },
             {
               "description": "Send a template-based envelope for e-signature after user confirmation.",
-              "prompt": "Envie o modelo 'NDA Padrão' para Maria Teste (felipe.felix+openai@clicksign.com) assinar por e-mail, com nome = Maria Teste.",
+              "prompt": "Envie o modelo 'NDA Padrão' para Maria Teste (maria.teste@example.com) assinar por e-mail, com nome = Maria Teste.",
               "tools_triggered": "list_templates, get_template_fields, create_envelope_with_template",
               "expected_behavior": "Asks for confirmation before sending, then creates and starts the envelope and returns its id; the signer receives the signature request email."
             },
             {
               "description": "Send a PDF from a public HTTPS link for e-signature.",
-              "prompt": "Mande este PDF https://drive.google.com/uc?export=download&id=18mJOh5zuQOscR3JCcInUd9AJhHRybHdW para João Teste (felipe.felix+openai@clicksign.com) assinar por e-mail.",
+              "prompt": "Mande este PDF https://drive.google.com/uc?export=download&id=18mJOh5zuQOscR3JCcInUd9AJhHRybHdW para João Teste (joao.teste@example.com) assinar por e-mail.",
               "tools_triggered": "create_envelope_with_file_url",
               "expected_behavior": "Asks for confirmation, creates the envelope using the file from the URL (filename derived from the URL) and returns the envelope id."
             },
