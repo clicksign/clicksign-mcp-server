@@ -73,6 +73,14 @@ describe('mentionedOperations', () => {
   it('skips a mentioned path whose first segment is not a known v3 resource', () => {
     assert.deepEqual(mentionedOperations('GET /something/else'), []);
   });
+
+  it('keeps an explicitly versioned v3 path even when the resource name is unknown', () => {
+    assert.deepEqual(mentionedOperations('POST /api/v3/envelpoes'), [{ method: 'POST', path: '/envelpoes' }]);
+    assert.deepEqual(mentionedOperations('POST https://sandbox.clicksign.com/api/v3/envelpoes'), [
+      { method: 'POST', path: '/envelpoes' },
+    ]);
+    assert.deepEqual(mentionedOperations('POST {{BASE_URL}}/api/v3/envelpoes'), [{ method: 'POST', path: '/envelpoes' }]);
+  });
 });
 
 describe('operationsFromOpenApi', () => {

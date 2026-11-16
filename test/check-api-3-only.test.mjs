@@ -96,6 +96,20 @@ describe('findLegacyApiViolations', () => {
     assert.ok(findLegacyApiViolations(dir).some((v) => v.includes('POST /api/v1/documents')));
   });
 
+  it('flags a legacy call that uses the templated base URL', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'start-clicksign-integration');
+    writeFileSync(
+      join(skill, 'SKILL.md'),
+      '---\nname: start-clicksign-integration\ndescription: Demo.\n---\n\n' +
+        'Call POST {{BASE_URL}}/api/v1/documents to send a document.\n' +
+        'Or send it with `POST {{BASE_URL}}/api/v1/documents`.\n',
+    );
+    const violations = findLegacyApiViolations(dir);
+    assert.ok(violations.some((v) => v.includes('POST {{BASE_URL}}/api/v1/documents')));
+    assert.equal(violations.filter((v) => v.includes('{{BASE_URL}}/api/v1/documents')).length, 2);
+  });
+
   it('lets a marked recognition region name the legacy call it is there to recognize', () => {
     const dir = copyRepo();
     const skill = join(dir, 'skills', 'start-clicksign-integration');

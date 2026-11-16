@@ -22,8 +22,10 @@ const LEGACY_API_SIGNALS = [
   [/\bauths\b/, 'auths'],
 ];
 
-const ACTIONABLE_LEGACY_CALL =
-  /\b(GET|POST|PATCH|PUT|DELETE)\s+`?((?:https?:\/\/[^\s`/]+)?\/(?:api\/v[12]\b|v1\.0\/)[^\s`]*)/gi;
+const ACTIONABLE_LEGACY_CALL = new RegExp(
+  String.raw`\b(GET|POST|PATCH|PUT|DELETE)\s+\`?((?:https?:\/\/[^\s\`/]+|\{\{BASE_URL\}\})?\/(?:api\/v[12]\b|v1\.0\/)[^\s\`]*)`,
+  'gi',
+);
 const LEGACY_API_RECOGNITION_REGION =
   /<!--\s*legacy-api-recognition\s*-->[\s\S]*?<!--\s*\/legacy-api-recognition\s*-->/g;
 

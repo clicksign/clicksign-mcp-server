@@ -65,12 +65,17 @@ function isShorthandPath(path) {
   return path.startsWith(SHORTHAND_PATH_PREFIX);
 }
 
+function isExplicitV3Path(path) {
+  const withoutOrigin = withoutApiOrigin(path);
+  return withoutOrigin === '/api/v3' || withoutOrigin.startsWith('/api/v3/');
+}
+
 function operationFromMention(method, path) {
   if (LEGACY_API_PATH.test(path)) return null;
   if (isShorthandPath(path)) {
     return { method, suffix: normalizePath(path.slice(SHORTHAND_PATH_PREFIX.length)) };
   }
-  if (isKnownV3Resource(path)) return { method, path: normalizePath(path) };
+  if (isKnownV3Resource(path) || isExplicitV3Path(path)) return { method, path: normalizePath(path) };
   return null;
 }
 
