@@ -63,7 +63,7 @@ Fetch the matched entry's detail page once, not the whole catalog, to confirm it
 
 Right after the discovery summary, before any decision or business question, and alone: the answer can make every other question moot. Send the summary and the question in the same message, so the developer can correct a wrong match in the same reply; if the correction removes the match, drop the question. If several catalog systems matched, ask once and list them all.
 
-Skip the question, and the page fetch, when the repository already holds a Clicksign integration on the API 3.0 (either sign is enough: calls under `/api/v3`, or a Clicksign access token key in the configuration): that choice was already made. Say in the discovery summary that you found it.
+Skip the question, and the page fetch, only when discovery finds an implemented outbound request to the Clicksign Envelope API under `/api/v3` on `app.clicksign.com` or `sandbox.clicksign.com` (including a configured base URL resolving to one of those hosts). A Clicksign access token key in configuration alone is incomplete setup, not evidence of an existing integration. When an implemented integration is found, say so in the discovery summary.
 
 Give the developer, in their own language:
 
