@@ -19,7 +19,11 @@ You sign in with your Clicksign account through OAuth 2.1 in the browser. No API
 | ChatGPT | [docs/setup-chatgpt.md](docs/setup-chatgpt.md) |
 | Codex | [docs/setup-codex.md](docs/setup-codex.md) |
 
-Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugin/`, `.mcp.json`) but are not published yet.
+Claude Code and Cursor manifests are included (`.claude-plugin/`, `.cursor-plugin/`, `.mcp.json`) but are not published yet. Once the repository is public, Claude Code installs the plugin in one step (Claude Code 2.1.275 or later):
+
+```sh
+/plugin install clicksign --marketplace clicksign/clicksign-mcp-server
+```
 
 ## Tools
 
@@ -49,11 +53,11 @@ Sending an envelope or a reminder notifies the signers and cannot be undone. The
 | Skill | What it does |
 |---|---|
 | `migrate-api-v1-to-v3` | Helps a developer migrate code from the legacy Clicksign API 1.9 to API 3.0 (Envelope). It asks for missing context, maps endpoints, payloads and flows, explains features without a direct equivalent, and proposes the adapted code to test in sandbox. It can fix or adjust the calls existing 1.9 code already makes, but does not write new code on API 1.9: a request for new 1.9 code gets the 3.0 equivalent instead. Works without signing in to the MCP server. |
-| `start-clicksign-integration` | Builds a brand-new Clicksign integration on API 3.0 only, with the least possible effort from the developer. It reads the client's repository, decides autonomously everything the official documentation already settles, asks only the open business rules in one short batch, and delivers a working integration (HTTP client, send function, webhook handler with HMAC validation, configuration, offline tests) directly in the client's code, plus a sandbox script up to the signed envelope and the received webhook. It never mentions the legacy API 1.9; a project that already has 1.9 code gets pointed to the migration skill instead. Works without signing in to the MCP server. |
+| `start-clicksign-integration` | Builds a brand-new Clicksign integration on API 3.0 only, with the least possible effort from the developer. It reads the client's repository, decides autonomously everything the official documentation already settles, asks only the open business rules in one short batch, and delivers a working integration (HTTP client, send function, webhook handler with HMAC validation, configuration, offline tests) directly in the client's code, plus a sandbox script up to the signed envelope and the received webhook. When the code connects to a system with a ready-made integration in the [Clicksign integrations catalog](https://www.clicksign.com/integracao), it first explains that option and asks whether to build from scratch or follow it. It never mentions the legacy API 1.9; a project that already has 1.9 code gets pointed to the migration skill instead. Works without signing in to the MCP server. |
 
 Ask the assistant, in a project with 1.9 code, something like *"Migrate my Clicksign integration from API 1.9 to 3.0"*. For a project with no Clicksign integration yet, ask something like *"Integrate Clicksign into my project to send contracts for signature"*.
 
-Both skills need permission to read and edit files, run the project's own commands, and reach `developers.clicksign.com` and `sandbox.clicksign.com`. Cursor, Claude Code and Codex each ask for this approval through their own run-mode settings; the skill asks once, up front, instead of per file.
+Both skills need permission to read and edit files, run the project's own commands, and reach `developers.clicksign.com` and `sandbox.clicksign.com`; `start-clicksign-integration` also reaches `www.clicksign.com`, once, to confirm a ready-made integration it found. Cursor, Claude Code and Codex each ask for this approval through their own run-mode settings; the skill asks once, up front, instead of per file.
 
 ## Repository layout
 
@@ -159,9 +163,9 @@ O plugin inclui a skill `migrate-api-v1-to-v3`. Ela ajuda quem tem uma integraç
 
 ### Skill de integração do zero na API 3.0
 
-O plugin também inclui a skill `start-clicksign-integration`, para quem ainda não tem nenhuma integração com a Clicksign. Ela lê o repositório do cliente, decide sozinha tudo o que a documentação oficial já resolve, pergunta só as regras de negócio que ficam em aberto, e entrega a integração pronta no próprio código do cliente: cliente HTTP, função de envio, webhook com validação HMAC, configuração e testes offline, além de um roteiro de sandbox até o envelope assinado e o webhook recebido. Nunca menciona nem recomenda a API 1.9: um projeto que já chama a 1.9 é direcionado à skill de migração. Não precisa de login no servidor MCP. Peça ao assistente, num projeto sem integração com a Clicksign, algo como *"Integre a Clicksign no meu projeto para enviar contratos para assinatura"*.
+O plugin também inclui a skill `start-clicksign-integration`, para quem ainda não tem nenhuma integração com a Clicksign. Ela lê o repositório do cliente, decide sozinha tudo o que a documentação oficial já resolve, pergunta só as regras de negócio que ficam em aberto, e entrega a integração pronta no próprio código do cliente: cliente HTTP, função de envio, webhook com validação HMAC, configuração e testes offline, além de um roteiro de sandbox até o envelope assinado e o webhook recebido. Quando o código se conecta a um sistema que tem integração pronta no [catálogo de integrações da Clicksign](https://www.clicksign.com/integracao), ela primeiro explica essa opção e pergunta se você prefere integrar do zero ou seguir com a integração pronta. Nunca menciona nem recomenda a API 1.9: um projeto que já chama a 1.9 é direcionado à skill de migração. Não precisa de login no servidor MCP. Peça ao assistente, num projeto sem integração com a Clicksign, algo como *"Integre a Clicksign no meu projeto para enviar contratos para assinatura"*.
 
-As duas skills pedem permissão para ler e editar arquivos, rodar os comandos do próprio projeto e acessar `developers.clicksign.com` e `sandbox.clicksign.com`. Cursor, Claude Code e Codex pedem essa aprovação pelas próprias configurações de modo de execução; a skill avisa uma vez, no início, em vez de pedir arquivo por arquivo.
+As duas skills pedem permissão para ler e editar arquivos, rodar os comandos do próprio projeto e acessar `developers.clicksign.com` e `sandbox.clicksign.com`; a `start-clicksign-integration` também acessa `www.clicksign.com`, uma vez, para confirmar uma integração pronta que encontrou. Cursor, Claude Code e Codex pedem essa aprovação pelas próprias configurações de modo de execução; a skill avisa uma vez, no início, em vez de pedir arquivo por arquivo.
 
 Para as skills não ficarem desatualizadas, o workflow `docs-drift` roda toda segunda e sob demanda: compara as páginas da documentação citadas com `scripts/docs-sources.lock.json` e abre ou atualiza uma issue com a label `docs-drift` quando alguma muda. Os passos para resolver estão em [skills/README.md](skills/README.md).
 

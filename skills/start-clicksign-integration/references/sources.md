@@ -1,6 +1,6 @@
 # Official sources
 
-Every page below is the official Clicksign documentation for the API 3.0 (Envelope), served as Markdown. You should not need to fetch most of them: [concepts.md](concepts.md), [flows.md](flows.md), [webhooks.md](webhooks.md), [decisions.md](decisions.md) and [delivery.md](delivery.md) already distill everything the default flow needs, with these same pages cited as their sources. Fetch one page here only for a field, enum or response none of those five files spell out, or for a gap [limits.md](limits.md) flags — never to double-check something already stated in this skill's own files. Do not use any other source, and do not fetch any `/v1.0/` page or a migration page: this skill never reads, mentions or recommends the legacy API 1.9.
+Every page below is the official Clicksign documentation for the API 3.0 (Envelope), served as Markdown. You should not need to fetch most of them: [concepts.md](concepts.md), [flows.md](flows.md), [webhooks.md](webhooks.md), [decisions.md](decisions.md) and [delivery.md](delivery.md) already distill everything the default flow needs, with these same pages cited as their sources. Fetch one page here only for a field, enum or response none of those five files spell out, or for a gap [limits.md](limits.md) flags — never to double-check something already stated in this skill's own files. The one other source is Clicksign's own catalog of integrations, listed at the end of this file. Do not use any other source, and do not fetch any `/v1.0/` page or a migration page: this skill never reads, mentions or recommends the legacy API 1.9.
 
 ## Index
 
@@ -123,3 +123,9 @@ Every page below is the official Clicksign documentation for the API 3.0 (Envelo
 | Delete webhook | https://developers.clicksign.com/reference/api-excluir-webhook.md |
 | `document_closed` event | https://developers.clicksign.com/docs/evento-document-closed.md |
 | `close` event | https://developers.clicksign.com/docs/evento-close.md |
+
+## Integrations catalog (not API documentation)
+
+| Topic | URL |
+|---|---|
+| Clicksign catalog of integrations: type, segment and a short description of each; the entry pages and help articles are listed in [native-integrations.md](native-integrations.md) | https://www.clicksign.com/integracao |
