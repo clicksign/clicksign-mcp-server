@@ -1,0 +1,101 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "clicksign",
+  "version": "1.0.0",
+  "description": "Send documents for e-signature and track signing status in Clicksign.",
+  "author": {
+    "name": "Clicksign",
+    "url": "https://www.clicksign.com"
+  },
+  "homepage": "https://github.com/clicksign/clicksign-mcp-server",
+  "repository": "https://github.com/clicksign/clicksign-mcp-server",
+  "license": "Apache-2.0",
+  "keywords": ["clicksign", "e-signature", "assinatura eletrônica", "contracts", "documents", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Clicksign",
+        "shortDescription": "Send and track e-signatures",
+        "longDescription": "Clicksign is the official connector for your Clicksign account. Send documents for electronic signature from your templates or from a file link, check who has already signed and who is still pending, and send reminders to pending signers, all from a conversation. Sending an envelope or a reminder notifies the signers by email (or WhatsApp/SMS when configured) and cannot be undone, so ChatGPT asks for your confirmation first. Requires an existing Clicksign account; the connector only accesses the account you authorize and does not sign documents on your behalf.",
+        "developerName": "Clicksign",
+        "category": "Business & Operations",
+        "capabilities": ["Send documents for signature", "Track signing status", "Send signer reminders", "Manage templates"],
+        "websiteURL": "https://www.clicksign.com",
+        "supportURL": "https://www.clicksign.com/suporte",
+        "privacyPolicyURL": "https://www.clicksign.com/politica-de-privacidade",
+        "termsOfServiceURL": "https://www.clicksign.com/termos-de-uso",
+        "defaultPrompt": [
+          "Who still needs to sign my latest envelope?",
+          "List my Clicksign templates.",
+          "Send a reminder to pending signers."
+        ],
+        "brandColor": "#F25924",
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png"
+      },
+      "review": {
+        "demo_recording_url": "https://example.com/clicksign-mcp-demo",
+        "test_cases": {
+          "positive": [
+            {
+              "description": "List the templates available in the connected Clicksign account.",
+              "prompt": "Quais modelos de documento eu tenho na Clicksign?",
+              "tools_triggered": "list_templates",
+              "expected_behavior": "Returns the account's templates (including 'NDA Padrão') with their names; no write action is performed."
+            },
+            {
+              "description": "Report who has signed and who is still pending on an existing envelope.",
+              "prompt": "Quem ainda não assinou o envelope 'Contrato ACME'?",
+              "tools_triggered": "list_envelopes, list_envelope_signers",
+              "expected_behavior": "Finds the envelope by name and lists each signer with status signed or pending plus a summary (1 signed, 1 pending)."
+            },
+            {
+              "description": "Send a template-based envelope for e-signature after user confirmation.",
+              "prompt": "Envie o modelo 'NDA Padrão' para Maria Teste (maria.teste@example.com) assinar por e-mail, com nome = Maria Teste.",
+              "tools_triggered": "list_templates, get_template_fields, create_envelope_with_template",
+              "expected_behavior": "Asks for confirmation before sending, then creates and starts the envelope and returns its id; the signer receives the signature request email."
+            },
+            {
+              "description": "Send a PDF from a public HTTPS link for e-signature.",
+              "prompt": "Mande este PDF https://drive.google.com/uc?export=download&id=18mJOh5zuQOscR3JCcInUd9AJhHRybHdW para João Teste (joao.teste@example.com) assinar por e-mail.",
+              "tools_triggered": "create_envelope_with_file_url",
+              "expected_behavior": "Asks for confirmation, creates the envelope using the file from the URL (filename derived from the URL) and returns the envelope id."
+            },
+            {
+              "description": "Remind pending signers of a running envelope.",
+              "prompt": "Reenvie o lembrete para quem está pendente no envelope 'Contrato ACME'.",
+              "tools_triggered": "list_envelopes, send_envelope_reminders",
+              "expected_behavior": "Asks for confirmation, sends the reminder by email to the pending signer and reports who was notified; a second request within one minute is reported as rate-limited."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Signing on behalf of a signer is not supported and must be refused.",
+              "prompt": "Assine o 'Contrato ACME' por mim no lugar do signatário pendente."
+            },
+            {
+              "description": "Payments are out of scope.",
+              "prompt": "Faça um Pix de R$ 500 para o fornecedor do Contrato ACME."
+            },
+            {
+              "description": "Bulk deletion is not supported by the plugin.",
+              "prompt": "Apague todos os meus envelopes da Clicksign."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments."
+      },
+      "publication": {
+        "countries": ["BR"],
+        "release_notes": "Initial release: send envelopes from templates or file links, track signer status, send reminders and manage templates.",
+        "translations": {
+          "pt-BR": {
+            "subtitle": "Envie e acompanhe assinaturas",
+            "description": "Conector oficial da sua conta Clicksign. Envie documentos para assinatura eletrônica a partir de modelos ou de um link de arquivo, veja quem já assinou e quem está pendente e envie lembretes, tudo pela conversa. Enviar um envelope ou lembrete notifica os signatários por e-mail (ou WhatsApp/SMS, quando configurado) e não pode ser desfeito, por isso o ChatGPT pede sua confirmação antes. Requer uma conta Clicksign existente; o conector acessa somente a conta autorizada e não assina documentos em seu nome."
+          }
+        }
+      }
+    }
+  }
+}

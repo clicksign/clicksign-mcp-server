@@ -1,0 +1,16 @@
+{
+  "name": "clicksign",
+  "version": "1.0.0",
+  "description": "Send documents for e-signature and track signing status in Clicksign.",
+  "author": {
+    "name": "Clicksign",
+    "url": "https://www.clicksign.com"
+  },
+  "homepage": "https://github.com/clicksign/clicksign-mcp-server",
+  "repository": "https://github.com/clicksign/clicksign-mcp-server",
+  "license": "Apache-2.0",
+  "privacyPolicyUrl": "https://www.clicksign.com/politica-de-privacidade",
+  "keywords": ["clicksign", "e-signature", "contracts", "documents", "mcp"],
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "clicksign",
+  "description": "Clicksign plugin marketplace for Claude Code",
+  "owner": {
+    "name": "Clicksign"
+  },
+  "plugins": [
+    {
+      "name": "clicksign",
+      "description": "Send documents for e-signature and track signing status in Clicksign.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Clicksign"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/clicksign/clicksign-mcp-server"
+    }
+  ]
+}

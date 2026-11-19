@@ -1,0 +1,198 @@
+import assert from 'node:assert/strict';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { basename, dirname, join, resolve } from 'node:path';
+import { afterEach, describe, it } from 'node:test';
+import { fileURLToPath } from 'node:url';
+import { deflateSync } from 'node:zlib';
+import { validate } from '../scripts/validate.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const SKIP = new Set(['.git', 'node_modules', 'dist', '.docs-cache']);
+
+let copies = [];
+
+function copyRepo() {
+  const dir = mkdtempSync(join(tmpdir(), 'clicksign-plugin-'));
+  cpSync(ROOT, dir, { recursive: true, filter: (src) => !SKIP.has(basename(src)) });
+  copies.push(dir);
+  return dir;
+}
+
+function editJson(dir, file, change) {
+  const path = join(dir, file);
+  const data = JSON.parse(readFileSync(path, 'utf8'));
+  change(data);
+  writeFileSync(path, JSON.stringify(data, null, 2));
+}
+
+const openai = (data) => data.extensions['com.openai'];
+
+// Minimal valid PNG of the given size; only the header matters to the size check.
+function png(width, height) {
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  const chunk = (type, data) => {
+    const length = Buffer.alloc(4);
+    length.writeUInt32BE(data.length);
+    return Buffer.concat([length, Buffer.from(type), data, Buffer.alloc(4)]);
+  };
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', deflateSync(Buffer.alloc(1))),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
+function assertError(result, pattern) {
+  assert.ok(
+    result.errors.some((message) => pattern.test(message)),
+    `expected an error matching ${pattern}, got:\n${result.errors.join('\n') || '(no errors)'}`,
+  );
+}
+
+afterEach(() => {
+  for (const dir of copies) rmSync(dir, { recursive: true, force: true });
+  copies = [];
+});
+
+describe('validate', () => {
+  it('passes the repository without errors', () => {
+    assert.deepEqual(validate(ROOT).errors, []);
+  });
+
+  // Copies the repo and puts a placeholder string and the generated placeholder
+  // icon back, so these checks do not depend on what is still unfilled.
+  function copyWithPlaceholders() {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.supportURL = '<https://ajuda.clicksign.com/... support page>'));
+    cpSync(join(ROOT, 'test', 'fixtures', 'placeholder-logo.png'), join(dir, 'assets', 'logo.png'));
+    return dir;
+  }
+
+  it('reports placeholders as warnings in a draft', () => {
+    const result = validate(copyWithPlaceholders());
+    assert.deepEqual(result.errors, []);
+    assert.ok(result.warnings.some((message) => /placeholder at .*supportURL/.test(message)));
+    assert.ok(result.warnings.some((message) => /logo is still a placeholder image/.test(message)));
+  });
+
+  it('turns placeholders into errors with --release', () => {
+    const result = validate(copyWithPlaceholders(), { release: true });
+    assert.deepEqual(result.warnings, []);
+    assertError(result, /placeholder at .*supportURL/);
+    assertError(result, /logo is still a placeholder image/);
+  });
+
+  it('rejects a category outside the portal taxonomy', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = 'Business'));
+    assertError(validate(dir), /category "Business" is not an accepted category/);
+  });
+
+  it('treats a category placeholder as unfinished in a draft', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.category = '<category>'));
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = '<category>'));
+
+    const draft = validate(dir);
+    assert.deepEqual(draft.errors, []);
+    assert.ok(draft.warnings.some((message) => /placeholder at .*interface\/category/.test(message)));
+
+    assertError(validate(dir, { release: true }), /placeholder at .*interface\/category/);
+  });
+
+  it('rejects a Codex marketplace category that differs from plugin.json', () => {
+    const dir = copyRepo();
+    editJson(dir, '.agents/plugins/marketplace.json', (data) => (data.plugins[0].category = 'Productivity'));
+    assertError(validate(dir), /marketplace\.json: plugins\[clicksign\]\.category/);
+  });
+
+  it('treats a missing demo_recording_url as unfinished, not invalid', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => delete openai(data).review.demo_recording_url);
+
+    const draft = validate(dir);
+    assert.ok(!draft.errors.some((message) => /demo_recording_url/.test(message)), draft.errors.join('\n'));
+    assert.ok(draft.warnings.some((message) => /demo_recording_url is required for the MCP review/.test(message)));
+
+    assertError(validate(dir, { release: true }), /demo_recording_url is required for the MCP review/);
+  });
+
+  it('rejects a displayName longer than 30 characters', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).interface.displayName = 'C'.repeat(31)));
+    assertError(validate(dir), /displayName has 31 characters \(max 30\)/);
+  });
+
+  it('rejects any MCP URL other than the OAuth endpoint', () => {
+    const dir = copyRepo();
+    editJson(dir, 'mcp.json', (data) => (data.mcpServers.clicksign.url = 'https://mcp.clicksign.com/mcp/other'));
+    assertError(validate(dir), /mcp\.json: mcpServers\.clicksign\.url must be https:\/\/mcp\.clicksign\.com\/mcp\/oauth2/);
+  });
+
+  it('rejects a logo that is not square', () => {
+    const dir = copyRepo();
+    writeFileSync(join(dir, 'assets', 'logo.png'), png(512, 256));
+    assertError(validate(dir), /interface\.logo must be square, found 512x256/);
+  });
+
+  it('requires exactly five positive test cases', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => openai(data).review.test_cases.positive.pop());
+    assertError(validate(dir), /positive must have exactly 5 cases \(found 4\)/);
+  });
+
+  it('rejects a client_secret in a manifest', () => {
+    const dir = copyRepo();
+    editJson(dir, '.cursor-plugin/plugin.json', (data) => (data.client_secret = 'abc123'));
+    assertError(validate(dir), /\.cursor-plugin\/plugin\.json: looks like it contains a secret \(client_secret\)/);
+  });
+
+  it('detects version drift in the Claude manifest', () => {
+    const dir = copyRepo();
+    editJson(dir, '.claude-plugin/plugin.json', (data) => (data.version = '1.0.1'));
+    assertError(validate(dir), /\.claude-plugin\/plugin\.json: version is "1\.0\.1", expected "1\.0\.0"/);
+  });
+
+  it('rejects a second MCP server', () => {
+    const dir = copyRepo();
+    editJson(dir, 'mcp.json', (data) => (data.mcpServers.other = { type: 'streamable-http', url: 'https://example.com/mcp' }));
+    assertError(validate(dir), /mcp\.json: must declare exactly one MCP server \(found 2\)/);
+  });
+
+  it('rejects app references', () => {
+    const dir = copyRepo();
+    writeFileSync(join(dir, '.app.json'), '{"apps":{}}');
+    assertError(validate(dir), /\.app\.json: is not allowed/);
+  });
+
+  it('rejects reviewer credentials in the package', () => {
+    const dir = copyRepo();
+    editJson(dir, 'plugin.json', (data) => (openai(data).review.test_credentials = 'user / pass'));
+    assertError(validate(dir), /review\.test_credentials is rejected by OpenAI/);
+  });
+
+  it('validates skill frontmatter', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'send-envelope');
+    mkdirSync(skill, { recursive: true });
+    writeFileSync(join(skill, 'SKILL.md'), '---\nname: other-name\ndescription: Sends an envelope.\n---\n\nBody\n');
+    assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter name must be "send-envelope"/);
+  });
+
+  it('rejects a skill description over the 1024 characters the Agent Skills specification allows', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'send-envelope');
+    mkdirSync(skill, { recursive: true });
+    writeFileSync(join(skill, 'SKILL.md'), `---\nname: send-envelope\ndescription: ${'a'.repeat(1025)}\n---\n\nBody\n`);
+    assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter description has 1025 characters \(max 1024\)/);
+
+    writeFileSync(join(skill, 'SKILL.md'), `---\nname: send-envelope\ndescription: ${'a'.repeat(1024)}\n---\n\nBody\n`);
+    assert.deepEqual(validate(dir).errors.filter((message) => message.includes('send-envelope')), []);
+  });
+});

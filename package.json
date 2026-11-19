@@ -1,0 +1,32 @@
+{
+  "name": "clicksign-mcp-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Distribution package for the Clicksign MCP server (OpenAI ChatGPT + Codex plugin).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "package": "node scripts/package.mjs",
+    "package:dev": "node scripts/package.mjs --dev",
+    "test": "node --test test/",
+    "smoke": "node scripts/smoke.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:api-3-only": "node scripts/check-api-3-only.mjs",
+    "check:endpoints": "node scripts/check-endpoints.mjs",
+    "check:docs-drift": "node scripts/check-docs-drift.mjs",
+    "docs:lock": "node scripts/check-docs-drift.mjs --update",
+    "docs:lock:add": "node scripts/check-docs-drift.mjs --add",
+    "inspect": "node scripts/inspect.mjs web",
+    "inspect:cli": "node scripts/inspect.mjs cli"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "image-size": "2.0.4",
+    "yaml": "2.9.1",
+    "yazl": "3.3.1"
+  }
+}
