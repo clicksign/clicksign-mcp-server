@@ -377,7 +377,10 @@ export function validate(root, { release = false } = {}) {
       if (!KEBAB.test(name)) error(file, `directory name "${name}" must be kebab-case`);
       if (frontmatter.name !== name) error(file, `frontmatter name must be "${name}" (found ${JSON.stringify(frontmatter.name)})`);
       if (typeof frontmatter.description !== 'string' || !frontmatter.description.trim()) error(file, 'frontmatter description is required');
-    }
+      // Limits from the Agent Skills specification (agentskills.io/specification), which the
+      // Agent Plugins standard defers to. Cursor, Claude Code and Codex accept more; strict validators do not.
+      maxLength(file, 'frontmatter name', frontmatter.name, 64);
+      maxLength(file, 'frontmatter description', frontmatter.description, 1024);    }
   }
 
   function maxLength(file, field, value, max) {

@@ -4,6 +4,7 @@
 // Usage:
 //   node scripts/check-docs-drift.mjs [--report <file>]   exit 0 unchanged, 2 changed, 1 fetch error
 //   node scripts/check-docs-drift.mjs --update            rewrite the lock after reviewing the skill
+//   node scripts/check-docs-drift.mjs --add               record only a new skill's first citations
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -44,6 +45,14 @@ export function diffLock(lock, current) {
 export function readLock(root) {
   const path = join(root, LOCK_PATH);
   return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {};
+}
+
+export function urlsNotYetInLock(lock, urls) {
+  return urls.filter((url) => !lock[url]);
+}
+
+export function withNewUrlsAdded(lock, newUrls) {
+  return { ...newUrls, ...lock };
 }
 
 /** Markdown body for the docs-drift issue. Lists URLs and dates only, never page content. */
@@ -97,6 +106,27 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const reportPath = reportIndex >= 0 ? args[reportIndex + 1] : null;
 
   const urls = trackedUrls(root);
+  const lock = readLock(root);
+
+  if (args.includes('--add')) {
+    const newUrls = urlsNotYetInLock(lock, urls);
+    if (!newUrls.length) {
+      console.log(`✔ ${urls.length} page(s) already in ${LOCK_PATH}; nothing to add`);
+      process.exit(0);
+    }
+    const { current: newPages, errors: fetchErrors } = await snapshot(newUrls);
+    if (fetchErrors.length) {
+      for (const line of fetchErrors) console.error(`✖ ${line}`);
+      console.error(`\n✖ could not fetch ${fetchErrors.length} of ${newUrls.length} new page(s)`);
+      process.exit(1);
+    }
+    const updatedLock = withNewUrlsAdded(lock, newPages);
+    const sorted = Object.fromEntries(Object.keys(updatedLock).sort().map((url) => [url, updatedLock[url]]));
+    writeFileSync(join(root, LOCK_PATH), `${JSON.stringify(sorted, null, 2)}\n`);
+    console.log(`✔ added ${newUrls.length} new page(s) to ${LOCK_PATH}; left ${Object.keys(lock).length} existing entries untouched`);
+    process.exit(0);
+  }
+
   const { current, errors } = await snapshot(urls);
   if (errors.length) {
     for (const line of errors) console.error(`✖ ${line}`);
@@ -111,7 +141,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(0);
   }
 
-  const lock = readLock(root);
   const diff = diffLock(lock, current);
   const total = diff.changed.length + diff.added.length + diff.removed.length;
   if (!total) {

@@ -15,8 +15,11 @@
     "test": "node --test test/",
     "smoke": "node scripts/smoke.mjs",
     "check:links": "node scripts/check-links.mjs",
+    "check:api-3-only": "node scripts/check-api-3-only.mjs",
+    "check:endpoints": "node scripts/check-endpoints.mjs",
     "check:docs-drift": "node scripts/check-docs-drift.mjs",
     "docs:lock": "node scripts/check-docs-drift.mjs --update",
+    "docs:lock:add": "node scripts/check-docs-drift.mjs --add",
     "inspect": "node scripts/inspect.mjs web",
     "inspect:cli": "node scripts/inspect.mjs cli"
   },

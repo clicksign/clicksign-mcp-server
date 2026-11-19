@@ -184,4 +184,15 @@ describe('validate', () => {
     writeFileSync(join(skill, 'SKILL.md'), '---\nname: other-name\ndescription: Sends an envelope.\n---\n\nBody\n');
     assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter name must be "send-envelope"/);
   });
+
+  it('rejects a skill description over the 1024 characters the Agent Skills specification allows', () => {
+    const dir = copyRepo();
+    const skill = join(dir, 'skills', 'send-envelope');
+    mkdirSync(skill, { recursive: true });
+    writeFileSync(join(skill, 'SKILL.md'), `---\nname: send-envelope\ndescription: ${'a'.repeat(1025)}\n---\n\nBody\n`);
+    assertError(validate(dir), /skills\/send-envelope\/SKILL\.md: frontmatter description has 1025 characters \(max 1024\)/);
+
+    writeFileSync(join(skill, 'SKILL.md'), `---\nname: send-envelope\ndescription: ${'a'.repeat(1024)}\n---\n\nBody\n`);
+    assert.deepEqual(validate(dir).errors.filter((message) => message.includes('send-envelope')), []);
+  });
 });

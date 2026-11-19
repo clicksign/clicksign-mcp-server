@@ -7,9 +7,17 @@
     "updatedAt": "2026-10-02T14:58:35.000Z",
     "sha256": "dab7fdc14669c0fbd53744f69096475b865dfc2c894d9f560c4ed2fb2c08580c"
   },
+  "https://developers.clicksign.com/docs/adicionar-requisito-de-rubrica.md": {
+    "updatedAt": "2026-10-23T21:05:26.000Z",
+    "sha256": "ab8b3b61e61e431f0a2b047f5d043d00bca25f54a85306e273ff26c7e5e9491e"
+  },
   "https://developers.clicksign.com/docs/ambientes-autenticacao-e-formato.md": {
     "updatedAt": "2026-10-02T15:18:15.000Z",
     "sha256": "c7aaeacf51f395f5dfda4d2757224e1ed858f0f9d90fc971a09211054784a6f1"
+  },
+  "https://developers.clicksign.com/docs/aproveitamento-de-assinaturas-parciais-em-documentos-expirados.md": {
+    "updatedAt": "2026-10-02T16:14:15.000Z",
+    "sha256": "0a11121b00e2112b1b73cc291be9d59f4884dbb453bc518e373bc3b60559ad41"
   },
   "https://developers.clicksign.com/docs/assinatura-automatica.md": {
     "updatedAt": "2026-10-02T16:14:48.000Z",
@@ -31,6 +39,10 @@
     "updatedAt": "2026-10-02T15:16:28.000Z",
     "sha256": "2088eee05a6ae635c8715e7a1c1d1b8aa921fd889773c3ebf65b243a82b60973"
   },
+  "https://developers.clicksign.com/docs/customizar-notificacoes-por-email.md": {
+    "updatedAt": "2026-10-23T21:05:26.000Z",
+    "sha256": "e4e0f7a9bb382be3aa65974194b742f70f06dc037041b819f01a8b92a6409cb8"
+  },
   "https://developers.clicksign.com/docs/descubra-sua-versao-da-api.md": {
     "updatedAt": "2026-10-02T15:16:28.000Z",
     "sha256": "ef49602afd7ba5977f1a81525a72171e76c48eee42f4572518f7436717882f3f"
@@ -51,9 +63,17 @@
     "updatedAt": "2026-09-29T13:36:16.000Z",
     "sha256": "e08cd5230162183d3660a5043f91e3341a8a319b6224ab6e3e92b9fc3ddc831d"
   },
+  "https://developers.clicksign.com/docs/envelope-eventos.md": {
+    "updatedAt": "2026-09-29T13:36:16.000Z",
+    "sha256": "addbc77e3f8da16b4dca5d00ec404972829c44356fe38a532d2b04c022821920"
+  },
   "https://developers.clicksign.com/docs/envelope.md": {
     "updatedAt": "2026-10-02T14:58:35.000Z",
     "sha256": "66106ffe94a37092b06d2f909ae373ce57362727794ad2544451a25fe2933172"
+  },
+  "https://developers.clicksign.com/docs/evento-close.md": {
+    "updatedAt": "2026-09-28T23:29:22.000Z",
+    "sha256": "a146fa8c000b1e4690c028e9dfa67a23803cb9f5203478b08c3d7a1e8c67a316"
   },
   "https://developers.clicksign.com/docs/evento-document-closed.md": {
     "updatedAt": "2026-09-28T23:29:22.000Z",
@@ -115,6 +135,10 @@
     "updatedAt": "2026-10-09T20:56:26.000Z",
     "sha256": "17ad9934c856d45816719f6343aba8cf0663274eb01bd6e702e76911029bf823"
   },
+  "https://developers.clicksign.com/docs/introducao-assinatura-digital.md": {
+    "updatedAt": "2026-10-23T21:05:26.000Z",
+    "sha256": "627ce3a1d77b2cd1dad08cec0a85314814c4690e42f200301ae6ed1d53264c40"
+  },
   "https://developers.clicksign.com/docs/limite-de-requisicoes.md": {
     "updatedAt": "2026-10-09T18:54:00.000Z",
     "sha256": "41b03834e5cf21219407b5ad07b5288312e1f44ff24e44937fdbf0f0268d1a35"
@@ -151,6 +175,10 @@
     "updatedAt": "2026-09-29T13:36:16.000Z",
     "sha256": "0a13f29b11dec53244633cc8fd9880d24b618217bbe7185a0a975d601f49a670"
   },
+  "https://developers.clicksign.com/docs/tipos-de-notificacoes-do-signatario.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "df8a0431b04f8c1cf601e2bc4e3023e503f9eaaa90021630207a12d48cfb4823"
+  },
   "https://developers.clicksign.com/docs/tipos-de-requisitos-de-autenticacao.md": {
     "updatedAt": "2026-10-02T15:18:15.000Z",
     "sha256": "45ebb6d513e0ee546120c9d8e7190e51ee8a69244e3f30a48f4d9e21e3aebb88"
@@ -158,6 +186,10 @@
   "https://developers.clicksign.com/docs/veja-como-funciona-na-prática.md": {
     "updatedAt": "2026-10-02T14:58:35.000Z",
     "sha256": "0bb0c6f1556108fd86604f1723b14a5b9863e52b2dd0db76277e35dde6208c5b"
+  },
+  "https://developers.clicksign.com/docs/visualização-de-notificações.md": {
+    "updatedAt": "2026-10-02T14:58:35.000Z",
+    "sha256": "444a84667ea9cd6953fa488da332965c1465ddd6183da28a300c486039dbdef2"
   },
   "https://developers.clicksign.com/llms.txt": {
     "updatedAt": null,
@@ -215,6 +247,10 @@
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "36b5289a177b51b632b96d544491aff9475146955cfb2e7edb74193c0d8fc6ce"
   },
+  "https://developers.clicksign.com/reference/api-eventos.md": {
+    "updatedAt": "2026-09-15T14:39:04.000Z",
+    "sha256": "4eb5006c6aa028cd0efaf581c1bb11c5aa95663de9b58a443cf9ba2dba83ebd3"
+  },
   "https://developers.clicksign.com/reference/api-excluir-documento.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "dfb53b0932474bfc53104bf81742f1da77a931c1a9ee87275a7a00369c5e7978"
@@ -258,6 +294,10 @@
   "https://developers.clicksign.com/reference/api-listar-pastas.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "115b400bc25555b2a10141d9f44455746b35f96cc081a824e852b7d98e578d50"
+  },
+  "https://developers.clicksign.com/reference/api-listar-requisitos.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "9e2d5a0fe0b7d8a0541b2bdb1f3e0505a027d9587175a92024b470c311a6eec5"
   },
   "https://developers.clicksign.com/reference/api-listar-signatarios.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
@@ -326,6 +366,10 @@
   "https://developers.clicksign.com/reference/detalhes-do-documento.md": {
     "updatedAt": "2026-07-20T13:56:39.000Z",
     "sha256": "011e2428484773d084931e06e8fc3b1732efd1d9ebc696a902ac68562256f799"
+  },
+  "https://developers.clicksign.com/reference/detalhes-do-requisito.md": {
+    "updatedAt": "2026-07-20T13:56:39.000Z",
+    "sha256": "9eeeaa5dd8e17195e99e8a789951da92ae22e512844af931cc2e55ce6694f82c"
   },
   "https://developers.clicksign.com/reference/documento-campos-e-regras-de-negocio.md": {
     "updatedAt": "2026-09-15T14:39:04.000Z",
